@@ -11,6 +11,8 @@ import java.awt.{BorderLayout, Font}
 import data.Artifact
 import javax.swing.border.{EtchedBorder, BevelBorder}
 import net.OAuthTinyServer
+import akka.actor.ActorDSL._
+
 
 object Actions {
 
@@ -61,7 +63,7 @@ object Actions {
     dialog.visible = true
 
     updateStatusBar("Resolving artifacts...")
-    AnonActors.naked {
+    actor(actorSystem)(new Act{
       var dependencyNeedsReset = false
       dialog.artifacts foreach {
         case (s1, s2, s3) =>
@@ -76,7 +78,7 @@ object Actions {
       } else {
         updateStatusBar("Artifact already loaded. Reset canceled.")
       }
-    }
+    })
   }
 
   val addJarsAction = registerAction("Add Jars ...", "control J")(classPathAction {

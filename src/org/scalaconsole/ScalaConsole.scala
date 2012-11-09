@@ -15,6 +15,8 @@ import data._
 import java.util.jar.JarFile
 import xml.XML
 import tools.nsc.plugins.PluginDescription
+import akka.actor.ActorDSL._
+
 
 object ScalaConsole extends SimpleSwingApplication {
   System.clearProperty("scala.home")
@@ -35,10 +37,10 @@ object ScalaConsole extends SimpleSwingApplication {
   val sysOutErr = new PrintStream(replOs) {
     override def write(buf: Array[Byte], off: Int, len: Int) {
       val str = new String(buf, off, len)
-      AnonActors.naked {
+      actor(actorSystem)(new Act {
         replOs.write(str.getBytes)
         replOs.flush()
-      }
+      })
     }
   }
   System.setOut(sysOutErr)
@@ -46,7 +48,7 @@ object ScalaConsole extends SimpleSwingApplication {
   val PluginXML = "scalac-plugin.xml"
 
   def startRepl() {
-    AnonActors.naked {
+    actor(actorSystem)(new Act {
       val replIs = new PipedInputStream(4096)
       val scriptWriter = new PrintWriter(new OutputStreamWriter(new PipedOutputStream(replIs)))
 
@@ -101,23 +103,24 @@ object ScalaConsole extends SimpleSwingApplication {
       replIs.close()
       scriptWriter.close()
 
-    }
+    })
   }
 
   var writeToRepl: ActorRef = _
 
-  def connectToRepl(writer: PrintWriter, pasteFunc: String => Unit) = AnonActors { context => {
-    case ('Normal, script: String) =>
-      writer.write(script)
-      if (!script.endsWith("\n")) writer.write("\n")
-      writer.flush()
-      if (script == ":q") context.stop(context.self)
-    case ('Paste, script: String) =>
-      println("// Interpreting in paste mode ")
-      pasteFunc(script)
-      println("// Exiting paste mode. ")
-  }
-  }
+  def connectToRepl(writer: PrintWriter, pasteFunc: String => Unit) = actor(actorSystem)(new Act{
+    become {
+      case ('Normal, script: String) =>
+        writer.write(script)
+        if (!script.endsWith("\n")) writer.write("\n")
+        writer.flush()
+        if (script == ":q") context.stop(self)
+      case ('Paste, script: String) =>
+        println("// Interpreting in paste mode ")
+        pasteFunc(script)
+        println("// Exiting paste mode. ")
+    }
+  })
 
   val readFromRepl = new Thread() {
     override def run() {
@@ -134,7 +137,8 @@ object ScalaConsole extends SimpleSwingApplication {
   private def osToWriter(os: OutputStream) = new PrintWriter(new OutputStreamWriter(os))
 
 
-  def textPane = new TextPane {peerText =>
+  def textPane = new TextPane {
+    peerText =>
     val undoManager = new TextUndoManager
     undoManager.addPropertyChangeListener(Actions.UndoAction)
     undoManager.addPropertyChangeListener(Actions.RedoAction)

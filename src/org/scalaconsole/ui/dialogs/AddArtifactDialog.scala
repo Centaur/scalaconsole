@@ -10,6 +10,8 @@ import javax.swing.border.TitledBorder
 import javax.swing.{JOptionPane, SwingUtilities, ImageIcon, KeyStroke, JComponent}
 import java.io.IOException
 import akka.actor.{Actor, Props}
+import akka.actor.ActorDSL._
+
 
 
 object VersionComparator {
@@ -103,7 +105,7 @@ class AddArtifactDialog(parent: Window) extends Dialog(parent) with Cancelable {
             src.enabled = false
             promptLabel.visible = false
             loadingImage.visible = true
-            AnonActors.naked {
+            actor(actorSystem)(new Act {
               try {
                 val result = net.MavenIndexerClient.search(src.text)
                 exactRef = result._1
@@ -149,7 +151,7 @@ class AddArtifactDialog(parent: Window) extends Dialog(parent) with Cancelable {
               loadingImage.visible = false
               src.enabled = true
 
-            }
+            })
           }
           src.requestFocus()
         case ButtonClicked(src) =>

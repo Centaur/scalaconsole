@@ -17,7 +17,7 @@ object `package` {
     "2.9.1.final" -> "2.9.1",
     "2.9.1.1" -> "2.9.1-1",
     "2.9.2" -> "2.9.2",
-    "2.10.0-M7" -> "2.10.0-M7"
+    "2.10.0-RC2" -> "2.10.0-RC2"
   )
   val isMac = System.getProperty("os.name").toLowerCase.contains("mac")
   val ControlOrMeta = if (isMac) Key.Modifier.Meta else Key.Modifier.Control
@@ -44,19 +44,13 @@ object `package` {
 
   trait ActorFactory {
     def naked(action: => Any): ActorRef
-    def apply(action: ActorContext => Actor.Receive): ActorRef
   }
 
   class ActorFactoryImpl extends ActorFactory{
     def naked(action: => Any) = TypedActor.context.actorOf(Props(new Actor() {
       action
 
-      protected def receive = null
+      override def receive = Actor.emptyBehavior
     }))
-
-    def apply(action: ActorContext => Actor.Receive) = TypedActor.context.actorOf(Props(action))
   }
-  val AnonActors:ActorFactory = TypedActor(actorSystem).typedActorOf(TypedProps[ActorFactoryImpl])
-
-
 }

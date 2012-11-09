@@ -7,7 +7,7 @@ import xml.XML
 import scala.Some
 import javax.swing.JOptionPane
 import org.scalaconsole.ScalaConsole
-import akka.actor.{Props, Actor}
+import akka.actor._
 
 object OAuthTinyServer {
   val client_id = "3d4d9d562d4fd186aa41"
@@ -35,12 +35,15 @@ object OAuthTinyServer {
 
 
   def withAccessToken(callback: Option[String] => Unit) {
-    val post = AnonActors { context => {
-      case token: String =>
-        callback(Some(token))
-        context.stop(context.self)
-    }
-    }
+    import akka.actor.ActorDSL._
+
+    val post = actor(actorSystem)(new Act {
+      become {
+        case token: String =>
+          callback(Some(token))
+          context.stop(context.self)
+      }
+    })
     if (accessToken.isDefined) post ! accessToken.get
     else new javax.swing.SwingWorker[Unit, Unit]() {
       def doInBackground() {
