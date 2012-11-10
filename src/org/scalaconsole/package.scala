@@ -15,7 +15,7 @@ object `package` {
   val isMac = System.getProperty("os.name").toLowerCase.contains("mac")
   val ControlOrMeta = if (isMac) Key.Modifier.Meta else Key.Modifier.Control
 
-  class Times(val n: Int) {
+  implicit class Times(val n: Int) {
     def times(b: => Unit) {
       var count = 0
       def worker: javax.swing.SwingWorker[Unit, Unit] = new javax.swing.SwingWorker[Unit, Unit]() {
@@ -31,7 +31,6 @@ object `package` {
     }
   }
 
-  implicit def int2Times(n: Int) = new Times(n)
 
   val actorSystem = ActorSystem()
 

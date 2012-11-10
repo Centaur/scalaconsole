@@ -196,7 +196,7 @@ class AddArtifactDialog(parent: Window) extends Dialog(parent) with Cancelable {
               case (Seq(e), Seq()) => e
             }
 
-            selectedBox.listData = selectedBox.listData :+ (newOne + " : " + listData(index)) distinct
+            selectedBox.listData = (selectedBox.listData :+ (newOne + " : " + listData(index))).distinct
           }
       }
     }

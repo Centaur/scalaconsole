@@ -8,11 +8,11 @@ import collection.immutable.TreeSet
 import util.matching.Regex
 
 class StructuredSyntaxDocumentFilter(val styledDocument: DefaultStyledDocument) extends DocumentFilter {
-  implicit def int2Orderable(i: Int) = new Orderable{
-    def value = i
-  }
+//  implicit def int2Orderable(i: Int) = new Orderable{
+//    def value = i
+//  }
 
-  val TAB_REPLACEMENT = "  ";
+  val TAB_REPLACEMENT = "  "
   val segment = new Segment
   protected val lexer = new LexerNode
 
@@ -43,7 +43,7 @@ class StructuredSyntaxDocumentFilter(val styledDocument: DefaultStyledDocument) 
       } else if (offset - 1 > 0) {
         parseDocument(offset - 1, 1)
       } else {
-        mlTextRunSet = new TreeSet[Orderable]
+        mlTextRunSet = new TreeSet[Int]
       }
     }
   }
@@ -128,7 +128,7 @@ class StructuredSyntaxDocumentFilter(val styledDocument: DefaultStyledDocument) 
         val style = styleMap(groupList(groupNum))
         styledDocument.setCharacterAttributes(pointer, matchEnd - pointer, style, true)
         if (paragraphStart(pointer) != paragraphStart(matchEnd)) {
-          mlTextRunSet += new MultiLineRun(pointer, matchEnd)
+          mlTextRunSet += new MultiLineRun(pointer, matchEnd).start
         }
 
         // parse the child regexps, if any, within a matched block
@@ -179,16 +179,17 @@ class StructuredSyntaxDocumentFilter(val styledDocument: DefaultStyledDocument) 
   /**
    * The position tree of multi-line comments.
    */
-  implicit object Orderable extends OrderableOrdering
+//  implicit object Orderable extends OrderableOrdering
 
-  protected var mlTextRunSet = new TreeSet[Orderable]()
-  trait Orderable {def value: Int}
+  protected var mlTextRunSet = new TreeSet[Int]()
+//  trait Orderable {def value: Int}
 
-  trait OrderableOrdering extends Ordering[Orderable] {
-    def compare(x: Orderable, y: Orderable) = x.value - y.value
-  }
+//  trait OrderableOrdering extends Ordering[Orderable] {
+//    def compare(x: Orderable, y: Orderable) = x.value - y.value
+//  }
 
-  class MultiLineRun(_start: Int, _end: Int, _delimeterSize: Int = 2) extends Orderable{
+//  class MultiLineRun(_start: Int, _end: Int, _delimeterSize: Int = 2) extends Orderable{
+  class MultiLineRun(_start: Int, _end: Int, _delimeterSize: Int = 2) {
     if (_start > _end) {
       val msg = "Start offset is after end: "
       throw new BadLocationException(msg, _start)
@@ -200,12 +201,12 @@ class StructuredSyntaxDocumentFilter(val styledDocument: DefaultStyledDocument) 
     val start = styledDocument.createPosition(_start).getOffset
     val length = end - start
 
-    override def value = start
+//    override def value = start
   }
 
 
-  implicit def position2Orderable(p: Position) = new {
-    def value = p.getOffset
-  }
+//  implicit def position2Orderable(p: Position) = new {
+//    def value = p.getOffset
+//  }
 
 }

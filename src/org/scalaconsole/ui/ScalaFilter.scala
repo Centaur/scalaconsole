@@ -46,15 +46,13 @@ class ScalaFilter(val doc: DefaultStyledDocument) extends StructuredSyntaxDocume
     }
   }
 
-  implicit def customStyle2Style(c: CustomStyle) = c.self
-
   for((regex, style) <- (SLASH_STAR_COMMENT -> comment) :: (SLASH_SLASH_COMMENT -> comment) ::
     (QUOTES -> quotes) :: (DIGITS -> digits) :: (OPERATION -> operation) ::
     (IDENT -> ident) :: Nil) {
-    lexer.putStyle(regex, style)
+    lexer.putStyle(regex, style.self)
   }
-  lexer.putChild(OPERATION, new LexerNode().putStyle(RESERVED_WORDS, reservedWords).putStyle(LEFT_PARENS, leftParens))
-  lexer.putChild(IDENT, new LexerNode().putStyle(RESERVED_WORDS, reservedWords))
+  lexer.putChild(OPERATION, new LexerNode().putStyle(RESERVED_WORDS, reservedWords.self).putStyle(LEFT_PARENS, leftParens.self))
+  lexer.putChild(IDENT, new LexerNode().putStyle(RESERVED_WORDS, reservedWords.self))
 }
 
 object ScalaFilter {

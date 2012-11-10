@@ -14,7 +14,7 @@ unmanagedResourceDirectories in Compile <+= baseDirectory(_ / "resources")
 
 fork := true
 
-scalacOptions ++= Seq("-unchecked", "-deprecation")
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 //mainResourcesPath := "src"
 //

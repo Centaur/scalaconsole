@@ -57,10 +57,10 @@ class ManageDependenciesDialog(parent: Window) extends Dialog(parent) with Cance
 
   def onRemove() {
     pathBox.listData = pathBox.listData.toList filterNot {
-      pathBox.selection.items.toList contains
+      pathBox.selection.items.toList.contains
     }
     artifactBox.listData = artifactBox.listData.toList filterNot {
-      artifactBox.selection.items.toList contains
+      artifactBox.selection.items.toList.contains
     }
   }
 
