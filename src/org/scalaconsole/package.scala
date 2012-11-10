@@ -1,8 +1,6 @@
 package org.scalaconsole
 
 import swing.event.Key
-import swing.SwingWorker
-import javax.swing.SwingUtilities
 import akka.actor._
 
 
@@ -10,13 +8,8 @@ object `package` {
   type AIG = Map[String, List[Map[String, String]]]
   type AIMap = Map[String, AIG]
 
-  private[scalaconsole] val ScalaCoreLibraries = Set("scala-compiler", "scala-library", "scala-swing", "scalap", "scala-dbc")
+  private[scalaconsole] val ScalaCoreLibraries = Set("scala-compiler", "scala-library", "scala-swing", "scalap", "scala-dbc", "scala-reflect")
   val SupportedScalaVersions = Map(
-    "2.9.0.final" -> "2.9.0",
-    "2.9.0.1" -> "2.9.0-1",
-    "2.9.1.final" -> "2.9.1",
-    "2.9.1.1" -> "2.9.1-1",
-    "2.9.2" -> "2.9.2",
     "2.10.0-RC2" -> "2.10.0-RC2"
   )
   val isMac = System.getProperty("os.name").toLowerCase.contains("mac")
@@ -42,15 +35,4 @@ object `package` {
 
   val actorSystem = ActorSystem()
 
-  trait ActorFactory {
-    def naked(action: => Any): ActorRef
-  }
-
-  class ActorFactoryImpl extends ActorFactory{
-    def naked(action: => Any) = TypedActor.context.actorOf(Props(new Actor() {
-      action
-
-      override def receive = Actor.emptyBehavior
-    }))
-  }
 }

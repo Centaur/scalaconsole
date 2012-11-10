@@ -21,7 +21,7 @@ object ClassLoaderManager {
       }
     }.flatMap(_.asURLs) ++ scalaLibraries.map(_.toURI.toURL)
 
-    val cl = ScalaClassLoader(new ChildFirstClassLoader(newClassPath.toArray))
+    val cl = new ChildFirstClassLoader(newClassPath.toArray) with ScalaClassLoader
     val result = (cl, scalaBootPath)
     classLoaders(v) = result
     (cl, scalaBootPath)

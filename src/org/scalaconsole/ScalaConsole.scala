@@ -9,7 +9,6 @@ import javax.swing.text.DefaultStyledDocument
 import java.io.{FileFilter => _, _}
 import javax.swing.SwingUtilities
 import tools.nsc.{Properties, Settings}
-import java.awt.event.{WindowEvent, WindowAdapter, WindowStateListener}
 import ui._
 import data._
 import java.util.jar.JarFile
@@ -124,7 +123,7 @@ object ScalaConsole extends SimpleSwingApplication {
 
   val readFromRepl = new Thread() {
     override def run() {
-      for (line <- io.Source.fromInputStream(outputIs).getLines) {
+      for (line <- io.Source.fromInputStream(outputIs).getLines()) {
         outputPane.text += (line + "\n")
         outputPane.caret.position = outputPane.text.length
       }
@@ -143,7 +142,7 @@ object ScalaConsole extends SimpleSwingApplication {
     undoManager.addPropertyChangeListener(Actions.UndoAction)
     undoManager.addPropertyChangeListener(Actions.RedoAction)
 
-    var documentChangedSinceLastRepaint = false;
+    var documentChangedSinceLastRepaint = false
 
     font = displayFont
     cursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)
