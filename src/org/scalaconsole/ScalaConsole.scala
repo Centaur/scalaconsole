@@ -56,6 +56,7 @@ object ScalaConsole extends SimpleSwingApplication {
 
       for (path <- data.DependencyManager.boundedExtraClasspath(currentScalaVersion)) {
         settings.classpath.append(path)
+        settings.classpath.value = settings.classpath.value  // set settings.classpath.isDefault to false
         // enable plugins
         if (path.endsWith(".jar")) {
           val jar = new JarFile(path)
@@ -74,7 +75,6 @@ object ScalaConsole extends SimpleSwingApplication {
 
       if (isOrigin) {
         settings.usejavacp.value = true
-
         val iloop = new DetachedILoop(isToReader(replIs), osToWriter(replOs))
         writeToRepl = connectToRepl(scriptWriter, {
           s => iloop.intp.interpret(s)

@@ -12,9 +12,10 @@ import plugins.resolver._
 
 object EmbeddedIvy {
 
-  val repositories = ('central, "http://repo1.maven.org/maven2/") ::
-    ('typesafe, "http://repo.typesafe.com/typesafe/releases/") ::
-    Nil
+  val repositories =
+      ('typesafe, "http://repo.typesafe.com/typesafe/releases/") ::
+      ('central, "http://repo1.maven.org/maven2/") ::
+      Nil
 
   case class TransitiveResolver(m2Compatible: Boolean, name: String, patternRoot: String) extends IBiblioResolver {
     setM2compatible(m2Compatible)
@@ -24,12 +25,12 @@ object EmbeddedIvy {
 
   def resolve(groupId: String, artifactId: String, version: String) = {
     //creates clear ivy settings
-    val ivySettings = new IvySettings();
+    val ivySettings = new IvySettings()
     //adding maven repo resolver
     //url resolver for configuration of maven repo
     val chainResolver = new ChainResolver
     for ((name, url) <- repositories) {
-      chainResolver.add(TransitiveResolver(true, name.name, url))
+      chainResolver.add(TransitiveResolver(m2Compatible = true, name = name.name, patternRoot = url))
     }
     ivySettings.addResolver(chainResolver)
     //set to the default resolver
@@ -46,7 +47,7 @@ object EmbeddedIvy {
     report.getAllArtifactsReports map (_.getLocalFile)
   }
 
-  def resolveScala(version: String):List[java.io.File] = {
+  def resolveScala(version: String): List[java.io.File] = {
     for {lib <- ScalaCoreLibraries.toList
          file <- resolve("org.scala-lang", lib, version)} yield file
   }
