@@ -10,7 +10,7 @@ object `package` {
 
   private[scalaconsole] val ScalaCoreLibraries = Set("scala-compiler", "scala-library", "scala-swing", "scalap", "scala-dbc", "scala-reflect")
   val SupportedScalaVersions = Map(
-    "2.10.0-RC2" -> "2.10.0-RC2"
+    "2.10.0-RC3" -> "2.10.0-RC3"
   )
   val isMac = System.getProperty("os.name").toLowerCase.contains("mac")
   val ControlOrMeta = if (isMac) Key.Modifier.Meta else Key.Modifier.Control
