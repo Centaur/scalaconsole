@@ -61,7 +61,7 @@ class AddArtifactDialog(parent: Window) extends Dialog(parent) with Cancelable {
 
   var exactRef: AIG = _
   var othersRef: AIG = _
-  val R = """.*_(\d+\.\d+\.\d+(?:\-\d+)?(?:\.RC\d+|-SNAPSHOT)?)""".r
+  val R = """.*_(\d+\.\d+(?:\.\d+)?(?:\-\d+)?(?:\.RC\d+|-SNAPSHOT)?)""".r
 
 
   val searchBox = new FlowPanel {
