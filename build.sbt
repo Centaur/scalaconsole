@@ -37,7 +37,7 @@ libraryDependencies <++= scalaVersion { v => Seq(
                              "org.scala-lang" % "scala-compiler" % v,
                              "org.scala-lang" % "scala-reflect" % v,
                              "org.scala-lang" % "scala-swing" % v,
-                             "org.scalaz" % "scalaz-core_2.10" % "7.0.0-M7",
+                             "org.scalaz" % "scalaz-core_2.10" % "7.0.0-RC2",
                              "com.typesafe.akka" %% "akka-actor" % "2.1.0",
                              "org.specs2" %% "specs2" % "latest.release" % "test"
                            )}
