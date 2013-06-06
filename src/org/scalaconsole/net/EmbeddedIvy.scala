@@ -37,12 +37,17 @@ object EmbeddedIvy {
     ivySettings.setDefaultResolver(chainResolver.getName)
     //creates an Ivy instance with settings
     val ivy = Ivy.newInstance(ivySettings)
+    // For windows
     val md = DefaultModuleDescriptor.newCallerInstance(
-      ModuleRevisionId.newInstance(groupId, artifactId, version), Array("*,!sources,!javadoc"), true, false
+      Array(ModuleRevisionId.newInstance(groupId, artifactId, version)), true, false
     )
+    // Works on other platforms
+//    val md = DefaultModuleDescriptor.newCallerInstance(
+//      ModuleRevisionId.newInstance(groupId, artifactId, version), Array("*,!sources,!javadoc"), true, false
+//    )
     //init resolve report
     val options = new ResolveOptions
-    val report = ivy.resolve(md, new ResolveOptions)
+    val report = ivy.resolve(md, options)
     //so you can get the jar library
     report.getAllArtifactsReports map (_.getLocalFile)
   }
