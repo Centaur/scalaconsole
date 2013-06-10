@@ -4,7 +4,7 @@ name := "ScalaConsole"
 
 version := "1.5.RC5"
 
-scalaVersion := "2.10.1"
+scalaVersion := "2.10.2"
 
 scalaSource in Compile <<= baseDirectory(_ / "src")
 
