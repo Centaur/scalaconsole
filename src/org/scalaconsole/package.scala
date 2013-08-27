@@ -33,6 +33,6 @@ object `package` {
   }
 
 
-  val actorSystem = ActorSystem()
+  implicit val actorSystem = ActorSystem()
 
 }

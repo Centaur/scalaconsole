@@ -105,7 +105,7 @@ class AddArtifactDialog(parent: Window) extends Dialog(parent) with Cancelable {
             src.enabled = false
             promptLabel.visible = false
             loadingImage.visible = true
-            actor(actorSystem)(new Act {
+            actor(new Act {
               try {
                 val result = net.MavenIndexerClient.search(src.text)
                 exactRef = result._1

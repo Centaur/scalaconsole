@@ -36,7 +36,7 @@ object ScalaConsole extends SimpleSwingApplication {
   val sysOutErr = new PrintStream(replOs) {
     override def write(buf: Array[Byte], off: Int, len: Int) {
       val str = new String(buf, off, len)
-      actor(actorSystem)(new Act {
+      actor(new Act {
         replOs.write(str.getBytes)
         replOs.flush()
       })
@@ -47,7 +47,7 @@ object ScalaConsole extends SimpleSwingApplication {
   val PluginXML = "scalac-plugin.xml"
 
   def startRepl() {
-    actor(actorSystem)(new Act {
+    actor(new Act {
       val replIs = new PipedInputStream(4096)
       val scriptWriter = new PrintWriter(new OutputStreamWriter(new PipedOutputStream(replIs)))
 
@@ -56,7 +56,7 @@ object ScalaConsole extends SimpleSwingApplication {
 
       for (path <- data.DependencyManager.boundedExtraClasspath(currentScalaVersion)) {
         settings.classpath.append(path)
-        settings.classpath.value = settings.classpath.value  // set settings.classpath.isDefault to false
+        settings.classpath.value = settings.classpath.value // set settings.classpath.isDefault to false
         // enable plugins
         if (path.endsWith(".jar")) {
           val jar = new JarFile(path)
@@ -107,8 +107,8 @@ object ScalaConsole extends SimpleSwingApplication {
 
   var writeToRepl: ActorRef = _
 
-  def connectToRepl(writer: PrintWriter, pasteFunc: String => Unit) = actor(actorSystem)(new Act{
-    become {
+  def connectToRepl(writer: PrintWriter, pasteFunc: String => Unit) = actor(new Actor {
+    def receive = {
       case ('Normal, script: String) =>
         writer.write(script)
         if (!script.endsWith("\n")) writer.write("\n")
