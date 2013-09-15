@@ -133,18 +133,23 @@ class AddArtifactDialog(parent: Window) extends Dialog(parent) with Cancelable {
                       newBtn.doClick()
                     }
                 }
+                val all = new ToggleButton("All")
+                crossBuiltBox.contents.insert(0, all)
+                group.buttons += all
+                listenTo(all)
+
                 crossBuiltBox.preferredSize = if (group.buttons.size > 0) {
-                  val all = new ToggleButton("All")
-                  crossBuiltBox.contents.insert(0, all)
-                  group.buttons += all
-                  listenTo(all)
-                  new swing.Dimension(600, 35 * (group.buttons.size / 7 + 1))
+                  new swing.Dimension(dialog.size.width, 35*((dialog.size.width / 50) / 7 + 1))
+//                  new swing.Dimension(dialog.size.width, 35 * (group.buttons.size / 7 + 1))
                 } else {
                   dimension_0_0
                 }
+
+                crossBuiltBox.peer.doLayout()
+
                 src.selectAll()
-                dialog.pack()
-                dialog.centerOnScreen()
+//                dialog.pack()
+//                dialog.centerOnScreen()
               } catch {
                 case e: IOException => JOptionPane.showMessageDialog(null, "Maven index server not available at the moment. Please try again later.")
               }
@@ -237,7 +242,7 @@ class AddArtifactDialog(parent: Window) extends Dialog(parent) with Cancelable {
     }
     add(new ScrollPane() {
       border = new TitledBorder("Version")
-      contents = version;
+      contents = version
       preferredSize = dimension_150_400
     }, BorderPanel.Position.East)
     val splitter = new SplitPane(Orientation.Horizontal) {
