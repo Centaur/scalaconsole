@@ -13,9 +13,10 @@ import plugins.resolver._
 object EmbeddedIvy {
 
   val repositories =
-      ('typesafe, "http://repo.typesafe.com/typesafe/releases/") ::
-      ('central, "http://repo1.maven.org/maven2/") ::
-      Nil
+    ('oschina, "http://maven.oschina.net/content/groups/public/") ::
+    ('typesafe, "http://repo.typesafe.com/typesafe/releases/") ::
+    ('central, "http://repo1.maven.org/maven2/") ::
+    Nil
 
   case class TransitiveResolver(m2Compatible: Boolean, name: String, patternRoot: String) extends IBiblioResolver {
     setM2compatible(m2Compatible)
@@ -42,9 +43,9 @@ object EmbeddedIvy {
       Array(ModuleRevisionId.newInstance(groupId, artifactId, version)), true, false
     )
     // Works on other platforms
-//    val md = DefaultModuleDescriptor.newCallerInstance(
-//      ModuleRevisionId.newInstance(groupId, artifactId, version), Array("*,!sources,!javadoc"), true, false
-//    )
+    //    val md = DefaultModuleDescriptor.newCallerInstance(
+    //      ModuleRevisionId.newInstance(groupId, artifactId, version), Array("*,!sources,!javadoc"), true, false
+    //    )
     //init resolve report
     val options = new ResolveOptions
     val report = ivy.resolve(md, options)

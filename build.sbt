@@ -4,7 +4,7 @@ name := "ScalaConsole"
 
 version := "1.5.RC5"
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.10.3"
 
 scalaSource in Compile <<= baseDirectory(_ / "src")
 
@@ -38,7 +38,7 @@ libraryDependencies <++= scalaVersion { v => Seq(
                              "org.scala-lang" % "scala-reflect" % v,
                              "org.scala-lang" % "scala-swing" % v,
                              "org.scalaz" %% "scalaz-core" % "latest.release",
-                             "com.typesafe.akka" %% "akka-actor" % "2.2.0",
+                             "com.typesafe.akka" %% "akka-actor" % "2.2.3",
                              "org.specs2" %% "specs2" % "latest.release" % "test"
                            )}
 
