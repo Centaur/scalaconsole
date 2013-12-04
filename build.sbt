@@ -8,6 +8,8 @@ scalaVersion := "2.10.3"
 
 scalaSource in Compile <<= baseDirectory(_ / "src")
 
+scalaSource in Test <<= baseDirectory(_ / "test")
+
 javaSource in Compile <<= baseDirectory(_ / "src")
 
 unmanagedResourceDirectories in Compile <+= baseDirectory(_ / "resources")
@@ -18,7 +20,7 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 //mainResourcesPath := "src"
 //
-//testScalaSourcePath := "test"
+// testScalaSourcePath := "test"
 //
 //testResourcesPath := "test"
 //
@@ -37,8 +39,8 @@ libraryDependencies <++= scalaVersion { v => Seq(
                              "org.scala-lang" % "scala-compiler" % v,
                              "org.scala-lang" % "scala-reflect" % v,
                              "org.scala-lang" % "scala-swing" % v,
-                             "org.scalaz" %% "scalaz-core" % "latest.release",
+                             "org.scalaz" %% "scalaz-core" % "7.0.4",
                              "com.typesafe.akka" %% "akka-actor" % "2.2.3",
-                             "org.specs2" %% "specs2" % "latest.release" % "test"
+                             "org.specs2" %% "specs2" % "2.3.4" % "test"
                            )}
 
