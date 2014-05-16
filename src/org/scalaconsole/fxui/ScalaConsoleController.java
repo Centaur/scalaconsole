@@ -4,50 +4,47 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.ArrayBlockingQueue;
 
 public class ScalaConsoleController {
-    ArrayBlockingQueue<String> codeQueue = new ArrayBlockingQueue<>(10);
-    ArrayBlockingQueue<String> outputQueue = new ArrayBlockingQueue<>(1024);
-
+    CoreDelegate delegate;
 
     @FXML
-    private ResourceBundle resources;
+    ResourceBundle resources;
 
     @FXML
-    private URL location;
+    URL location;
 
     @FXML
-    private TextArea scriptArea;
+    TextArea scriptArea;
 
     @FXML
-    private TextArea outputArea;
+    TextArea outputArea;
 
     @FXML
-    private Label statusBar;
+    Label statusBar;
 
     @FXML
     void onRun(ActionEvent event) {
-
+        delegate.run(scriptArea.getText());
     }
 
     @FXML
     void onRunSelected(ActionEvent event) {
-        String script = scriptArea.getSelectedText();
-        codeQueue.add(script);
+        delegate.run(scriptArea.getSelectedText());
     }
 
     @FXML
     void onRunInPasteMode(ActionEvent event) {
-
+        delegate.runPaste(scriptArea.getText());
     }
 
     @FXML
     void onRunSelectedInPasteMode(ActionEvent event) {
-
+        delegate.runPaste(scriptArea.getSelectedText());
     }
 
     @FXML
@@ -111,7 +108,7 @@ public class ScalaConsoleController {
     }
 
     @FXML
-    void onTextAreaClicked(ActionEvent event) {
+    void onTextAreaClicked(MouseEvent event) {
 
     }
 
@@ -120,5 +117,7 @@ public class ScalaConsoleController {
         assert scriptArea != null : "fx:id=\"scriptArea\" was not injected: check your FXML file 'scalaconsole.fxml'.";
         assert outputArea != null : "fx:id=\"outputArea\" was not injected: check your FXML file 'scalaconsole.fxml'.";
         assert statusBar != null : "fx:id=\"statusBar\" was not injected: check your FXML file 'scalaconsole.fxml'.";
+        delegate = new CoreDelegate(this);
     }
+
 }

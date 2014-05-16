@@ -1,10 +1,10 @@
 package org.scalaconsole
 package data
 
-import tools.nsc.util.ScalaClassLoader
+import scala.reflect.internal.util.ScalaClassLoader
 import tools.nsc.Settings
 import tools.util.PathResolver
-
+import scala.util.Properties
 
 object ClassLoaderManager {
   val classLoaders = collection.mutable.Map[String, (ScalaClassLoader, String)]()
@@ -27,5 +27,11 @@ object ClassLoaderManager {
     (cl, scalaBootPath)
   }
 
-  def reset() = classLoaders.remove(ScalaConsole.currentScalaVersion)
+  val originScalaVersionNumber = Properties.scalaPropOrEmpty("version.number")
+  val originScalaVersion = SupportedScalaVersions(originScalaVersionNumber)
+  def isOrigin = currentScalaVersion == originScalaVersion
+
+  var currentScalaVersion = originScalaVersion
+
+  def reset() = classLoaders.remove(currentScalaVersion)
 }

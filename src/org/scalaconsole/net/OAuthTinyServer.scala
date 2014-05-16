@@ -6,7 +6,6 @@ import java.io._
 import xml.XML
 import scala.Some
 import javax.swing.JOptionPane
-import org.scalaconsole.ScalaConsole
 import akka.actor._
 
 object OAuthTinyServer {

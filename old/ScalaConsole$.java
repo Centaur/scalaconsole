@@ -1,21 +1,4 @@
-package org.scalaconsole
-
-import swing._
-import akka.actor._
-import event.{WindowIconified, Key, KeyPressed, SelectionChanged}
-import javax.swing.event.{DocumentEvent, DocumentListener}
-import java.awt.{Dimension, Font, Cursor}
-import javax.swing.text.DefaultStyledDocument
-import java.io.{FileFilter => _, _}
-import javax.swing.SwingUtilities
-import tools.nsc.{Properties, Settings}
-import ui._
-import data._
-import java.util.jar.JarFile
-import xml.XML
-import tools.nsc.plugins.PluginDescription
-import akka.actor.ActorDSL._
-
+package org.scalaconsole;
 
 object ScalaConsole extends SimpleSwingApplication {
   System.clearProperty("scala.home")
@@ -328,4 +311,3 @@ object ScalaConsole extends SimpleSwingApplication {
   }
 
 }
-

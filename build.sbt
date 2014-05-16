@@ -4,7 +4,7 @@ name := "ScalaConsole"
 
 version := "1.5.RC5"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.0"
 
 scalaSource in Compile <<= baseDirectory(_ / "src")
 
@@ -35,12 +35,13 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies <++= scalaVersion { v => Seq(
-                             "org.apache.ivy" % "ivy" % "2.2.0",
-                             "org.scala-lang" % "scala-compiler" % v,
-                             "org.scala-lang" % "scala-reflect" % v,
-                             "org.scala-lang" % "scala-swing" % v,
-                             "org.scalaz" %% "scalaz-core" % "7.0.6",
-                             "com.typesafe.akka" %% "akka-actor" % "2.3.2",
-                             "org.specs2" %% "specs2" % "2.3.11" % "test"
-                           )}
+  "org.apache.ivy" % "ivy" % "2.2.0",
+  "org.scala-lang" % "scala-compiler" % v,
+  "org.scala-lang" % "scala-reflect" % v,
+  "org.scalaz" %% "scalaz-core" % "7.0.6",
+  "org.controlsfx" % "controlsfx" % "8.0.5",
+  "com.typesafe.akka" %% "akka-actor" % "2.3.2",
+  "org.specs2" %% "specs2" % "2.3.11" % "test"
+)
+}
 

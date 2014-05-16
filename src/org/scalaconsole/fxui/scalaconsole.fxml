@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="663.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ScalaConsoleController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="663.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scalaconsole.fxui.ScalaConsoleController">
    <children>
       <HBox prefHeight="24.0" prefWidth="600.0">
          <children>
@@ -101,11 +101,11 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="341.0" prefWidth="377.0">
                <children>
-                  <TextArea prefHeight="604.0" prefWidth="628.0" scrollLeft="1.0" scrollTop="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <TextArea fx:id="scriptArea" prefHeight="604.0" prefWidth="628.0" scrollLeft="1.0" scrollTop="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children></AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <TextArea id="output-area" fx:id="outputArea" editable="false" focusTraversable="false" onMouseClicked="#onTextAreaClicked" prefHeight="341.0" prefWidth="259.0" scrollTop="1.0" stylesheets="@scalaconsole.css" text="Welcome to Scala version 2.10.4 (Java HotSpot(TM) Server VM, Java 1.8.0_05).Type in expressions to have them evaluated.Type :help for more information." wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <TextArea id="output-area" fx:id="outputArea" editable="false" focusTraversable="false" onMouseClicked="#onTextAreaClicked" prefHeight="341.0" prefWidth="259.0" scrollTop="1.0" stylesheets="@scalaconsole.css" text="" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
         </items>

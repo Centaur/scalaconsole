@@ -3,10 +3,9 @@ package data
 
 import java.lang.String
 import collection.mutable.{ListBuffer, Buffer}
-import ui.MainMenuBar
-import swing.ComboBox
-import javax.swing.JOptionPane
 import java.io.{BufferedReader, FileReader, FilenameFilter, ObjectInputStream, FileInputStream, ObjectOutputStream, FileWriter, BufferedWriter, FileOutputStream, File}
+import javax.swing.JOptionPane
+import org.controlsfx.dialog.{Dialog, Dialogs}
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,7 +57,7 @@ object DependencyManager {
       needsReset
   }
 
-  def version = ScalaConsole.currentScalaVersion
+  def version = ClassLoaderManager.currentScalaVersion
 
   /**
    * return : classpathNeedsReset
@@ -86,18 +85,22 @@ object DependencyManager {
   val dependencies = collection.mutable.Map[String, Dependencies](SupportedScalaVersions.keys.toSeq.map(_ -> Dependencies()): _*)
 
   def saveCurrentAsProfile(name: String) {
+    def confirmOverwrite() = {
+      val response = Dialogs.create().owner(null).title("Confirm overwrite").
+                     message(s"Profile $name for $version exists. Overwrite?").showConfirm()
+      response == Dialog.Actions.OK
+    }
+
     dependencies.get(version).map {dep =>
       val target = proFile(name, version)
-      if (!target.exists() || JOptionPane.showConfirmDialog(null,
-        "Profile %s for %s exists. Overwrite?".format(name, ScalaConsole.currentScalaVersion),
-        "Confirm overwrite", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+      if (!target.exists() || confirmOverwrite()) {
         val writer = new BufferedWriter(new FileWriter(target))
         writer.write(dep.serialize)
         writer.close()
-        JOptionPane.showMessageDialog(null, "Profile %s for Scala %s saved.".format(name, ScalaConsole.currentScalaVersion))
+        Dialogs.create().owner(null).message(s"Profile $name for Scala $version saved.").showInformation()
       }
     } orElse {
-      JOptionPane.showMessageDialog(null, "No Dependencies configured.")
+      Dialogs.create().owner(null).message("No Dependencies configured.").showInformation()
       None
     }
   }
@@ -113,7 +116,7 @@ object DependencyManager {
     dependencies(version) = dep
     reader.close()
     data.ClassLoaderManager.reset()
-    ui.Actions.resetReplAction.apply()
+//    ui.Actions.resetReplAction.apply()
   }
 
   def loadProfiles = {

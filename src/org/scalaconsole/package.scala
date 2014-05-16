@@ -1,6 +1,4 @@
 package org.scalaconsole
-
-import swing.event.Key
 import akka.actor._
 
 
@@ -14,7 +12,7 @@ object `package` {
     hostVersion -> hostVersion
   )
   val isMac = System.getProperty("os.name").toLowerCase.contains("mac")
-  val ControlOrMeta = if (isMac) Key.Modifier.Meta else Key.Modifier.Control
+//  val ControlOrMeta = if (isMac) Key.Modifier.Meta else Key.Modifier.Control
 
   implicit class Times(val n: Int) {
     def times(b: => Unit) {
