@@ -1,5 +1,4 @@
 package org.scalaconsole
-import akka.actor._
 
 
 object `package` {
@@ -30,7 +29,5 @@ object `package` {
     }
   }
 
-
-  implicit val actorSystem = ActorSystem()
 
 }

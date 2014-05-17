@@ -24,9 +24,6 @@ class MainStage extends Application {
 
 object MainStage {
   var top         : Stage        = _
-  var coreDelegate: CoreDelegate = _
-
-  def cleanupThreads() = coreDelegate.cancelTasks()
 
   def main(args: Array[String]) {
     Application.launch(classOf[MainStage], args: _*)

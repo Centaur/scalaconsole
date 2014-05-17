@@ -34,15 +34,13 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
-libraryDependencies <++= scalaVersion { v => Seq(
+libraryDependencies ++= Seq(
   "org.apache.ivy" % "ivy" % "2.2.0",
-  "org.scala-lang" % "scala-compiler" % v,
-  "org.scala-lang" % "scala-reflect" % v,
-  "org.scalaz" %% "scalaz-core" % "7.0.6",
+  "org.scala-lang" % "scala-compiler" % scalaVersion.value,
   "org.controlsfx" % "controlsfx" % "8.0.5",
   "com.google.guava" % "guava" % "17.0",
-  "com.typesafe.akka" %% "akka-actor" % "2.3.2",
+  "com.google.code.gson" % "gson" % "2.2.4",
   "org.specs2" %% "specs2" % "2.3.11" % "test"
 )
-}
+
 

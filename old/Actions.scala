@@ -12,7 +12,7 @@ import data.Artifact
 import javax.swing.border.{EtchedBorder, BevelBorder}
 import net.OAuthTinyServer
 import akka.actor.ActorDSL._
-
+import apple.laf.JRSUIUtils.TabbedPane
 
 object Actions {
 

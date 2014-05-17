@@ -1,11 +1,10 @@
 package org.scalaconsole.fxui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebEngine;
@@ -35,6 +34,9 @@ public class ScalaConsoleController {
     Label statusBar;
 
     @FXML
+    SplitPane splitPane;
+
+    @FXML
     void onRun(ActionEvent event) {
         delegate.run(scriptArea.getEngine().executeScript("editor.getValue()").toString());
     }
@@ -56,8 +58,7 @@ public class ScalaConsoleController {
 
     @FXML
     void onScriptClear(ActionEvent event) {
-
-//        scriptArea.clear();
+        delegate.clearScript();
     }
 
     @FXML
@@ -72,12 +73,12 @@ public class ScalaConsoleController {
 
     @FXML
     void onPostAnonymousGist(ActionEvent event) {
-
+        delegate.postAnonymousGist();
     }
 
     @FXML
     void onPostGistWithAccount(ActionEvent event) {
-
+        delegate.postGistWithAccount();
     }
 
     @FXML
@@ -87,12 +88,21 @@ public class ScalaConsoleController {
 
     @FXML
     void onReplReset(ActionEvent event) {
-
+        delegate.resetRepl();
     }
 
     @FXML
     void onSetCommandlineOptions(ActionEvent event) {
-        delegate.setFont();
+        delegate.setCommandlineOptions();
+    }
+
+    @FXML
+    void onSetFont(ActionEvent event) {
+        delegate.onSetFont();
+    }
+    @FXML
+    void onToggleSplitterOrientation(ActionEvent event) {
+        delegate.onToggleSplitterOrientation();
     }
 
     @FXML
@@ -124,14 +134,11 @@ public class ScalaConsoleController {
     void initialize() throws IOException {
         delegate = new CoreDelegate(this);
         WebEngine engine = scriptArea.getEngine();
-        engine.setOnAlert(stringWebEvent -> Dialogs.create().message(stringWebEvent.getData()).showInformation());
-        engine.getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {
-            @Override
-            public void changed(ObservableValue<? extends Worker.State> observableValue, Worker.State oldState, Worker.State newState) {
-                if (newState == Worker.State.SUCCEEDED) {
-                    delegate.setFont();
-                    scriptArea.requestFocus();
-                }
+        engine.setOnAlert(stringWebEvent -> Dialogs.create().masthead(null).message(stringWebEvent.getData()).showInformation());
+        engine.getLoadWorker().stateProperty().addListener((observableValue, oldState, newState) -> {
+            if (newState == Worker.State.SUCCEEDED) {
+                delegate.setFont();
+                scriptArea.requestFocus();
             }
         });
         engine.load(getClass().getResource("ace.html").toExternalForm());

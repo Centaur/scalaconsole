@@ -2,18 +2,17 @@ package org.scalaconsole
 package fxui
 import java.io._
 import javafx.concurrent.Task
-import org.scalaconsole.data.{CommandLineOptions, ClassLoaderManager}
+import org.scalaconsole.data.ClassLoaderManager
 import java.util.jar.JarFile
 import scala.tools.nsc.plugins.PluginDescription
 import org.scalaconsole.DetachedILoop
 import scala.tools.nsc.Settings
 import java.util.concurrent.ArrayBlockingQueue
 import javafx.application.Platform
-import scalaz.Alpha.T
-import com.sun.org.apache.xpath.internal.operations.Variable
-import javafx.scene.text.Font
-import java.nio.charset.StandardCharsets
-import java.util.Base64
+import org.controlsfx.dialog.Dialogs
+import javafx.geometry.Orientation
+import com.google.common.base.Strings
+import org.scalaconsole.net.{OAuthTinyServer, Gist}
 
 class CoreDelegate(val controller: ScalaConsoleController) {
   val commandQueue = new ArrayBlockingQueue[(Symbol, String)](10)
@@ -43,7 +42,6 @@ class CoreDelegate(val controller: ScalaConsoleController) {
         }
       }
     }
-    registerTask(task)
     val thread = new Thread(task)
     thread.setDaemon(true)
     thread.start()
@@ -73,7 +71,6 @@ class CoreDelegate(val controller: ScalaConsoleController) {
         }
       }
     }
-    registerTask(task)
     val thread = new Thread(task)
     thread.setDaemon(true)
     thread.start()
@@ -90,7 +87,7 @@ class CoreDelegate(val controller: ScalaConsoleController) {
         val replIs = new PipedInputStream(4096)
         val scriptWriter = new PrintWriter(new OutputStreamWriter(new PipedOutputStream(replIs)))
         val settings = new Settings
-        CommandLineOptions.value.map(settings.processArgumentString)
+        Variables.commandlineOption.map(settings.processArgumentString)
 
         for (path <- data.DependencyManager.boundedExtraClasspath(ClassLoaderManager.currentScalaVersion)) {
           settings.classpath.append(path)
@@ -149,12 +146,6 @@ class CoreDelegate(val controller: ScalaConsoleController) {
     commandQueue.put('Paste, script)
   }
 
-  var tasks = List[Task[_]]()
-
-  def registerTask[T](task: Task[T]) = tasks ::= task
-
-  def cancelTasks() = for (task <- tasks) task.cancel()
-
   startOutputRenderer()
   startRepl()
 
@@ -171,4 +162,84 @@ class CoreDelegate(val controller: ScalaConsoleController) {
       }
     })
   }
+
+  def clearScript() = {
+    Platform.runLater(new Runnable() {
+      override def run() = {
+        controller.scriptArea.getEngine.executeScript("editor.setValue('')")
+      }
+    })
+  }
+
+  private def reset(cls: Boolean = true) = {
+    commandQueue.put('Normal -> ":q")
+    startRepl()
+    if (cls) controller.outputArea.clear()
+    setStatus("Repl reset.")
+  }
+
+  def setCommandlineOptions() = {
+    val current = Variables.commandlineOption
+    val masth = "Example: -Xprint:typer"
+    val msg = s"current: ${current.getOrElse("none")}"
+    val result = Dialogs.create().title("Set Commandline Options").masthead(masth).message(msg).showTextInput(current.getOrElse(""))
+    if (result != null && Variables.commandlineOption.getOrElse("") != result) {
+      Variables.commandlineOption = Some(result)
+      reset()
+    }
+  }
+
+  def onSetFont() = {
+    val masth = "Example: Consolas-14"
+    val msg = s"current: ${Variables.displayFont}"
+    val f = Variables.displayFont
+    val fontAsString = s"${f.getFamily}-${f.getSize.toInt}"
+    val result = Dialogs.create().title("Set Display Font").masthead(masth).message(msg).showTextInput(fontAsString)
+    if (result != null) {
+      Variables.displayFont = Variables.decodeFont(result)
+      setFont()
+      setStatus(s"Font set to $fontAsString")
+    }
+  }
+
+  def onToggleSplitterOrientation() = {
+    import Orientation._
+    controller.splitPane.getOrientation match {
+      case HORIZONTAL =>
+        controller.splitPane.setOrientation(VERTICAL)
+      case VERTICAL =>
+        controller.splitPane.setOrientation(HORIZONTAL)
+    }
+  }
+
+  def resetRepl() = reset()
+
+  private def setStatus(s: String) = Platform.runLater(new Runnable() {
+    override def run() = {
+      controller.statusBar.setText(s)
+    }
+  })
+
+  private def postGist(token: Option[String]) = {
+    val code = controller.scriptArea.getEngine.executeScript("editor.getValue()").toString
+    val description = Dialogs.create().title("Gist Description").masthead(null).showTextInput()
+    if (!Strings.isNullOrEmpty(code)) {
+      setStatus("Posting to gist...")
+      val task = new Task[Unit] {
+        override def call() = {
+          val msg = Gist.post(code, token, description)
+          setStatus(msg)
+        }
+      }
+      val thread = new Thread(task)
+      thread.setDaemon(true)
+      thread.start()
+    } else {
+      setStatus("Empty Content. Not posting.")
+    }
+  }
+
+  def postAnonymousGist() = postGist(None)
+
+  def postGistWithAccount() = OAuthTinyServer.withAccessToken(postGist)
 }

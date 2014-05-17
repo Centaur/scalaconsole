@@ -1,14 +1,16 @@
 package org.scalaconsole.net
 
 import java.net._
-import util.parsing.json.JSON
 import java.awt.Toolkit
 import java.awt.datatransfer.{Transferable, Clipboard, ClipboardOwner, StringSelection}
+import java.io.StringReader
+import com.google.gson.JsonParser
+import com.google.common.io.ByteStreams
 
 object Gist extends ClipboardOwner {
-  def post(content: String, accessToken: Option[String], description: String = "Post By ScalaConsole") = {
+  def post(content: String, accessToken: Option[String], description: String = "Post By ScalaConsole"):String = {
 
-    val x = new URL("https://api.github.com/gists" + accessToken.map("?access_token=" + _ +"&scope=gist").getOrElse(""))
+    val x = new URL("https://api.github.com/gists" + accessToken.fold("")("?access_token=" + _ + "&scope=gist"))
     val conn = x.openConnection.asInstanceOf[HttpURLConnection]
 
     conn.setDoInput(true)
@@ -26,16 +28,17 @@ object Gist extends ClipboardOwner {
 
     conn.getOutputStream.write(requestJSON.getBytes)
 
-    val buff = new Array[Byte](conn.getContentLength)
-    conn.getInputStream.read(buff)
-    val json = JSON.parseFull(new String(buff))
+    val contentLength = conn.getContentLength
+    val buff = new Array[Byte](contentLength)
+    ByteStreams.readFully(conn.getInputStream, buff)
+    val json = new JsonParser().parse(new String(buff)).getAsJsonObject
     conn.getResponseCode match {
       case 201 =>
-        val url = json.get.asInstanceOf[Map[String, Any]]("html_url")
+        val url = json.get("html_url").getAsString
         Toolkit.getDefaultToolkit.getSystemClipboard.setContents(new StringSelection(url.toString), this)
-        "New Gist created at %s.\nURL has been copied to clipboard.".format(url)
+        "New Gist created at %s. URL has been copied to clipboard.".format(url)
       case _ =>
-        "Post to gist failed. Error: %s".format(json.get.asInstanceOf[Map[String, Any]]("message"))
+        "Post to gist failed. Error: %s".format(json.get("message").getAsString)
     }
   }
 

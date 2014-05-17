@@ -3,10 +3,6 @@ package net
 
 import java.net._
 import java.io._
-import xml.XML
-import scala.Some
-import javax.swing.JOptionPane
-import akka.actor._
 
 object OAuthTinyServer {
   val client_id = "3d4d9d562d4fd186aa41"
@@ -34,18 +30,9 @@ object OAuthTinyServer {
 
 
   def withAccessToken(callback: Option[String] => Unit) {
-    import akka.actor.ActorDSL._
-
-    val post = actor(actorSystem)(new Act {
-      become {
-        case token: String =>
-          callback(Some(token))
-          context.stop(context.self)
-      }
-    })
-    if (accessToken.isDefined) post ! accessToken.get
-    else new javax.swing.SwingWorker[Unit, Unit]() {
-      def doInBackground() {
+    if (accessToken.isDefined) {
+      callback(accessToken)
+    } else {
         java.awt.Desktop.getDesktop.browse(new java.net.URI(authorize_uri))
         val client = socket.accept()
         val reader = new BufferedReader(new InputStreamReader(client.getInputStream))
@@ -63,16 +50,15 @@ object OAuthTinyServer {
                 val content = new String(buff)
                 accessToken = content.split("&").map(_.split("=")).find(_(0) == "access_token").map(_(1))
                 for (token <- accessToken) {
-                  post ! token
+                  callback(Some(token))
                   writeResponseMessage(client)
                 }
                 conn.disconnect()
                 client.close()
             }
           case _ => throw new RuntimeException("Protocol Error")
-        }
       }
-    } execute()
+    }
   }
 
   private def writeResponseMessage(client: Socket) {

@@ -73,6 +73,16 @@
                         <MenuItem mnemonicParsing="false" onAction="#onSetCommandlineOptions" text="Command Line Options" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="Edit">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#onSetFont" text="Set Font ..." />
+                        <MenuItem mnemonicParsing="false" onAction="#onToggleSplitterOrientation" text="Toggle Splitter Orientation">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                     </items>
+                  </Menu>
                   <Menu mnemonicParsing="false" text="Dependency">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#onDependencySearch" text="Search">
@@ -99,7 +109,7 @@
             </MenuBar>
          </children>
       </HBox>
-      <SplitPane dividerPositions="0.618" prefHeight="350.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+      <SplitPane fx:id="splitPane" dividerPositions="0.618" prefHeight="350.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="341.0" prefWidth="377.0">
                <children>
@@ -117,7 +127,7 @@
       </SplitPane>
       <HBox id="statusBar" prefHeight="28.0" prefWidth="600.0">
          <children>
-            <Label fx:id="statusBar" text="Label" />
+            <Label fx:id="statusBar" prefHeight="30.0" prefWidth="1024.0" text="Label" HBox.hgrow="ALWAYS" />
          </children></HBox>
    </children>
 </VBox>
