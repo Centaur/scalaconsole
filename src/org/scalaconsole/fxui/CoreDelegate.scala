@@ -9,15 +9,16 @@ import org.scalaconsole.DetachedILoop
 import scala.tools.nsc.Settings
 import java.util.concurrent.ArrayBlockingQueue
 import javafx.application.Platform
+import scalaz.Alpha.T
 
 class CoreDelegate(val controller: ScalaConsoleController) {
   val commandQueue = new ArrayBlockingQueue[(Symbol, String)](10)
 
   // 这一对stream是从repl的输出到右侧的textarea的数据通道，不变
-  val outputIs =new PipedInputStream(4096)
-  val replOs = new PipedOutputStream(outputIs)
+  val outputIs = new PipedInputStream(4096)
+  val replOs   = new PipedOutputStream(outputIs)
 
-  val sysOutErr          = new PrintStream(replOs) {
+  val sysOutErr = new PrintStream(replOs) {
     override def write(buf: Array[Byte], off: Int, len: Int) {
       val str = new String(buf, off, len)
       replOs.write(str.getBytes)
@@ -25,10 +26,11 @@ class CoreDelegate(val controller: ScalaConsoleController) {
     }
   }
   System.setOut(sysOutErr)
+
   def startOutputRenderer() = {
     val task = new Task[Unit] {
       override def call() = {
-        for(line <- io.Source.fromInputStream(outputIs).getLines) {
+        for (line <- io.Source.fromInputStream(outputIs).getLines) {
           Platform.runLater(new Runnable {
             override def run() = {
               controller.outputArea.appendText(s"$line\n")
@@ -37,6 +39,7 @@ class CoreDelegate(val controller: ScalaConsoleController) {
         }
       }
     }
+    registerTask(task)
     val thread = new Thread(task)
     thread.setDaemon(true)
     thread.start()
@@ -47,36 +50,37 @@ class CoreDelegate(val controller: ScalaConsoleController) {
    * @return
    */
   def connectToRepl(writer: PrintWriter, pasteFunc: String => Unit) = {
-    def createTask = new Task[Unit] {
+    val task = new Task[Unit] {
       override def call() = {
         var quitCommand = false
-        while (!quitCommand) {
-          if (!isCancelled) {
-            commandQueue.take() match {
-              case ('Normal, script: String) =>
-                writer.write(script)
-                if (!script.endsWith("\n")) writer.write("\n")
-                writer.flush()
-                if (script == ":q")
-                  quitCommand = true
-              case ('Paste, script: String) =>
-                println("// Interpreting in paste mode ")
-                pasteFunc(script)
-                println("// Exiting paste mode. ")
-            }
+        while (!isCancelled) {
+          commandQueue.take() match {
+            case ('Normal, script: String) =>
+              writer.write(script)
+              if (!script.endsWith("\n")) writer.write("\n")
+              writer.flush()
+              if (script == ":q")
+                cancel()
+            case ('Paste, script: String) =>
+              println("// Interpreting in paste mode ")
+              pasteFunc(script)
+              println("// Exiting paste mode. ")
           }
         }
       }
     }
-    val thread = new Thread(createTask)
+    registerTask(task)
+    val thread = new Thread(task)
+    thread.setDaemon(true)
     thread.start()
   }
 
-  def startRepl() = {
-    def createTask = new Task[Unit]() {
-      def isToReader(is: InputStream) = new BufferedReader(new InputStreamReader(is))
+  def isToReader(is: InputStream) = new BufferedReader(new InputStreamReader(is))
 
-      def osToWriter(os: OutputStream) = new PrintWriter(new OutputStreamWriter(os))
+  def osToWriter(os: OutputStream) = new PrintWriter(new OutputStreamWriter(os))
+
+  def startRepl() = {
+    def task = new Task[Unit]() {
 
       override def call() = {
         val replIs = new PipedInputStream(4096)
@@ -128,7 +132,7 @@ class CoreDelegate(val controller: ScalaConsoleController) {
         scriptWriter.close()
       }
     }
-    val thread = new Thread(createTask)
+    val thread = new Thread(task)
     thread.setDaemon(true)
     thread.start()
   }
@@ -136,10 +140,18 @@ class CoreDelegate(val controller: ScalaConsoleController) {
   def run(script: String) = {
     commandQueue.put('Normal, script)
   }
+
   def runPaste(script: String) = {
     commandQueue.put('Paste, script)
   }
 
+  var tasks = List[Task[_]]()
+
+  def registerTask[T](task: Task[T]) = tasks ::= task
+  def cancelTasks() = for(task <- tasks) task.cancel()
+
   startOutputRenderer()
   startRepl()
+  controller.scriptArea.setFont(Variables.displayFont)
+  controller.outputArea.setFont(Variables.displayFont)
 }

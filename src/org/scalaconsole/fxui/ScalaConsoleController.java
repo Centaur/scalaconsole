@@ -49,7 +49,7 @@ public class ScalaConsoleController {
 
     @FXML
     void onScriptClear(ActionEvent event) {
-
+        scriptArea.clear();
     }
 
     @FXML
@@ -74,7 +74,7 @@ public class ScalaConsoleController {
 
     @FXML
     void onReplClear(ActionEvent event) {
-
+        outputArea.clear();
     }
 
     @FXML
@@ -114,10 +114,8 @@ public class ScalaConsoleController {
 
     @FXML
     void initialize() {
-        assert scriptArea != null : "fx:id=\"scriptArea\" was not injected: check your FXML file 'scalaconsole.fxml'.";
-        assert outputArea != null : "fx:id=\"outputArea\" was not injected: check your FXML file 'scalaconsole.fxml'.";
-        assert statusBar != null : "fx:id=\"statusBar\" was not injected: check your FXML file 'scalaconsole.fxml'.";
         delegate = new CoreDelegate(this);
+        MainStage$.MODULE$.coreDelegate_$eq(delegate);
     }
 
 }
