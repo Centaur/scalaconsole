@@ -10,6 +10,10 @@ import scala.tools.nsc.Settings
 import java.util.concurrent.ArrayBlockingQueue
 import javafx.application.Platform
 import scalaz.Alpha.T
+import com.sun.org.apache.xpath.internal.operations.Variable
+import javafx.scene.text.Font
+import java.nio.charset.StandardCharsets
+import java.util.Base64
 
 class CoreDelegate(val controller: ScalaConsoleController) {
   val commandQueue = new ArrayBlockingQueue[(Symbol, String)](10)
@@ -148,10 +152,23 @@ class CoreDelegate(val controller: ScalaConsoleController) {
   var tasks = List[Task[_]]()
 
   def registerTask[T](task: Task[T]) = tasks ::= task
-  def cancelTasks() = for(task <- tasks) task.cancel()
+
+  def cancelTasks() = for (task <- tasks) task.cancel()
 
   startOutputRenderer()
   startRepl()
-  controller.scriptArea.setFont(Variables.displayFont)
-  controller.outputArea.setFont(Variables.displayFont)
+
+  def setFont() = {
+    val f = Variables.displayFont
+    controller.outputArea.setFont(f)
+    Platform.runLater(new Runnable() {
+      override def run() = {
+        val engine = controller.scriptArea.getEngine
+        val doc = engine.getDocument
+        val editor = doc.getElementById("editor")
+        val css = s"font-family:${f.getFamily}; font-size: ${f.getSize}px"
+        editor.setAttribute("style", css)
+      }
+    })
+  }
 }

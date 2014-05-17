@@ -40,6 +40,7 @@ libraryDependencies <++= scalaVersion { v => Seq(
   "org.scala-lang" % "scala-reflect" % v,
   "org.scalaz" %% "scalaz-core" % "7.0.6",
   "org.controlsfx" % "controlsfx" % "8.0.5",
+  "com.google.guava" % "guava" % "17.0",
   "com.typesafe.akka" %% "akka-actor" % "2.3.2",
   "org.specs2" %% "specs2" % "2.3.11" % "test"
 )
