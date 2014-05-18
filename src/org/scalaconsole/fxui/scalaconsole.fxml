@@ -17,44 +17,47 @@
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#onRun" text="Run">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator></MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#onRunSelected" text="Run Selected" />
+                        <MenuItem mnemonicParsing="false" onAction="#onRunSelected" text="Run Selected">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator></MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onRunInPasteMode" text="Run In Paste Mode">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onRunSelectedInPasteMode" text="Run Selected In Paste Mode">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="P" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#onScriptClear" text="Clear">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onNewTab" text="New Tab">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onCloseTab" text="Close Tab">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="F4" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="F4" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#onPostAnonymousGist" text="Post Anonymous Gist">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="G" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="G" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onPostGistWithAccount" text="Post Gist with Account">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="G" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="G" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                   </items>
@@ -63,11 +66,11 @@
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#onReplClear" text="Clear">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator></MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onReplReset" text="Reset">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onSetCommandlineOptions" text="Command Line Options" />
@@ -78,7 +81,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#onSetFont" text="Set Font ..." />
                         <MenuItem mnemonicParsing="false" onAction="#onToggleSplitterOrientation" text="Toggle Splitter Orientation">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                      </items>
@@ -87,13 +90,13 @@
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#onDependencySearch" text="Search">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onDependencyManually" text="Manually" />
                         <MenuItem mnemonicParsing="false" onAction="#onDependencyLocal" text="Local Jar/Classes">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="J" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />

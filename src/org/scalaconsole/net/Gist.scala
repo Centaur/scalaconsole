@@ -1,13 +1,14 @@
 package org.scalaconsole.net
 
 import java.net._
-import java.awt.Toolkit
-import java.awt.datatransfer.{Transferable, Clipboard, ClipboardOwner, StringSelection}
 import java.io.StringReader
 import com.google.gson.JsonParser
 import com.google.common.io.ByteStreams
+import javafx.scene.input.{DataFormat, ClipboardContent, Clipboard}
+import java.awt.datatransfer.Transferable
+import org.scalaconsole.fxui.FxUtil
 
-object Gist extends ClipboardOwner {
+object Gist {
   def post(content: String, accessToken: Option[String], description: String = "Post By ScalaConsole"):String = {
 
     val x = new URL("https://api.github.com/gists" + accessToken.fold("")("?access_token=" + _ + "&scope=gist"))
@@ -35,17 +36,18 @@ object Gist extends ClipboardOwner {
     conn.getResponseCode match {
       case 201 =>
         val url = json.get("html_url").getAsString
-        Toolkit.getDefaultToolkit.getSystemClipboard.setContents(new StringSelection(url.toString), this)
+        val copyContent = new ClipboardContent
+        copyContent.putString(url)
+
+        FxUtil.onEventThread {
+          Clipboard.getSystemClipboard.setContent(copyContent)
+        }
+
         "New Gist created at %s. URL has been copied to clipboard.".format(url)
       case _ =>
         "Post to gist failed. Error: %s".format(json.get("message").getAsString)
     }
   }
-
-  def lostOwnership(p1: Clipboard, p2: Transferable) {
-    /* do nothing */
-  }
-
 }
 
 
