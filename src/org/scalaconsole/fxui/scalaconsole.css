@@ -1,3 +1,7 @@
 #output-area .content {
   -fx-background-color: #ffffda;
 }
+
+#errorMsg {
+  -fx-text-fill: red;
+}

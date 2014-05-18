@@ -4,7 +4,7 @@ package ui
 import javax.imageio.ImageIO
 import java.awt.{TrayIcon, SystemTray}
 import java.awt.event.{MouseEvent, MouseAdapter}
-import org.scalaconsole.fxui.MainStage
+import org.scalaconsole.fxui.ScalaConsole
 
 object SysIcon {
   val icon = ImageIO.read(getClass.getResource("/scala.ico"))
@@ -18,7 +18,7 @@ object SysIcon {
       trayIcon.addMouseListener(new MouseAdapter() {
         override def mouseClicked(e: MouseEvent) {
           if (e.getClickCount == 2) {
-            val main = MainStage.top
+            val main = ScalaConsole.top
             if(main.isIconified) main.show()
             else main.setIconified(true)
           }

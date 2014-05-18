@@ -12,8 +12,13 @@ import org.controlsfx.dialog.Dialogs
 import javafx.geometry.Orientation
 import com.google.common.base.Strings
 import org.scalaconsole.net.{OAuthTinyServer, Gist}
+import javafx.fxml.FXMLLoader
+import javafx.scene.{Scene, Parent}
+import javafx.stage.{WindowEvent, Stage}
+import javafx.beans.value.{ObservableValue, ChangeListener}
+import javafx.event.EventHandler
 
-class CoreDelegate(val controller: ScalaConsoleController) {
+class MainDelegate(val controller: MainController) {
   import FxUtil._
   val commandQueue = new ArrayBlockingQueue[(Symbol, String)](10)
 
@@ -168,7 +173,7 @@ class CoreDelegate(val controller: ScalaConsoleController) {
   }
 
   def onSetFont() = {
-    val masth = "Example: Consolas-14"
+    val masth = "Example: Consolas-14 or Ubuntu Mono-17"
     val f = Variables.displayFont
     val fontAsString = s"${f.getFamily}-${f.getSize.toInt}"
     val msg = s"current: $fontAsString"
@@ -213,4 +218,16 @@ class CoreDelegate(val controller: ScalaConsoleController) {
   def postAnonymousGist() = postGist(None)
 
   def postGistWithAccount() = OAuthTinyServer.withAccessToken(postGist)
+
+  def onSearchArtifacts() = {
+    val root: Parent = FXMLLoader.load(getClass.getResource("SearchArtifactStage.fxml"))
+    val searchArtifactsStage = new Stage
+    searchArtifactsStage.setScene(new Scene(root))
+    searchArtifactsStage.setOnShown(new EventHandler[WindowEvent] {
+      override def handle(p1: WindowEvent) = {
+        searchArtifactsStage.getScene.lookup("#searchBox").requestFocus()
+      }
+    })
+    searchArtifactsStage.show()
+  }
 }

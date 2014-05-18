@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ScalaConsoleController {
-    CoreDelegate delegate;
+public class MainController {
+    MainDelegate delegate;
 
     @FXML
     ResourceBundle resources;
@@ -100,6 +100,7 @@ public class ScalaConsoleController {
     void onSetFont(ActionEvent event) {
         delegate.onSetFont();
     }
+
     @FXML
     void onToggleSplitterOrientation(ActionEvent event) {
         delegate.onToggleSplitterOrientation();
@@ -107,7 +108,7 @@ public class ScalaConsoleController {
 
     @FXML
     void onDependencySearch(ActionEvent event) {
-
+        delegate.onSearchArtifacts();
     }
 
     @FXML
@@ -132,7 +133,7 @@ public class ScalaConsoleController {
 
     @FXML
     void initialize() throws IOException {
-        delegate = new CoreDelegate(this);
+        delegate = new MainDelegate(this);
         WebEngine engine = scriptArea.getEngine();
         engine.setOnAlert(stringWebEvent -> Dialogs.create().masthead(null).message(stringWebEvent.getData()).showInformation());
         engine.getLoadWorker().stateProperty().addListener((observableValue, oldState, newState) -> {

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="600.0" stylesheets="@scalaconsole.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scalaconsole.fxui.SearchArtifactController">
+   <children>
+      <HBox alignment="CENTER" spacing="10.0">
+         <children>
+            <Label text="Keyword: " />
+            <TextField fx:id="searchBox" onKeyPressed="#onEnterInSearchBox" prefHeight="26.0" prefWidth="191.0" promptText="e.g. scalaz" />
+            <ImageView fx:id="loadingImg" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../resources/loading.gif" />
+               </image>
+            </ImageView>
+            <Label id="errorMsg" fx:id="errorMsg" opacity="0.0" text="3 chars at least." />
+         </children>
+         <padding>
+            <Insets bottom="5.0" top="5.0" />
+         </padding>
+      </HBox>
+      <HBox prefHeight="320.0" prefWidth="600.0" spacing="2.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox spacing="2.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <ListView fx:id="exactMatch" prefHeight="0.0" prefWidth="421.0" VBox.vgrow="ALWAYS" />
+                  <ListView fx:id="otherMatch" prefHeight="297.0" prefWidth="423.0" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <ListView fx:id="versions" prefHeight="513.0" prefWidth="136.0" />
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="2.0" left="2.0" right="2.0" />
+         </padding>
+      </HBox>
+      <FlowPane fx:id="crossBuildsPane" prefHeight="43.0" prefWidth="600.0" VBox.vgrow="NEVER" />
+      <FlowPane columnHalignment="RIGHT" hgap="20.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="0.0" prefWidth="600.0" VBox.vgrow="NEVER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
+            <Button mnemonicParsing="false" onAction="#onOK" text="Ok" textAlignment="CENTER" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="20.0" top="10.0" />
+         </padding>
+      </FlowPane>
+   </children>
+</VBox>

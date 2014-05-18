@@ -5,9 +5,9 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.{Parent, Scene}
 import javafx.event.EventHandler
 
-class MainStage extends Application {
+class ScalaConsole extends Application {
   override def start(pStage: Stage) = {
-    val root: Parent = FXMLLoader.load(this.getClass.getResource("scalaconsole.fxml"))
+    val root: Parent = FXMLLoader.load(this.getClass.getResource("MainStage.fxml"))
     pStage.setScene(new Scene(root))
     pStage.show()
     pStage.setOnCloseRequest(new EventHandler[WindowEvent]() {
@@ -17,15 +17,15 @@ class MainStage extends Application {
       }
     })
 
-    MainStage.top = pStage
+    ScalaConsole.top = pStage
   }
 
 }
 
-object MainStage {
+object ScalaConsole {
   var top         : Stage        = _
 
   def main(args: Array[String]) {
-    Application.launch(classOf[MainStage], args: _*)
+    Application.launch(classOf[ScalaConsole], args: _*)
   }
 }
