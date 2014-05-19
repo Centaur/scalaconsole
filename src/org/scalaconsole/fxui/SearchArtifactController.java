@@ -22,9 +22,6 @@ public class SearchArtifactController {
     SearchArtifactDelegate delegate;
 
     @FXML
-    ListView<Map.Entry<String, JsonElement>> exactMatch;
-
-    @FXML
     ImageView loadingImg;
 
     @FXML
@@ -37,7 +34,7 @@ public class SearchArtifactController {
     FlowPane crossBuildsPane;
 
     @FXML
-    ListView<Map.Entry<String, JsonElement>> otherMatch;
+    ListView<Map.Entry<String, JsonElement>> matchedList;
 
     @FXML
     TextField searchBox;
@@ -75,9 +72,8 @@ public class SearchArtifactController {
     @FXML
     void initialize() {
         delegate = new SearchArtifactDelegate(this);
-//        loadingImg.visibleProperty().bind(loading);
-        exactMatch.setCellFactory(entryListView -> new MatchesCell());
-        otherMatch.setCellFactory(entryListView -> new MatchesCell());
+        loadingImg.visibleProperty().bind(loading);
+        matchedList.setCellFactory(entryListView -> new MatchesCell());
         delegate.init();
     }
 

@@ -6,10 +6,6 @@ object `package` {
   type AIMap = Map[String, AIG]
 
   private[scalaconsole] val ScalaCoreLibraries = Set("scala-compiler", "scala-library", "scala-swing", "scalap", "scala-dbc", "scala-reflect")
-  private val hostVersion = util.Properties.versionString.split(" ")(1)
-  val SupportedScalaVersions = Map(
-    hostVersion -> hostVersion
-  )
   val isMac = System.getProperty("os.name").toLowerCase.contains("mac")
 //  val ControlOrMeta = if (isMac) Key.Modifier.Meta else Key.Modifier.Control
 

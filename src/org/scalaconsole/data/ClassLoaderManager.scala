@@ -4,7 +4,7 @@ package data
 import scala.reflect.internal.util.ScalaClassLoader
 import tools.nsc.Settings
 import tools.util.PathResolver
-import scala.util.Properties
+import org.scalaconsole.fxui.{Constants, Variables}
 
 object ClassLoaderManager {
   val classLoaders = collection.mutable.Map[String, (ScalaClassLoader, String)]()
@@ -15,7 +15,7 @@ object ClassLoaderManager {
     val scalaLibraries = myself :: net.EmbeddedIvy.resolveScala(v) ++
       DependencyManager.boundedExtraClasspath(v).map(new java.io.File(_))
     val scalaBootPath = scalaLibraries mkString System.getProperty("path.separator")
-    val newClassPath = new PathResolver(new Settings).containers.filterNot {cp =>
+    val newClassPath = new PathResolver(new Settings).containers.filterNot { cp =>
       ScalaCoreLibraries exists {
         cp.asClasspathString.contains
       }
@@ -27,11 +27,7 @@ object ClassLoaderManager {
     (cl, scalaBootPath)
   }
 
-  val originScalaVersionNumber = Properties.scalaPropOrEmpty("version.number")
-  val originScalaVersion = SupportedScalaVersions(originScalaVersionNumber)
-  def isOrigin = currentScalaVersion == originScalaVersion
+  def isOrigin = Variables.currentScalaVersion == Constants.originScalaVersion
 
-  var currentScalaVersion = originScalaVersion
-
-  def reset() = classLoaders.remove(currentScalaVersion)
+  def reset() = classLoaders.remove(Variables.currentScalaVersion)
 }

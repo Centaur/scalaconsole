@@ -10,4 +10,7 @@ object Variables {
   }
   def encodeFont(f: Font) = s"${f.getFamily}-${f.getSize.toInt}"
   var displayFont = decodeFont(System.getProperty("font", "Monospaced-12"))
+
+  var currentScalaVersion = Constants.originScalaVersion
+
 }

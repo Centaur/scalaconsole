@@ -83,7 +83,7 @@ class MainDelegate(val controller: MainController) {
     val settings = new Settings
     Variables.commandlineOption.map(settings.processArgumentString)
 
-    for (path <- data.DependencyManager.boundedExtraClasspath(ClassLoaderManager.currentScalaVersion)) {
+    for (path <- data.DependencyManager.boundedExtraClasspath(Variables.currentScalaVersion)) {
       settings.classpath.append(path)
       settings.classpath.value = settings.classpath.value // set settings.classpath.isDefault to false
       // enable plugins
@@ -106,7 +106,7 @@ class MainDelegate(val controller: MainController) {
       connectToRepl(scriptWriter, s => iloop.intp.interpret(s))
       iloop.process(settings)
     } else {
-      val (cl, scalaBootPath) = ClassLoaderManager.forVersion(ClassLoaderManager.currentScalaVersion)
+      val (cl, scalaBootPath) = ClassLoaderManager.forVersion(Variables.currentScalaVersion)
       settings.usejavacp.value = true
       settings.bootclasspath.value = scalaBootPath
       cl.asContext {

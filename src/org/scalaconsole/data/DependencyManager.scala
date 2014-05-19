@@ -6,6 +6,7 @@ import collection.mutable.{ListBuffer, Buffer}
 import java.io.{BufferedReader, FileReader, FilenameFilter, ObjectInputStream, FileInputStream, ObjectOutputStream, FileWriter, BufferedWriter, FileOutputStream, File}
 import javax.swing.JOptionPane
 import org.controlsfx.dialog.{Dialog, Dialogs}
+import org.scalaconsole.fxui.{Constants, Variables}
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,7 +58,7 @@ object DependencyManager {
       needsReset
   }
 
-  def version = ClassLoaderManager.currentScalaVersion
+  def version = Variables.currentScalaVersion
 
   /**
    * return : classpathNeedsReset
@@ -82,7 +83,7 @@ object DependencyManager {
     }
   }
 
-  val dependencies = collection.mutable.Map[String, Dependencies](SupportedScalaVersions.keys.toSeq.map(_ -> Dependencies()): _*)
+  val dependencies = collection.mutable.Map[String, Dependencies](Constants.SupportedScalaVersions.keys.toSeq.map(_ -> Dependencies()): _*)
 
   def saveCurrentAsProfile(name: String) {
     def confirmOverwrite() = {
