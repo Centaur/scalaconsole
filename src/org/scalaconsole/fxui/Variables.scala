@@ -8,5 +8,6 @@ object Variables {
     val Array(family, size) = desc.split("-")
     Font.font(family, size.toDouble)
   }
+  def encodeFont(f: Font) = s"${f.getFamily}-${f.getSize.toInt}"
   var displayFont = decodeFont(System.getProperty("font", "Monospaced-12"))
 }

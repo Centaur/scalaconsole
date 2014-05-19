@@ -16,7 +16,6 @@ class ScalaConsole extends Application {
         System.exit(0)
       }
     })
-
     ScalaConsole.top = pStage
   }
 

@@ -3,6 +3,7 @@ package ui
 
 import javax.swing.filechooser.FileFilter
 import java.io._
+import org.scalaconsole.fxui.ScalaConsole
 import swing._
 import event.{ButtonClicked, SelectionChanged}
 import java.beans.{PropertyChangeEvent, PropertyChangeListener}

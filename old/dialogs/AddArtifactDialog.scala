@@ -2,16 +2,18 @@ package org.scalaconsole
 package ui
 package dialogs
 
+import org.scalaconsole.fxui.ScalaConsole
 import swing._
 import collection.mutable.ListBuffer
 import swing.event._
 import java.awt.event.{KeyEvent, ActionEvent, ActionListener}
 import javax.swing.border.TitledBorder
-import javax.swing.{JOptionPane, SwingUtilities, ImageIcon, KeyStroke, JComponent}
+import javax.swing._
 import java.io.IOException
 import akka.actor.{Actor, Props}
 import akka.actor.ActorDSL._
-
+import javafx.scene.control.ToggleButton
+import com.sun.xml.internal.ws.api.Cancelable
 
 
 object VersionComparator {

@@ -4,6 +4,9 @@ package net
 import java.net.{URLEncoder, URL}
 import util.parsing.json.JSON
 import java.io.InputStreamReader
+import com.google.gson.JsonParser
+import com.google.common.io.{CharStreams, ByteStreams}
+import com.google.common.base.Charsets
 
 
 /**
@@ -15,19 +18,8 @@ import java.io.InputStreamReader
 
 object MavenIndexerClient {
   def search(keywords: String) = {
-    //    val conn = new URL("http://localhost:8080/search?q="+ URLEncoder.encode(keywords, "UTF-8")).openConnection()
-    val conn = new URL("http://maven-index.gtan.com/search?q=" + URLEncoder.encode(keywords, "UTF-8")).openConnection()
-    val is = conn.getInputStream
-    val reader = new InputStreamReader(is)
-    val buff = new Array[Char](1024)
-    val sb = new StringBuilder
-    var read = reader.read(buff)
-    while (read != -1) {
-      sb.appendAll(buff, 0, read)
-      read = reader.read(buff)
-    }
-    is.close()
-    val json = JSON.parseFull(sb.toString()).get.asInstanceOf[AIMap]
-    (json("exact"), json("others"))
+    val response = io.Source.fromURL("http://maven-index.gtan.com/search?q=" + URLEncoder.encode(keywords, "UTF-8")).mkString
+    val json = new JsonParser().parse(response).getAsJsonObject
+    (json.get("exact").getAsJsonObject, json.get("others").getAsJsonObject)
   }
 }

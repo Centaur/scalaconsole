@@ -175,13 +175,13 @@ class MainDelegate(val controller: MainController) {
   def onSetFont() = {
     val masth = "Example: Consolas-14 or Ubuntu Mono-17"
     val f = Variables.displayFont
-    val fontAsString = s"${f.getFamily}-${f.getSize.toInt}"
+    val fontAsString = Variables.encodeFont(f)
     val msg = s"current: $fontAsString"
     val result = Dialogs.create().title("Set Display Font").masthead(masth).message(msg).showTextInput(fontAsString)
     if (result != null) {
       Variables.displayFont = Variables.decodeFont(result)
       setFont()
-      setStatus(s"Font set to $fontAsString")
+      setStatus(s"Font set to $result")
     }
   }
 
