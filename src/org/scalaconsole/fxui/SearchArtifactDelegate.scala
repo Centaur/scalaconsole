@@ -17,10 +17,12 @@ class SearchArtifactDelegate(val controller: SearchArtifactController) {
 
   val matchedArtifacts = FXCollections.observableArrayList[java.util.Map.Entry[String, JsonElement]]()
   val artifactVersions = FXCollections.observableArrayList[SemVersion]()
+  val selectedVersions = FXCollections.observableArrayList[String]()
 
   def init() = {
     controller.matchedList.setItems(matchedArtifacts)
     controller.versionList.setItems(artifactVersions)
+    controller.selectedVersionList.setItems(selectedVersions)
   }
 
   private def animateErrorMsg() = {
@@ -94,6 +96,11 @@ class SearchArtifactDelegate(val controller: SearchArtifactController) {
     } yield version
 
     artifactVersions.setAll(versions.toSeq.sorted.asJavaCollection)
+  }
+
+  def addVersion2Selection(ver: SemVersion) = {
+    val dependencyString = s"${controller.matchedList.getSelectionModel.getSelectedItem.getKey}:${ver.stringPresentation}"
+    selectedVersions.add(dependencyString)
   }
 
 }

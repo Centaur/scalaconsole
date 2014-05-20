@@ -37,16 +37,22 @@ public class SearchArtifactController {
     ListView<Map.Entry<String, JsonElement>> matchedList;
 
     @FXML
+    ListView<String> selectedVersionList;
+
+    @FXML
     TextField searchBox;
 
     @FXML
-    void onCancel(ActionEvent event) {
-
+    void onOK(ActionEvent event) {
+        SearchArtifactStage window = (SearchArtifactStage) errorMsg.getScene().getWindow();
+        window.onOK();
+        window.close();
     }
 
     @FXML
-    void onOK(ActionEvent event) {
-
+    void onCancel(ActionEvent event) {
+        SearchArtifactStage window = (SearchArtifactStage) errorMsg.getScene().getWindow();
+        window.close();
     }
 
     @FXML
@@ -86,12 +92,19 @@ public class SearchArtifactController {
         loadingImg.visibleProperty().bind(loading);
         matchedList.setCellFactory(entryListView -> new ArtifactCell());
         matchedList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldEntry, newEntry) -> {
-            if(newEntry != null)
+            if (newEntry != null)
                 delegate.onSelectArtifact(newEntry);
         });
-        versionList.setCellFactory(versionListView -> new VersionCell());
+        versionList.setCellFactory(versionListView -> {
+            VersionCell cell = new VersionCell();
+            cell.setOnMouseClicked(evt -> {
+                if (evt.getClickCount() == 2 && cell.getItem() != null) {
+                    delegate.addVersion2Selection(cell.getItem());
+                }
+            });
+            return cell;
+        });
         delegate.init();
     }
-
 
 }

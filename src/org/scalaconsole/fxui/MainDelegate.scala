@@ -1,8 +1,9 @@
 package org.scalaconsole
 package fxui
+
 import java.io._
 import javafx.concurrent.Task
-import org.scalaconsole.data.ClassLoaderManager
+import org.scalaconsole.data.{Artifact, DependencyManager, ClassLoaderManager}
 import java.util.jar.JarFile
 import scala.tools.nsc.plugins.PluginDescription
 import org.scalaconsole.DetachedILoop
@@ -19,7 +20,9 @@ import javafx.beans.value.{ObservableValue, ChangeListener}
 import javafx.event.EventHandler
 
 class MainDelegate(val controller: MainController) {
+
   import FxUtil._
+
   val commandQueue = new ArrayBlockingQueue[(Symbol, String)](10)
 
   // 这一对stream是从repl的输出到右侧的textarea的数据通道，不变
@@ -113,7 +116,7 @@ class MainDelegate(val controller: MainController) {
         settings.embeddedDefaults(cl)
         val remoteClazz = Class.forName("org.scalaconsole.DetachedILoop", false, cl)
         val _iloop = remoteClazz.getConstructor(classOf[java.io.BufferedReader], classOf[java.io.PrintWriter]).
-                     newInstance(isToReader(replIs), osToWriter(replOs))
+          newInstance(isToReader(replIs), osToWriter(replOs))
         connectToRepl(scriptWriter, { s =>
           val _intp = remoteClazz.getMethod("intp").invoke(_iloop)
           val remoteIMain = Class.forName("scala.tools.nsc.interpreter.IMain", false, cl)
@@ -220,14 +223,26 @@ class MainDelegate(val controller: MainController) {
   def postGistWithAccount() = OAuthTinyServer.withAccessToken(postGist)
 
   def onSearchArtifacts() = {
-    val root: Parent = FXMLLoader.load(getClass.getResource("SearchArtifactStage.fxml"))
-    val searchArtifactsStage = new Stage
-    searchArtifactsStage.setScene(new Scene(root))
-    searchArtifactsStage.setOnShown(new EventHandler[WindowEvent] {
-      override def handle(p1: WindowEvent) = {
-        searchArtifactsStage.getScene.lookup("#searchBox").requestFocus()
-      }
-    })
+    val loader = new FXMLLoader(getClass.getResource("SearchArtifactStage.fxml"))
+    val root: Parent = loader.load()
+    val searchArtifactsStage = new SearchArtifactStage(root, this, loader.getController.asInstanceOf[SearchArtifactController])
     searchArtifactsStage.show()
   }
+
+  def updateArtifacts(strs: Seq[String]) = {
+    if (strs.nonEmpty) {
+      for (str <- strs) {
+        val Array(g, a, v) = str.split(":")
+        DependencyManager.addArtifact(Artifact(g, a, v))
+      }
+      ClassLoaderManager.reset()
+      setStatus("Resolving artifacts...")
+      reset(cls = false)
+      setStatus("Classpath changed. Repl reset.")
+    } else {
+      setStatus("No new artifacts.")
+    }
+
+  }
+
 }
