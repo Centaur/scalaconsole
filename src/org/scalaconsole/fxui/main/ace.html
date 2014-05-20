@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>ACE in Action</title>
+    <style type="text/css" media="screen">
+        #editor {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="editor"></div>
+
+<script src="ace-builds/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/chrome");
+
+    editor.commands.addCommand({
+          name: 'Paste',
+          bindKey: {win: 'Ctrl-V', mac: 'Command-V'},
+          exec: function(editor){
+            editor.insert(clipboardBridge.getContent(), true)
+          }
+      });
+    editor.commands.addCommand({
+          name: 'Copy',
+          bindKey: {win: 'Ctrl-C', mac: 'Command-C'},
+          exec: function(editor){
+            var selected = editor.session.getTextRange(editor.getSelectionRange());
+            clipboardBridge.setContent(selected)
+          }
+      });
+    editor.commands.addCommand({
+          name: 'Cut',
+          bindKey: {win: 'Ctrl-X', mac: 'Command-X'},
+          exec: function(editor){
+            var range = editor.getSelectionRange();
+            var selected = editor.session.getTextRange();
+            clipboardBridge.setContent(selected);
+            editor.remove(range)
+          }
+      });
+
+    editor.getSession().setMode("ace/mode/scala");
+    editor.focus();
+</script>
+</body>
+</html>

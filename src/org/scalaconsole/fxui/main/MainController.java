@@ -1,4 +1,4 @@
-package org.scalaconsole.fxui;
+package org.scalaconsole.fxui.main;
 
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
@@ -9,7 +9,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import netscape.javascript.JSObject;
 import org.controlsfx.dialog.Dialogs;
+import org.scalaconsole.fxui.ClipboardBridge;
 
 import java.io.IOException;
 import java.net.URL;
@@ -131,6 +133,7 @@ public class MainController {
 
     }
 
+
     @FXML
     void initialize() throws IOException {
         delegate = new MainDelegate(this);
@@ -140,6 +143,8 @@ public class MainController {
             if (newState == Worker.State.SUCCEEDED) {
                 delegate.setFont();
                 scriptArea.requestFocus();
+                JSObject window = (JSObject) engine.executeScript("window");
+                window.setMember("clipboardBridge", new ClipboardBridge());
             }
         });
         engine.load(getClass().getResource("ace.html").toExternalForm());

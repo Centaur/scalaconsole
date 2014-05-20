@@ -1,5 +1,4 @@
-package org.scalaconsole
-package fxui
+package org.scalaconsole.fxui.main
 
 import java.io._
 import javafx.concurrent.Task
@@ -14,10 +13,9 @@ import javafx.geometry.Orientation
 import com.google.common.base.Strings
 import org.scalaconsole.net.{OAuthTinyServer, Gist}
 import javafx.fxml.FXMLLoader
-import javafx.scene.{Scene, Parent}
-import javafx.stage.{WindowEvent, Stage}
-import javafx.beans.value.{ObservableValue, ChangeListener}
-import javafx.event.EventHandler
+import javafx.scene.Parent
+import org.scalaconsole.fxui.search.{SearchArtifactController, SearchArtifactStage}
+import org.scalaconsole.fxui.{Constants, Variables, FxUtil}
 
 class MainDelegate(val controller: MainController) {
 
@@ -86,7 +84,7 @@ class MainDelegate(val controller: MainController) {
     val settings = new Settings
     Variables.commandlineOption.map(settings.processArgumentString)
 
-    for (path <- data.DependencyManager.boundedExtraClasspath(Variables.currentScalaVersion)) {
+    for (path <- DependencyManager.boundedExtraClasspath(Variables.currentScalaVersion)) {
       settings.classpath.append(path)
       settings.classpath.value = settings.classpath.value // set settings.classpath.isDefault to false
       // enable plugins
@@ -116,7 +114,7 @@ class MainDelegate(val controller: MainController) {
         settings.embeddedDefaults(cl)
         val remoteClazz = Class.forName("org.scalaconsole.DetachedILoop", false, cl)
         val _iloop = remoteClazz.getConstructor(classOf[java.io.BufferedReader], classOf[java.io.PrintWriter]).
-          newInstance(isToReader(replIs), osToWriter(replOs))
+                     newInstance(isToReader(replIs), osToWriter(replOs))
         connectToRepl(scriptWriter, { s =>
           val _intp = remoteClazz.getMethod("intp").invoke(_iloop)
           val remoteIMain = Class.forName("scala.tools.nsc.interpreter.IMain", false, cl)
@@ -223,7 +221,7 @@ class MainDelegate(val controller: MainController) {
   def postGistWithAccount() = OAuthTinyServer.withAccessToken(postGist)
 
   def onSearchArtifacts() = {
-    val loader = new FXMLLoader(getClass.getResource("SearchArtifactStage.fxml"))
+    val loader = new FXMLLoader(getClass.getResource("../search/SearchArtifactStage.fxml"))
     val root: Parent = loader.load()
     val searchArtifactsStage = new SearchArtifactStage(root, this, loader.getController.asInstanceOf[SearchArtifactController])
     searchArtifactsStage.show()
@@ -232,17 +230,14 @@ class MainDelegate(val controller: MainController) {
   def updateArtifacts(strs: Seq[String]) = {
     if (strs.nonEmpty) {
       for (str <- strs) {
-        val Array(g, a, v) = str.split(":")
+        val Array(g, a, v) = str.split(":").map(_.trim)
         DependencyManager.addArtifact(Artifact(g, a, v))
       }
       ClassLoaderManager.reset()
       setStatus("Resolving artifacts...")
       reset(cls = false)
-      setStatus("Classpath changed. Repl reset.")
     } else {
       setStatus("No new artifacts.")
     }
-
   }
-
 }

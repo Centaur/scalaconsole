@@ -1,4 +1,4 @@
-package org.scalaconsole.fxui;
+package org.scalaconsole.fxui.search;
 
 import com.google.gson.JsonElement;
 import javafx.beans.binding.Bindings;
@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
+import org.scalaconsole.fxui.SemVersion;
 
 import java.util.Map;
 

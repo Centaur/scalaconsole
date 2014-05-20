@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="600.0" stylesheets="@scalaconsole.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scalaconsole.fxui.SearchArtifactController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="600.0" stylesheets="@../scalaconsole.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scalaconsole.fxui.search.SearchArtifactController">
    <children>
       <BorderPane prefHeight="38.0" prefWidth="600.0" VBox.vgrow="NEVER">
          <center>
@@ -30,6 +30,9 @@
                </padding>
             </HBox>
          </right>
+         <padding>
+            <Insets bottom="5.0" top="5.0" />
+         </padding>
       </BorderPane>
       <HBox prefHeight="472.0" prefWidth="600.0" spacing="2.0" VBox.vgrow="NEVER">
          <children>

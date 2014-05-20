@@ -1,8 +1,9 @@
-package org.scalaconsole.fxui
+package org.scalaconsole.fxui.search
 
 import javafx.stage.{WindowEvent, Stage}
 import javafx.scene.{Parent, Scene}
 import javafx.event.EventHandler
+import org.scalaconsole.fxui.main.MainDelegate
 
 class SearchArtifactStage(val root: Parent, val mainDelegate: MainDelegate, val searchArtifactController: SearchArtifactController) extends Stage {
 

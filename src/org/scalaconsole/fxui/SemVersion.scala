@@ -89,14 +89,15 @@ object SemVersion {
         override def stringPresentation: String = str
       })
       case Some(e) =>
-        val extraVersion: ExtraVersion = e match {
-          case ExtraRC(no) => RC(no.toInt)
-          case ExtraBETA(no) => BETA(no.toInt)
-          case ExtraSNAPSHOT(date) => SNAPSHOT(date)
-          case ExtraM(no) => M(no.toInt)
-          case Minus(no) => GA(no.toInt)
+        val extraVersion: Option[ExtraVersion] = e match {
+          case ExtraRC(no) => Some(RC(no.toInt))
+          case ExtraBETA(no) => Some(BETA(no.toInt))
+          case ExtraSNAPSHOT(date) => Some(SNAPSHOT(date))
+          case ExtraM(no) => Some(M(no.toInt))
+          case Minus(no) => Some(GA(no.toInt))
+          case _ => None
         }
-        Some(new SemVersion(maj.toInt, min.toInt, Option(patch).map(_.toInt), extraVersion) {
+        extraVersion.map(v => new SemVersion(maj.toInt, min.toInt, Option(patch).map(_.toInt), v) {
           override def stringPresentation: String = str
         })
     }

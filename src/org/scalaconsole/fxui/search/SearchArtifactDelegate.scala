@@ -1,13 +1,13 @@
-package org.scalaconsole.fxui
+package org.scalaconsole.fxui.search
 
 import javafx.animation.FadeTransition
 import javafx.util.Duration
 import org.scalaconsole.net.MavenIndexerClient
-import com.google.gson.{JsonObject, JsonElement}
-import javafx.collections.{ObservableList, FXCollections}
+import com.google.gson.JsonElement
+import javafx.collections.FXCollections
 import javafx.scene.control._
 import javafx.beans.value.{ObservableValue, ChangeListener}
-import javafx.scene.Node
+import org.scalaconsole.fxui.{Variables, SemVersion, FxUtil}
 
 class SearchArtifactDelegate(val controller: SearchArtifactController) {
 
@@ -67,7 +67,7 @@ class SearchArtifactDelegate(val controller: SearchArtifactController) {
         })
         val allBtn = new ToggleButton("All")
         allBtn.setToggleGroup(versionGroup)
-        val versionButtons = versions.map(version => {
+        val versionButtons = versions.filter(v => SemVersion(v).isDefined).map(version => {
           val btn = new ToggleButton(version)
           btn.setToggleGroup(versionGroup)
           btn
@@ -99,7 +99,7 @@ class SearchArtifactDelegate(val controller: SearchArtifactController) {
   }
 
   def addVersion2Selection(ver: SemVersion) = {
-    val dependencyString = s"${controller.matchedList.getSelectionModel.getSelectedItem.getKey}:${ver.stringPresentation}"
+    val dependencyString = s"${controller.matchedList.getSelectionModel.getSelectedItem.getKey.trim}:${ver.stringPresentation}"
     selectedVersions.add(dependencyString)
   }
 
