@@ -3,21 +3,24 @@ package org.scalaconsole.fxui
 import javafx.animation.FadeTransition
 import javafx.util.Duration
 import org.scalaconsole.net.MavenIndexerClient
-import com.google.gson.JsonElement
+import com.google.gson.{JsonObject, JsonElement}
 import javafx.collections.{ObservableList, FXCollections}
 import javafx.scene.control._
 import javafx.beans.value.{ObservableValue, ChangeListener}
 import javafx.scene.Node
 
 class SearchArtifactDelegate(val controller: SearchArtifactController) {
+
   import collection.JavaConverters._
 
   import FxUtil._
 
   val matchedArtifacts = FXCollections.observableArrayList[java.util.Map.Entry[String, JsonElement]]()
+  val artifactVersions = FXCollections.observableArrayList[SemVersion]()
 
   def init() = {
     controller.matchedList.setItems(matchedArtifacts)
+    controller.versionList.setItems(artifactVersions)
   }
 
   private def animateErrorMsg() = {
@@ -29,11 +32,10 @@ class SearchArtifactDelegate(val controller: SearchArtifactController) {
     ft.play()
   }
 
-  val R = """.*_(\d+\.\d+(?:\.\d+)?(?:\-\d+)?(?:[-\.]RC\d+|-SNAPSHOT)?)""".r
 
   private def extractVersions(json: Set[java.util.Map.Entry[String, JsonElement]]): Set[String] = {
     json.map(_.getKey).collect {
-      case R(v) => v
+      case SemVersion.R(v) => v
     }.toSet
   }
 
@@ -51,6 +53,7 @@ class SearchArtifactDelegate(val controller: SearchArtifactController) {
         versionGroup.selectedToggleProperty.addListener(new ChangeListener[Toggle] {
           override def changed(p1: ObservableValue[_ <: Toggle], old: Toggle, selected: Toggle) = {
             val selectedBtn = selected.asInstanceOf[ToggleButton]
+            artifactVersions.clear()
             if (selectedBtn.getText == "All") {
               matchedArtifacts.setAll(exactMatch.asJavaCollection)
               matchedArtifacts.addAll(otherMatch.asJavaCollection)
@@ -72,12 +75,25 @@ class SearchArtifactDelegate(val controller: SearchArtifactController) {
           {
             val children = controller.crossBuildsPane.getChildren
             children.setAll(allBtn)
-            children.addAll(versionButtons.toSeq.asJavaCollection)
+            children.addAll(versionButtons.toSeq.sortBy(btn => SemVersion(btn.getText).get).asJavaCollection)
           }
-          versionButtons.find(btn => SemVersion(btn.getText) == SemVersion(Variables.currentScalaVersion)).getOrElse(allBtn).setSelected(true)
+          val currentSemVersion = SemVersion(Variables.currentScalaVersion)
+          versionButtons.find(btn => SemVersion(btn.getText).exists(_.fuzzyMatch(currentSemVersion))).
+            orElse(versionButtons.find(btn => btn.getText == Variables.currentScalaVersion)).
+            getOrElse(allBtn).setSelected(true)
           controller.loading.setValue(false)
         }
       }
     }
   }
+
+  def onSelectArtifact(entry: java.util.Map.Entry[String, JsonElement]) = {
+    val versions = for {
+      artifact <- entry.getValue.getAsJsonArray.asScala
+      version <- SemVersion.apply(artifact.getAsJsonObject.get("version").getAsString)
+    } yield version
+
+    artifactVersions.setAll(versions.toSeq.sorted.asJavaCollection)
+  }
+
 }

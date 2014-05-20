@@ -38,7 +38,7 @@
                   <ListView fx:id="matchedList" prefHeight="479.0" prefWidth="458.0" VBox.vgrow="ALWAYS" />
                </children>
             </VBox>
-            <ListView fx:id="versions" prefHeight="513.0" prefWidth="136.0" />
+            <ListView fx:id="versionList" prefHeight="513.0" prefWidth="136.0" />
          </children>
          <VBox.margin>
             <Insets />

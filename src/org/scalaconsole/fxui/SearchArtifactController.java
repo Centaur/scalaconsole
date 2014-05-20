@@ -28,7 +28,7 @@ public class SearchArtifactController {
     Label errorMsg;
 
     @FXML
-    ListView<?> versions;
+    ListView<SemVersion> versionList;
 
     @FXML
     FlowPane crossBuildsPane;
@@ -58,11 +58,22 @@ public class SearchArtifactController {
 
     BooleanProperty loading = new SimpleBooleanProperty(false);
 
-    class MatchesCell extends ListCell<Map.Entry<String, JsonElement>> {
-        public MatchesCell() {
+    class ArtifactCell extends ListCell<Map.Entry<String, JsonElement>> {
+        public ArtifactCell() {
             textProperty().bind(Bindings.createStringBinding(() -> {
                         Map.Entry<String, JsonElement> item = getItem();
                         if (item != null) return item.getKey();
+                        else return null;
+                    }, itemProperty()
+            ));
+        }
+    }
+
+    class VersionCell extends ListCell<SemVersion> {
+        public VersionCell() {
+            textProperty().bind(Bindings.createStringBinding(() -> {
+                        SemVersion item = getItem();
+                        if (item != null) return item.stringPresentation();
                         else return null;
                     }, itemProperty()
             ));
@@ -73,7 +84,12 @@ public class SearchArtifactController {
     void initialize() {
         delegate = new SearchArtifactDelegate(this);
         loadingImg.visibleProperty().bind(loading);
-        matchedList.setCellFactory(entryListView -> new MatchesCell());
+        matchedList.setCellFactory(entryListView -> new ArtifactCell());
+        matchedList.getSelectionModel().selectedItemProperty().addListener((observableValue, oldEntry, newEntry) -> {
+            if(newEntry != null)
+                delegate.onSelectArtifact(newEntry);
+        });
+        versionList.setCellFactory(versionListView -> new VersionCell());
         delegate.init();
     }
 
