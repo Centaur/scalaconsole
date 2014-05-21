@@ -35,7 +35,7 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
-  "org.apache.ivy" % "ivy" % "2.2.0",
+  "org.apache.ivy" % "ivy" % "2.3.0",
   "org.scala-lang" % "scala-compiler" % scalaVersion.value,
   "org.controlsfx" % "controlsfx" % "8.0.5",
   "com.google.guava" % "guava" % "17.0",

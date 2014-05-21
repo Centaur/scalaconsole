@@ -39,8 +39,10 @@ object EmbeddedIvy {
     //creates an Ivy instance with settings
     val ivy = Ivy.newInstance(ivySettings)
     // For windows
+    import collection.JavaConverters._
     val md = DefaultModuleDescriptor.newCallerInstance(
-      Array(ModuleRevisionId.newInstance(groupId, artifactId, version)), true, false
+      ModuleRevisionId.newInstance(groupId, artifactId, version),
+      Array("*->*,!sources,!javadoc"), true, false
     )
     // Works on other platforms
     //    val md = DefaultModuleDescriptor.newCallerInstance(
