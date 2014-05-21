@@ -98,11 +98,6 @@
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator></MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#onDependencyLocal" text="Local Jar/Classes">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
-                           </accelerator>
-                        </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#onDependencyCurrent" text="Current" />
                      </items>

@@ -10,10 +10,10 @@
    <children>
       <BorderPane prefHeight="38.0" prefWidth="600.0" VBox.vgrow="NEVER">
          <center>
-            <TextField fx:id="searchBox" onKeyPressed="#onEnterInSearchBox" prefHeight="26.0" prefWidth="191.0" promptText="e.g. scalaz" BorderPane.alignment="CENTER" />
+            <TextField fx:id="searchBox" onKeyPressed="#onEnterInSearchBox" prefHeight="26.0" prefWidth="191.0" BorderPane.alignment="CENTER" />
          </center>
          <left>
-            <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="208.0" text="Keyword: " BorderPane.alignment="CENTER_RIGHT" />
+            <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="208.0" text="Keyword (e.g. scalaz): " BorderPane.alignment="CENTER_RIGHT" />
          </left>
          <right>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="4.0" BorderPane.alignment="CENTER">
@@ -34,14 +34,10 @@
             <Insets bottom="5.0" top="5.0" />
          </padding>
       </BorderPane>
-      <HBox prefHeight="472.0" prefWidth="600.0" spacing="2.0" VBox.vgrow="NEVER">
+      <HBox minHeight="100.0" prefHeight="472.0" prefWidth="600.0" spacing="2.0">
          <children>
-            <VBox spacing="2.0" HBox.hgrow="ALWAYS">
-               <children>
-                  <ListView fx:id="matchedList" prefHeight="479.0" prefWidth="458.0" VBox.vgrow="ALWAYS" />
-               </children>
-            </VBox>
-            <ListView fx:id="versionList" prefHeight="513.0" prefWidth="136.0" />
+            <ListView fx:id="matchedList" minHeight="100.0" prefHeight="479.0" prefWidth="458.0" />
+            <ListView fx:id="versionList" minHeight="100.0" prefHeight="513.0" prefWidth="136.0" />
          </children>
          <VBox.margin>
             <Insets />
@@ -54,8 +50,8 @@
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding></FlowPane>
-      <ListView fx:id="selectedVersionList" prefHeight="151.0" prefWidth="600.0" VBox.vgrow="NEVER" />
-      <FlowPane columnHalignment="RIGHT" hgap="20.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="0.0" prefWidth="600.0" VBox.vgrow="NEVER">
+      <ListView fx:id="selectedVersionList" minHeight="-Infinity" prefHeight="77.0" prefWidth="600.0" />
+      <FlowPane columnHalignment="RIGHT" hgap="20.0" minHeight="-Infinity" nodeOrientation="RIGHT_TO_LEFT" VBox.vgrow="ALWAYS">
          <children>
             <Button mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
             <Button mnemonicParsing="false" onAction="#onOK" text="Ok" textAlignment="CENTER" />

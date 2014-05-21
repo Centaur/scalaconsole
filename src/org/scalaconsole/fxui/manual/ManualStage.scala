@@ -7,6 +7,7 @@ import org.scalaconsole.fxui.main.MainDelegate
 class ManualStage(val root: Parent, val mainDelegate: MainDelegate, val controller: ManualController) extends Stage {
 
   setScene(new Scene(root))
+  setTitle("Add Artifact Manually")
 
   def onOK() = {
     try {
