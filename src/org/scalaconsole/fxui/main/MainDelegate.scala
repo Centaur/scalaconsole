@@ -17,10 +17,12 @@ import javafx.scene.Parent
 import org.scalaconsole.fxui.search.{SearchArtifactController, SearchArtifactStage}
 import org.scalaconsole.fxui.{Constants, Variables, FxUtil}
 import org.scalaconsole.fxui.manual.{ManualController, ManualStage}
+import javafx.scene.web.{WebEngine, WebView}
 
 class MainDelegate(val controller: MainController) {
 
   import FxUtil._
+  import collection.JavaConverters._
 
   val commandQueue = new ArrayBlockingQueue[(Symbol, String)](10)
 
@@ -129,31 +131,52 @@ class MainDelegate(val controller: MainController) {
     scriptWriter.close()
   }
 
-  def run(script: String) = {
+  private def currentEngine = controller.tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView].getEngine
+
+  private def runScript(script: String) = {
     commandQueue.put('Normal, script)
   }
+  def run() = {
+    val script = currentEngine.executeScript("editor.getValue()").toString
+    runScript(script)
+  }
+  def runSelected() = {
+    val script = currentEngine.executeScript("editor.session.getTextRange(editor.getSelectionRange())").toString
+    runScript(script)
+  }
 
-  def runPaste(script: String) = {
+  def runPasteScript(script: String) = {
     commandQueue.put('Paste, script)
+  }
+  def runSelectedPaste() = {
+    runPasteScript(currentEngine.executeScript("editor.getValue()").toString)
+  }
+  def runPaste() = {
+    runPasteScript(currentEngine.executeScript("editor.session.getTextRange(editor.getSelectionRange())").toString)
   }
 
   startOutputRenderer()
   startRepl()
 
-  def setFont() = {
+  def setOutputAreaFont() = {
     val f = Variables.displayFont
     controller.outputArea.setFont(f)
+
+  }
+  def setScriptAreaFont(engine: WebEngine) = {
+    val f = Variables.displayFont
     onEventThread {
-      val engine = controller.scriptArea.getEngine
       val doc = engine.getDocument
       val editor = doc.getElementById("editor")
       val css = s"font-family:${f.getFamily}; font-size: ${f.getSize}px"
       editor.setAttribute("style", css)
     }
   }
-
-  def clearScript() = onEventThread {
-    controller.scriptArea.getEngine.executeScript("editor.setValue('')")
+  def setFontForAllScriptArea() = {
+    for(tab <- controller.tabPane.getTabs.asScala){
+      val engine = tab.getContent.asInstanceOf[WebView].getEngine
+      setScriptAreaFont(engine)
+    }
   }
 
   private def reset(cls: Boolean = true) = {
@@ -174,6 +197,7 @@ class MainDelegate(val controller: MainController) {
     }
   }
 
+
   def onSetFont() = {
     val masth = "Example: Consolas-14 or Ubuntu Mono-17"
     val f = Variables.displayFont
@@ -182,7 +206,7 @@ class MainDelegate(val controller: MainController) {
     val result = Dialogs.create().title("Set Display Font").masthead(masth).message(msg).showTextInput(fontAsString)
     if (result != null) {
       Variables.displayFont = Variables.decodeFont(result)
-      setFont()
+      setFontForAllScriptArea()
       setStatus(s"Font set to $result")
     }
   }
@@ -204,7 +228,8 @@ class MainDelegate(val controller: MainController) {
   }
 
   private def postGist(token: Option[String]) = {
-    val code = controller.scriptArea.getEngine.executeScript("editor.getValue()").toString
+    val scriptArea = controller.tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView]
+    val code = scriptArea.getEngine.executeScript("editor.getValue()").toString
     val description = Dialogs.create().title("Gist Description").masthead(null).showTextInput()
     if (!Strings.isNullOrEmpty(code)) {
       setStatus("Posting to gist...")

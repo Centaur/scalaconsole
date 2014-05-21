@@ -25,7 +25,7 @@
           name: 'Paste',
           bindKey: {win: 'Ctrl-V|Shift-Insert', mac: 'Command-V|Shift-Insert'},
           exec: function(editor){
-            editor.insert(clipboardBridge.getContent(), true)
+            editor.insert(javaBridge.getClipboardContent(), true)
           }
       });
     editor.commands.addCommand({
@@ -38,7 +38,7 @@
                 editor.getSelection().selectLineEnd();
             }
             var selected = editor.session.getTextRange(editor.getSelectionRange());
-            clipboardBridge.setContent(selected)
+            javaBridge.setClipboardContent(selected)
           }
       });
     editor.commands.addCommand({
@@ -51,7 +51,7 @@
                 editor.getSelection().selectLineEnd();
             }
             var selected = editor.session.getTextRange(editor.getSelectionRange());
-            clipboardBridge.setContent(selected);
+            javaBridge.setClipboardContent(selected);
             editor.remove(range)
           }
       });
@@ -68,6 +68,11 @@
           exec: function(editor){editor.duplicateSelection();},
           scrollIntoView: "cursor",
           multiSelectAction: "forEach"
+      });
+    editor.commands.addCommand({
+          name: 'Create Tab',
+          bindKey: {win: 'Ctrl-T', mac: 'Command-T'},
+          exec: function(editor){javaBridge.createTab();}
       });
 
     editor.getSession().setMode("ace/mode/scala");

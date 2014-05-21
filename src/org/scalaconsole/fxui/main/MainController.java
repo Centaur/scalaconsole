@@ -3,15 +3,12 @@ package org.scalaconsole.fxui.main;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 import org.controlsfx.dialog.Dialogs;
-import org.scalaconsole.fxui.ClipboardBridge;
+import org.scalaconsole.fxui.JavaBridge;
 
 import java.io.IOException;
 import java.net.URL;
@@ -39,33 +36,38 @@ public class MainController {
     SplitPane splitPane;
 
     @FXML
+    TabPane tabPane;
+
+    @FXML
     void onRun(ActionEvent event) {
-        delegate.run(scriptArea.getEngine().executeScript("editor.getValue()").toString());
+        delegate.run();
     }
 
     @FXML
     void onRunSelected(ActionEvent event) {
-        delegate.run(scriptArea.getEngine().executeScript("editor.session.getTextRange(editor.getSelectionRange())").toString());
+        delegate.runSelected();
     }
 
     @FXML
     void onRunInPasteMode(ActionEvent event) {
-        delegate.runPaste(scriptArea.getEngine().executeScript("editor.getValue()").toString());
+        delegate.runPaste();
     }
 
     @FXML
     void onRunSelectedInPasteMode(ActionEvent event) {
-        delegate.runPaste(scriptArea.getEngine().executeScript("editor.session.getTextRange(editor.getSelectionRange())").toString());
+        delegate.runPaste();
     }
 
     @FXML
-    void onScriptClear(ActionEvent event) {
-        delegate.clearScript();
-    }
-
-    @FXML
-    void onNewTab(ActionEvent event) {
-
+    public void onNewTab(ActionEvent event) {
+        if (event == null) {
+            Tab newTab = new Tab(String.format("Tab%d", tabPane.getTabs().size()));
+            WebView newView = new WebView();
+            newTab.setContent(newView);
+            tabPane.getTabs().add(newTab);
+            tabPane.getSelectionModel().select(newTab);
+            initWebView(newView);
+        }
     }
 
     @FXML
@@ -119,32 +121,39 @@ public class MainController {
     }
 
     @FXML
-    void onDependencyLocal(ActionEvent event) {
-
-    }
-
-    @FXML
     void onDependencyCurrent(ActionEvent event) {
 
     }
 
-    @FXML
-    void onTextAreaClicked(MouseEvent event) {
 
-    }
-
+    JavaBridge bridge;
 
     @FXML
     void initialize() throws IOException {
+        bridge = new JavaBridge(this);
         delegate = new MainDelegate(this);
-        WebEngine engine = scriptArea.getEngine();
+        delegate.setOutputAreaFont();
+        initWebView(scriptArea);
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observableValue, old, selected) -> {
+            Worker worker = ((WebView) selected.getContent()).getEngine().getLoadWorker();
+            System.out.println("worker.state="+worker.getState());
+            if (worker.getState() == Worker.State.SUCCEEDED) {
+                selected.getContent().requestFocus();
+                ((WebView) selected.getContent()).getEngine().executeScript("editor.focus()");
+            }
+        });
+    }
+
+
+    private void initWebView(WebView view) {
+        WebEngine engine = view.getEngine();
         engine.setOnAlert(stringWebEvent -> Dialogs.create().masthead(null).message(stringWebEvent.getData()).showInformation());
         engine.getLoadWorker().stateProperty().addListener((observableValue, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
-                delegate.setFont();
-                scriptArea.requestFocus();
+                delegate.setScriptAreaFont(engine);
+                view.requestFocus();
                 JSObject window = (JSObject) engine.executeScript("window");
-                window.setMember("clipboardBridge", new ClipboardBridge());
+                window.setMember("javaBridge", bridge);
             }
         });
         engine.load(getClass().getResource("ace.html").toExternalForm());
