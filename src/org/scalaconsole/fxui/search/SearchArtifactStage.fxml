@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="600.0" stylesheets="@../scalaconsole.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scalaconsole.fxui.search.SearchArtifactController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyReleased="#onKeyUp" prefHeight="640.0" prefWidth="600.0" stylesheets="@../scalaconsole.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.scalaconsole.fxui.search.SearchArtifactController">
    <children>
       <BorderPane prefHeight="38.0" prefWidth="600.0" VBox.vgrow="NEVER">
          <center>
@@ -54,7 +54,7 @@
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding></FlowPane>
-      <ListView fx:id="selectedVersionList" prefHeight="151.0" prefWidth="600.0" VBox.vgrow="ALWAYS" />
+      <ListView fx:id="selectedVersionList" prefHeight="151.0" prefWidth="600.0" VBox.vgrow="NEVER" />
       <FlowPane columnHalignment="RIGHT" hgap="20.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="0.0" prefWidth="600.0" VBox.vgrow="NEVER">
          <children>
             <Button mnemonicParsing="false" onAction="#onCancel" text="Cancel" />

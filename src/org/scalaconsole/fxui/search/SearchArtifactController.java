@@ -108,4 +108,12 @@ public class SearchArtifactController {
         delegate.init();
     }
 
+    @FXML
+    void onKeyUp(KeyEvent e){
+        switch(e.getCode()) {
+         case ESCAPE:
+             onCancel(null);
+        }
+    }
+
 }

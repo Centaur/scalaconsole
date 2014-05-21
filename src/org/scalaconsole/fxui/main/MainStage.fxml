@@ -85,7 +85,6 @@
                               <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="Dependencies">
@@ -95,7 +94,10 @@
                               <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" onAction="#onDependencyManually" text="Manually" />
+                        <MenuItem mnemonicParsing="false" onAction="#onDependencyManually" text="Manually">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                           </accelerator></MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onDependencyLocal" text="Local Jar/Classes">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP" shift="UP" shortcut="DOWN" />

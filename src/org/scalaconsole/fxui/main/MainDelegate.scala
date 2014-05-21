@@ -16,6 +16,7 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import org.scalaconsole.fxui.search.{SearchArtifactController, SearchArtifactStage}
 import org.scalaconsole.fxui.{Constants, Variables, FxUtil}
+import org.scalaconsole.fxui.manual.{ManualController, ManualStage}
 
 class MainDelegate(val controller: MainController) {
 
@@ -227,7 +228,14 @@ class MainDelegate(val controller: MainController) {
     searchArtifactsStage.show()
   }
 
-  def updateArtifacts(strs: Seq[String]) = {
+  def onManualArtifact() = {
+    val loader = new FXMLLoader(getClass.getResource("../manual/ManualStage.fxml"))
+    val root: Parent = loader.load()
+    val manualStage = new ManualStage(root, this, loader.getController.asInstanceOf[ManualController])
+    manualStage.show()
+  }
+
+  def addArtifacts(strs: Seq[String]) = {
     if (strs.nonEmpty) {
       for (str <- strs) {
         val Array(g, a, v) = str.split(":").map(_.trim)

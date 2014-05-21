@@ -115,7 +115,7 @@ public class MainController {
 
     @FXML
     void onDependencyManually(ActionEvent event) {
-
+        delegate.onManualArtifact();
     }
 
     @FXML
@@ -149,5 +149,6 @@ public class MainController {
         });
         engine.load(getClass().getResource("ace.html").toExternalForm());
     }
+
 
 }

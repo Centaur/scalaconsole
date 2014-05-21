@@ -16,7 +16,7 @@ class SearchArtifactStage(val root: Parent, val mainDelegate: MainDelegate, val 
 
   def onOK() = {
     import collection.JavaConverters._
-    mainDelegate.updateArtifacts(searchArtifactController.selectedVersionList.getItems.asScala)
+    mainDelegate.addArtifacts(searchArtifactController.selectedVersionList.getItems.asScala)
   }
 
 
