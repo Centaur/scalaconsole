@@ -1,0 +1,3 @@
+[submodule "resources/org/scalaconsole/fxui/main/ace-builds"]
+	path = resources/org/scalaconsole/fxui/main/ace-builds
+	url = https://github.com/ajaxorg/ace-builds.git
