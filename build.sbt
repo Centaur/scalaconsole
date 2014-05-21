@@ -6,13 +6,16 @@ version := "2.0.0-SNAPSHOT"
 
 scalaVersion := "2.11.0"
 
-scalaSource in Compile <<= baseDirectory(_ / "src")
+scalaSource in Compile := baseDirectory.value / "src"
 
-scalaSource in Test <<= baseDirectory(_ / "test")
+scalaSource in Test := baseDirectory.value / "test"
 
-javaSource in Compile <<= baseDirectory(_ / "src")
+javaSource in Compile := baseDirectory.value / "src"
 
-unmanagedResourceDirectories in Compile <+= baseDirectory(_ / "resources")
+unmanagedResourceDirectories in Compile ++= Seq(
+  baseDirectory.value / "resources",
+  baseDirectory.value / "src"
+)
 
 fork := true
 
