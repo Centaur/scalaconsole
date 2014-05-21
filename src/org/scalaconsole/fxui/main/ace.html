@@ -72,7 +72,9 @@
     editor.commands.addCommand({
           name: 'Create Tab',
           bindKey: {win: 'Ctrl-T', mac: 'Command-T'},
-          exec: function(editor){javaBridge.createTab();}
+          exec: function(editor){
+              javaBridge.createTab();
+          }
       });
 
     editor.getSession().setMode("ace/mode/scala");

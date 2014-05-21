@@ -136,10 +136,12 @@ class MainDelegate(val controller: MainController) {
   private def runScript(script: String) = {
     commandQueue.put('Normal, script)
   }
+
   def run() = {
     val script = currentEngine.executeScript("editor.getValue()").toString
     runScript(script)
   }
+
   def runSelected() = {
     val script = currentEngine.executeScript("editor.session.getTextRange(editor.getSelectionRange())").toString
     runScript(script)
@@ -148,9 +150,11 @@ class MainDelegate(val controller: MainController) {
   def runPasteScript(script: String) = {
     commandQueue.put('Paste, script)
   }
+
   def runSelectedPaste() = {
     runPasteScript(currentEngine.executeScript("editor.getValue()").toString)
   }
+
   def runPaste() = {
     runPasteScript(currentEngine.executeScript("editor.session.getTextRange(editor.getSelectionRange())").toString)
   }
@@ -163,6 +167,7 @@ class MainDelegate(val controller: MainController) {
     controller.outputArea.setFont(f)
 
   }
+
   def setScriptAreaFont(engine: WebEngine) = {
     val f = Variables.displayFont
     onEventThread {
@@ -172,8 +177,9 @@ class MainDelegate(val controller: MainController) {
       editor.setAttribute("style", css)
     }
   }
+
   def setFontForAllScriptArea() = {
-    for(tab <- controller.tabPane.getTabs.asScala){
+    for (tab <- controller.tabPane.getTabs.asScala) {
       val engine = tab.getContent.asInstanceOf[WebView].getEngine
       setScriptAreaFont(engine)
     }
@@ -197,7 +203,6 @@ class MainDelegate(val controller: MainController) {
     }
   }
 
-
   def onSetFont() = {
     val masth = "Example: Consolas-14 or Ubuntu Mono-17"
     val f = Variables.displayFont
@@ -206,6 +211,7 @@ class MainDelegate(val controller: MainController) {
     val result = Dialogs.create().title("Set Display Font").masthead(masth).message(msg).showTextInput(fontAsString)
     if (result != null) {
       Variables.displayFont = Variables.decodeFont(result)
+      setOutputAreaFont()
       setFontForAllScriptArea()
       setStatus(s"Font set to $result")
     }

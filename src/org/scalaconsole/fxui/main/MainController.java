@@ -60,19 +60,19 @@ public class MainController {
 
     @FXML
     public void onNewTab(ActionEvent event) {
-        if (event == null) {
-            Tab newTab = new Tab(String.format("Tab%d", tabPane.getTabs().size()));
-            WebView newView = new WebView();
-            newTab.setContent(newView);
-            tabPane.getTabs().add(newTab);
-            tabPane.getSelectionModel().select(newTab);
-            initWebView(newView);
-        }
+        Tab newTab = new Tab(String.format("Tab%d", tabPane.getTabs().size()));
+        WebView newView = new WebView();
+        newTab.setContent(newView);
+        tabPane.getTabs().add(newTab);
+        tabPane.getSelectionModel().select(newTab);
+        initWebView(newView);
     }
 
     @FXML
     void onCloseTab(ActionEvent event) {
-
+        int currentTab = tabPane.getSelectionModel().getSelectedIndex();
+        if(currentTab != 0)
+            tabPane.getTabs().remove(currentTab);
     }
 
     @FXML
@@ -134,19 +134,16 @@ public class MainController {
         delegate = new MainDelegate(this);
         delegate.setOutputAreaFont();
         initWebView(scriptArea);
-        tabPane.getSelectionModel().selectedItemProperty().addListener((observableValue, old, selected) -> {
-            Worker worker = ((WebView) selected.getContent()).getEngine().getLoadWorker();
-            System.out.println("worker.state="+worker.getState());
-            if (worker.getState() == Worker.State.SUCCEEDED) {
-                selected.getContent().requestFocus();
-                ((WebView) selected.getContent()).getEngine().executeScript("editor.focus()");
-            }
-        });
     }
 
 
     private void initWebView(WebView view) {
         WebEngine engine = view.getEngine();
+        view.visibleProperty().addListener((observableValue, old, visible) -> {
+            if (visible) {
+                view.requestFocus();
+            }
+        });
         engine.setOnAlert(stringWebEvent -> Dialogs.create().masthead(null).message(stringWebEvent.getData()).showInformation());
         engine.getLoadWorker().stateProperty().addListener((observableValue, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
