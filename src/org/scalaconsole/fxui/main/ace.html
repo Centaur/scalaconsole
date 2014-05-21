@@ -23,28 +23,51 @@
 
     editor.commands.addCommand({
           name: 'Paste',
-          bindKey: {win: 'Ctrl-V', mac: 'Command-V'},
+          bindKey: {win: 'Ctrl-V|Shift-Insert', mac: 'Command-V|Shift-Insert'},
           exec: function(editor){
             editor.insert(clipboardBridge.getContent(), true)
           }
       });
     editor.commands.addCommand({
           name: 'Copy',
-          bindKey: {win: 'Ctrl-C', mac: 'Command-C'},
+          bindKey: {win: 'Ctrl-C|Ctrl-Insert', mac: 'Command-C|Ctrl-Insert'},
           exec: function(editor){
+            var range = editor.getSelectionRange();
+            if(range.isEmpty()){
+                editor.navigateLineStart();
+                editor.getSelection().selectLineEnd();
+            }
             var selected = editor.session.getTextRange(editor.getSelectionRange());
             clipboardBridge.setContent(selected)
           }
       });
     editor.commands.addCommand({
           name: 'Cut',
-          bindKey: {win: 'Ctrl-X', mac: 'Command-X'},
+          bindKey: {win: 'Ctrl-X|Shift-Delete', mac: 'Command-X|Shift-Delete'},
           exec: function(editor){
             var range = editor.getSelectionRange();
-            var selected = editor.session.getTextRange();
+            if(range.isEmpty()){
+                editor.navigateLineStart();
+                editor.getSelection().selectLineEnd();
+            }
+            var selected = editor.session.getTextRange(editor.getSelectionRange());
             clipboardBridge.setContent(selected);
             editor.remove(range)
           }
+      });
+    editor.commands.addCommand({
+          name: 'Delete Line',
+          bindKey: {win: 'Ctrl-K', mac: 'Command-K'},
+          exec: function(editor){editor.removeLines();},
+          scrollIntoView: "cursor",
+          multiSelectAction: "forEachLine"
+      });
+    editor.commands.addCommand({
+          name: 'Duplicate Selection',
+          bindKey: {win: 'Ctrl-D', mac: 'Command-D'},
+          exec: function(editor){editor.duplicateSelection();},
+          scrollIntoView: "cursor",
+          multiSelectAction: "forEach"
       });
 
     editor.getSession().setMode("ace/mode/scala");
