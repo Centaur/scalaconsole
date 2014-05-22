@@ -2,23 +2,23 @@
 
 ## 版本要求
 * 运行：要求 Java 8
-* 编译：要求 Scala 2.11. 如果你使用的是2.10-，请使用ScalaConsole 1.x. 要修改ScalaConsole 2的代码适应Scala 2.10工作量也不大，
+* 编译：要求 Scala 2.11. 如果你使用的是2.10-，请使用ScalaConsole 1.x，现在有 [2.9](http://git.oschina.net/43284683/scalaconsole/tree/master/) 和 [2.10](http://git.oschina.net/43284683/scalaconsole/tree/2.10/) 两个分支. 其实要修改ScalaConsole 2的代码适应Scala 2.10工作量也不大，只是我本人没什么兴趣。欢迎提交pull request.
 
 ## 相对于1.x的变化
 * UI实现由Swing转到JavaFX
 
-  Scala 2.11的模块化将swing模块分离出来，JavaFX的开发体验比Swing好太多了，Java 8的Lambda对JavaFX更有加分。
+  Scala 2.11的模块化将 Swing 模块分离出来，更高的版本中可能根本就没有了。JavaFX 的开发体验比 Swing 好太多了，Java 8的 Lambda Expression 对 JavaFX 更有加分。
 
-* 编辑器使用Ace Editor
+* 编辑器使用 [Ace Editor](https://github.com/ajaxorg/ace)
 
-  `Ctrl-,` 可调出ace的配置界面，可以选择颜色主题。
+  `Ctrl-,` 可调出ace的配置界面，可以选择颜色主题，键盘模式(ace, vim, emacs)以及其它细节设置。
 
-* 使用 sbt assembly 打包
+* 使用 [sbt assembly](https://github.com/sbt/sbt-assembly) 打包
 
-  现在运行`java -jar ScalaConsole-assembly-$VERSION.jar` 即可开始使用。
-* 去掉了许多我自己基本不用的功能
+  现在运行 `java -jar ScalaConsole-assembly-$VERSION.jar` 即可开始使用。
+* 删减了许多我自己基本不用的功能
 
-  例如“打开”/“保存”文件，建议全面使用gist功能。又如切换Scala版本，这在几年以后，Scala2.8, 2.9的石器时代是一个很重要的功能。但是最近一两年我基本没用到过这个功能。添加本地Jar文件或classes目录作为依赖的功能也被取消了。
+  例如“打开”/“保存”文件(建议全面使用 [gist](https://gist.github.com/) )。又如切换Scala版本(这在几年以前，Scala 2.8, 2.9 的石器时代是一个很重要的功能。但是最近一两年我基本没用到过它)。添加本地Jar文件或classes目录作为依赖的功能也被取消了。
 
 * 使用gson取代被deprecated的scala内置JSON parser
 * artifacts crossbuild version 逻辑重新实现，更加完善，安全和易于扩展
@@ -29,28 +29,106 @@
 
   1.1 直接使用发布包
 
-  从本仓库“附件”区下载 ScalaConsole-assembly-$VERSION.jar，运行 `java -jar ScalaConsole-assembly-$VERSION.jar`
+  从本仓库[附件](http://git.oschina.net/43284683/scalaconsole/attach_files)下载 ScalaConsole-assembly-$VERSION.jar，运行
+  ```
+  java -jar ScalaConsole-assembly-$VERSION.jar
+  ```
 
   1.2 从源码编译
 
-  要求有sbt
+  要求有`sbt`，这是玩Scala的标配，没的选。
 
   ```
   $ git clone 本仓库
   $ cd scalaconsole
+  $ git checkout 2.11
   $ git submodule init
   $ git submodule update
   以上两个操作是为了获取本项目所依赖的ace-builds仓库的内容。
   $ sbt assembly
+  $ java -jar target/scala-2.11/ScalaConsole-assembly-$VERSION.jar
   或直接
   $ sbt run
   ```
   以后每次 `git pull` 以后都需要运行`git submodule update`对`ace-builds`进行更新。
+
 2. 代码编辑
+
+  **以下快捷键均为Linux/Windows上的键定义，在Mac上请将`Ctrl`换成`Meta`**
+
+  ScalaConsole快捷键定义尽量保持与IDEA一致。
+
+  2.1 `Ctrl-C` | `Ctrl-Insert` Smart Copy  
+
+  2.2 `Ctrl-D` Smart Duplicate
+
+  2.3 `Ctrl-X` | `Shift-Delete` Smart Cut
+
+  2.4 `Ctrl-K` 删除当前行
+
+  2.5 `Ctrl-/` 切换行注释
+
+  2.6 [Ace Editor](https://github.com/ajaxorg/ace) 是一个完整功能的编辑器，很强大，请参考 [它的快捷键](https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts)。
+
+  其中比较重要的是`Ctrl-,`，弹出 Ace Editor 的设置窗口。
 
 3. 运行代码
 
+  3.1 `Ctrl-R` **运行当前编辑区代码**
+
+  3.2 `Ctrl-Shift-R` **运行当前选中代码**
+
+  3.3 `Ctrl-P` **以 Paste 模式运行当前编辑区代码**
+
+  3.4 `Ctrl-Shift-P` **以 Paste 模式运行当前选中代码**
+
+  3.5 `Ctrl-E` **输出区域清屏**
+
+  3.6 `Ctrl-Shift-E` **重置REPL，保留当前的依赖设置**
+
 4. 依赖管理
 
-5. 其它
-  5.1
+  这是ScalaConsole的最大亮点，强烈推荐。
+
+  4.1 `Ctrl-I` **以关键字搜索并添加依赖**
+
+  ScalaConsole使用中央库的maven索引，每日更新。
+
+  4.2 `Ctrl-Shift-I` **手动添加依赖**
+
+  对于没有提交到中央库的Artifact，如typesafe的某些包，可以手动添加。目前ScalaConsole包含三个Resolver，依次为: `oschina`, `typesafe`, `central`
+
+  4.3 Menu -> Dependencies -> Reduce **减少依赖**
+
+  已经添加的依赖可以通过这个对话框进行删减。操作方式与搜索添加依赖窗口中的一样，鼠标双击要操作的项。
+
+5. 标签管理
+
+  ScalaConsole支持多标签，**添加标签**用`Ctrl-T`，**关闭当前标签**使用`Ctrl-F4`
+
+6. 当前代码发布到Gist
+
+  发布成功后ScalaConsole会自动将gist链接复制到系统剪贴板上。
+
+  6.1 `Ctrl-G` 会弹出系统浏览器到github.com去认证你的github帐号
+
+  6.2 `Ctrl-Shift-G` **匿名发布 gist**
+
+6. 其它
+
+  5.1 Menu -> Edit -> Set Font **修改字体**
+
+  字体格式为 `FamilyName-Size`，如 `Ubuntu Mono-13`, `Menlo-14`等。
+
+  5.2 Menu -> Repl -> Command line options **添加 REPL 的命令行选项**
+
+  把要添加的命令行选项放到一个字符串里，如 `-Xprint:typer`
+
+  5.3 `Ctrl-W` **改变窗口排列方式**
+
+  默认代码窗口和输出窗口左右排列，使用此键可在左右排列和上下排列之间切换。
+
+## 将来
+Scala-IDE 推出 worksheet 功能后，我曾一度以为 ScalaConsole 完成了它的历史使命，该进垃圾箱了。但是几年下来，我发现我仍然每天都在使用它。它非常轻快，随时开始编码，不依赖于一个完整的项目，我用它在StackOverflow上的Scala主题下抢了不少分。它又很贴心，基于 Maven 索引的依赖搜索及添加机制使得它能够快速地引用到我所感兴趣的任何库，这也使得 ScalaConsole 成为探索 Scala/Java 库的功能和 API 的必备利器。
+
+ScalaConsole 2.0现在的形态基本能满足我每天的编码需求，目前能想到的新功能只有代码格式化和 AceJump，会抽空慢慢实现。如果你有新的想法，也欢迎提交到 [issue tracker](http://git.oschina.net/43284683/scalaconsole/issues).
