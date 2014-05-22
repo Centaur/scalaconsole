@@ -1,3 +1,5 @@
+import AssemblyKeys._
+
 organization := "org.scalaconsole"
 
 name := "ScalaConsole"
@@ -13,9 +15,11 @@ scalaSource in Test := baseDirectory.value / "test"
 javaSource in Compile := baseDirectory.value / "src"
 
 unmanagedResourceDirectories in Compile ++= Seq(
-  baseDirectory.value / "resources",
-  baseDirectory.value / "src"
+  baseDirectory.value / "resources"
+  ,baseDirectory.value / "src"
 )
+
+excludeFilter in unmanagedResourceDirectories := HiddenFileFilter || "*.java" || "*.scala"
 
 fork := true
 
@@ -45,5 +49,8 @@ libraryDependencies ++= Seq(
   "com.google.code.gson" % "gson" % "2.2.4",
   "org.specs2" %% "specs2" % "2.3.11" % "test"
 )
+
+
+assemblySettings
 
 

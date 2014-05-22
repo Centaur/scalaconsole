@@ -253,14 +253,14 @@ class MainDelegate(val controller: MainController) {
   def postGistWithAccount() = OAuthTinyServer.withAccessToken(postGist)
 
   def onSearchArtifacts() = {
-    val loader = new FXMLLoader(getClass.getResource("../search/SearchArtifactStage.fxml"))
+    val loader = new FXMLLoader(getClass.getResource("/org/scalaconsole/fxui/search/SearchArtifactStage.fxml"))
     val root: Parent = loader.load()
     val searchArtifactsStage = new SearchArtifactStage(root, this, loader.getController.asInstanceOf[SearchArtifactController])
     searchArtifactsStage.show()
   }
 
   def onManualArtifact() = {
-    val loader = new FXMLLoader(getClass.getResource("../manual/ManualStage.fxml"))
+    val loader = new FXMLLoader(getClass.getResource("/org/scalaconsole/fxui/manual/ManualStage.fxml"))
     val root: Parent = loader.load()
     val manualStage = new ManualStage(root, this, loader.getController.asInstanceOf[ManualController])
     manualStage.show()
