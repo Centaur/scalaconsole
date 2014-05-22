@@ -78,6 +78,9 @@
       });
 
     editor.getSession().setMode("ace/mode/scala");
+    editor.getSession().setTabSize(2);
+    editor.renderer.setScrollMargin(2, 2, 2, 2);
+    editor.setHighlightActiveLine(false);
     editor.focus();
 </script>
 </body>
