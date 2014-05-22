@@ -84,6 +84,22 @@ public class SearchArtifactController {
                         else return null;
                     }, itemProperty()
             ));
+            setOnMouseClicked(evt -> {
+                if (evt.getClickCount() == 2 && getItem() != null) {
+                    delegate.addVersion2Selection(getItem());
+                }
+            });
+        }
+    }
+
+    class SelectedVersionCell extends ListCell<String> {
+        public SelectedVersionCell() {
+            textProperty().bind(itemProperty());
+            setOnMouseClicked(evt -> {
+                if (evt.getClickCount() == 2 && getItem() != null) {
+                    delegate.removeVersionFromSelection(getItem());
+                }
+            });
         }
     }
 
@@ -96,15 +112,8 @@ public class SearchArtifactController {
             if (newEntry != null)
                 delegate.onSelectArtifact(newEntry);
         });
-        versionList.setCellFactory(versionListView -> {
-            VersionCell cell = new VersionCell();
-            cell.setOnMouseClicked(evt -> {
-                if (evt.getClickCount() == 2 && cell.getItem() != null) {
-                    delegate.addVersion2Selection(cell.getItem());
-                }
-            });
-            return cell;
-        });
+        versionList.setCellFactory(versionListView ->new VersionCell());
+        selectedVersionList.setCellFactory(selectedVersionListView -> new SelectedVersionCell());
         delegate.init();
     }
 
