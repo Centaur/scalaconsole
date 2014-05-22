@@ -40,6 +40,9 @@ object DependencyManager {
 
   def currentArtifacts = dependencies.get(version).getOrElse(Dependencies()).artifacts
 
+  import collection.JavaConverters.asJavaCollectionConverter
+  def currentArtifactsAsJavaCollection = currentArtifacts.map(_.mkString).asJavaCollection
+
   /**
    * return : classpathNeedsReset
    */

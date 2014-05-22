@@ -121,8 +121,8 @@ public class MainController {
     }
 
     @FXML
-    void onDependencyCurrent(ActionEvent event) {
-
+    void onDependencyReduce(ActionEvent event) {
+        delegate.onReduceDependency();
     }
 
 

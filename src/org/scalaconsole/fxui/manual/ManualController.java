@@ -7,7 +7,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class ManualController {
-    ManualDelegate delegate;
 
     @FXML
     TextField groupId;
@@ -17,11 +16,6 @@ public class ManualController {
 
     @FXML
     TextField version;
-
-    @FXML
-    void initialize() {
-        delegate = new ManualDelegate();
-    }
 
     @FXML
     void onOK(ActionEvent e) {

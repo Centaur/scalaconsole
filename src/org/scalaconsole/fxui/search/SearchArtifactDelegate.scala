@@ -103,7 +103,4 @@ class SearchArtifactDelegate(val controller: SearchArtifactController) {
     selectedVersions.add(dependencyString)
   }
 
-  def removeVersionFromSelection(ver: String) = {
-    selectedVersions.remove(ver)
-  }
 }

@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
+import org.scalaconsole.fxui.SelectedVersionCell;
 import org.scalaconsole.fxui.SemVersion;
 
 import java.util.Map;
@@ -92,16 +93,6 @@ public class SearchArtifactController {
         }
     }
 
-    class SelectedVersionCell extends ListCell<String> {
-        public SelectedVersionCell() {
-            textProperty().bind(itemProperty());
-            setOnMouseClicked(evt -> {
-                if (evt.getClickCount() == 2 && getItem() != null) {
-                    delegate.removeVersionFromSelection(getItem());
-                }
-            });
-        }
-    }
 
     @FXML
     void initialize() {

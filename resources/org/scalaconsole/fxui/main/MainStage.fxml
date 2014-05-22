@@ -94,7 +94,7 @@
                               <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                            </accelerator></MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" onAction="#onDependencyCurrent" text="Current" />
+                        <MenuItem mnemonicParsing="false" onAction="#onDependencyReduce" text="Reduce" />
                      </items>
                   </Menu>
               </menus>

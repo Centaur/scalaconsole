@@ -18,6 +18,7 @@ import org.scalaconsole.fxui.search.{SearchArtifactController, SearchArtifactSta
 import org.scalaconsole.fxui.{Constants, Variables, FxUtil}
 import org.scalaconsole.fxui.manual.{ManualController, ManualStage}
 import javafx.scene.web.{WebEngine, WebView}
+import org.scalaconsole.fxui.reduce.{ReduceController, ReduceStage}
 
 class MainDelegate(val controller: MainController) {
 
@@ -259,6 +260,14 @@ class MainDelegate(val controller: MainController) {
     searchArtifactsStage.show()
   }
 
+  def onReduceDependency() = {
+    val loader = new FXMLLoader(getClass.getResource("/org/scalaconsole/fxui/reduce/ReduceStage.fxml"))
+    val root: Parent = loader.load()
+    val reduceStage = new ReduceStage(root, this, loader.getController.asInstanceOf[ReduceController])
+    reduceStage.show()
+
+  }
+
   def onManualArtifact() = {
     val loader = new FXMLLoader(getClass.getResource("/org/scalaconsole/fxui/manual/ManualStage.fxml"))
     val root: Parent = loader.load()
@@ -268,15 +277,26 @@ class MainDelegate(val controller: MainController) {
 
   def addArtifacts(strs: Seq[String]) = {
     if (strs.nonEmpty) {
-      for (str <- strs) {
-        val Array(g, a, v) = str.split(":").map(_.trim)
-        DependencyManager.addArtifact(Artifact(g, a, v))
+      for (str <- strs; artifact <- Artifact(str)) {
+        DependencyManager.addArtifact(artifact)
       }
       ClassLoaderManager.reset()
       setStatus("Resolving artifacts...")
       reset(cls = false)
     } else {
       setStatus("No new artifacts.")
+    }
+  }
+
+  def updateArtifacts(strs: Seq[String]) = {
+    val reduced = strs.map(Artifact.apply).filter(_.nonEmpty).map(_.get)
+    if(DependencyManager.currentArtifacts.length > reduced.length) { // 有变化
+      DependencyManager.replaceCurrentArtifacts(reduced)
+      ClassLoaderManager.reset()
+      setStatus("Resolving artifacts...")
+      reset(cls = false)
+    } else {
+      setStatus("No artifacts reduced.")
     }
   }
 }

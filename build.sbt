@@ -14,12 +14,7 @@ scalaSource in Test := baseDirectory.value / "test"
 
 javaSource in Compile := baseDirectory.value / "src"
 
-unmanagedResourceDirectories in Compile ++= Seq(
-  baseDirectory.value / "resources"
-  ,baseDirectory.value / "src"
-)
-
-excludeFilter in unmanagedResourceDirectories := HiddenFileFilter || "*.java" || "*.scala"
+unmanagedResourceDirectories in Compile += baseDirectory.value / "resources"
 
 fork := true
 
