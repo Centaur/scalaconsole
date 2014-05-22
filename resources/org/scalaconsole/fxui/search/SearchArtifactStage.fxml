@@ -61,7 +61,7 @@
          </padding></FlowPane>
       <HBox>
          <children>
-            <Label prefHeight="77.0" prefWidth="235.0" text="Dbclick to deselect" />
+            <Label alignment="CENTER" prefHeight="77.0" prefWidth="271.0" text="Dbclick to deselect" textAlignment="RIGHT" HBox.hgrow="ALWAYS" />
             <ListView fx:id="selectedVersionList" minHeight="-Infinity" prefHeight="77.0" prefWidth="600.0" />
          </children>
          <padding>
