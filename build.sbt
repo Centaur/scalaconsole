@@ -4,7 +4,7 @@ organization := "org.scalaconsole"
 
 name := "ScalaConsole"
 
-version := "2.0.0-M1"
+version := "2.0.0-M2"
 
 scalaVersion := "2.11.0"
 
@@ -47,5 +47,11 @@ libraryDependencies ++= Seq(
 
 
 assemblySettings
+
+mergeStrategy in assembly :=  {
+  case PathList("org", "scalaconsole", "fxui", "main", "ace-builds", sub, xs@_*) if sub != "src-min-noconflict" => MergeStrategy.discard
+  case x => (mergeStrategy in assembly).value.apply(x)
+}
+
 
 

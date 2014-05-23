@@ -21,7 +21,12 @@
   例如“打开”/“保存”文件(建议全面使用 [gist](https://gist.github.com/) )。又如切换Scala版本(这在几年以前，Scala 2.8, 2.9 的石器时代是一个很重要的功能。但是最近一两年我基本没用到过它)。添加本地Jar文件或classes目录作为依赖的功能也被取消了。
 
 * 使用 gson 取代被 deprecated 的 scala 内置 JSON parser
+
 * artifacts crossbuild version 逻辑重新实现，更加完善，安全和易于扩展
+
+* 不再使用akka actor实现并发
+
+  ScalaConsole 中的并发操作非常简单，为它创建一个ActorSystem完全是杀鸡用牛刀，还会增加启动时间。
 
 ## 使用说明
 
