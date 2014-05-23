@@ -4,9 +4,9 @@ organization := "org.scalaconsole"
 
 name := "ScalaConsole"
 
-version := "2.0.0-M2"
+version := "2.0.0-M3"
 
-scalaVersion := "2.11.0"
+scalaVersion := "2.11.1"
 
 scalaSource in Compile := baseDirectory.value / "src"
 
@@ -19,6 +19,8 @@ unmanagedResourceDirectories in Compile += baseDirectory.value / "resources"
 fork := true
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+
+incOptions := incOptions.value.withNameHashing(true)
 
 //mainResourcesPath := "src"
 //

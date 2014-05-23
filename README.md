@@ -1,4 +1,4 @@
-# ScalaConsole 2.0 Reloaded
+# ScalaConsole Reloaded (V2.0)
 
 ## 版本要求
 * 运行：要求 Java 8
@@ -63,15 +63,15 @@
 
   ScalaConsole 快捷键定义尽量保持与 IDEA 一致。
 
-  2.1 `Ctrl-C` | `Ctrl-Insert` Smart Copy  
+  2.1 `Ctrl-C` | `Ctrl-Insert` **Smart Copy**  
 
-  2.2 `Ctrl-D` Smart Duplicate
+  2.2 `Ctrl-D` **Smart Duplicate**
 
-  2.3 `Ctrl-X` | `Shift-Delete` Smart Cut
+  2.3 `Ctrl-X` | `Shift-Delete` **Smart Cut**
 
-  2.4 `Ctrl-K` 删除当前行
+  2.4 `Ctrl-K` **删除当前行**
 
-  2.5 `Ctrl-/` 切换行注释
+  2.5 `Ctrl-/` **切换行注释**
 
   2.6 [Ace Editor](https://github.com/ajaxorg/ace) 是一个完整功能的编辑器，很强大，请参考 [它的其它快捷键](https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts)。
 
