@@ -2,11 +2,11 @@ package org.scalaconsole
 package data
 
 import java.lang.String
-import collection.mutable.{ListBuffer, Buffer}
-import java.io.{BufferedReader, FileReader, FilenameFilter, ObjectInputStream, FileInputStream, ObjectOutputStream, FileWriter, BufferedWriter, FileOutputStream, File}
-import javax.swing.JOptionPane
+import collection.mutable.ListBuffer
+import java.io.{BufferedReader, FileReader, FilenameFilter, FileWriter, BufferedWriter, File}
 import org.controlsfx.dialog.{Dialog, Dialogs}
 import org.scalaconsole.fxui.{Constants, Variables}
+import scala.collection.mutable
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +18,7 @@ import org.scalaconsole.fxui.{Constants, Variables}
 object DependencyManager {
   def addArtifacts(artifacts: ListBuffer[Artifact]) = {
     artifacts.exists {
-      addArtifact(_)
+      addArtifact
     }
   }
 
@@ -79,7 +79,7 @@ object DependencyManager {
       }
   }
 
-  def boundedExtraClasspath(ver: String): Buffer[String] = {
+  def boundedExtraClasspath(ver: String): mutable.Buffer[String] = {
     val dep = dependencies.get(ver).getOrElse(Dependencies())
     dep.paths ++ dep.artifacts.flatMap {
       case Artifact(gid, aid, v) => net.EmbeddedIvy.resolve(gid, aid, v).map(_.getAbsolutePath)

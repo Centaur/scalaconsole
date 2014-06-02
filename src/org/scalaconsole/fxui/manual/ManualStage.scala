@@ -2,20 +2,18 @@ package org.scalaconsole.fxui.manual
 
 import javafx.stage.Stage
 import javafx.scene.{Scene, Parent}
-import org.scalaconsole.fxui.main.MainDelegate
+import org.scalaconsole.fxui.main.MainStage
+import javafx.scene.control.TextField
+import javafx.fxml.{FXMLLoader, FXML}
 
-class ManualStage(val root: Parent, val mainDelegate: MainDelegate, val controller: ManualController) extends Stage {
+class ManualStage(val mainDelegate: MainStage) extends Stage with ManualController{
+  @FXML  var groupId: TextField = _
+  @FXML  var artifactId: TextField = _
+  @FXML  var version: TextField = _
 
-  setScene(new Scene(root))
+  val loader = new FXMLLoader(getClass.getResource("/org/scalaconsole/fxui/manual/ManualStage.fxml"))
+  loader.setController(this)
+  setScene(new Scene(loader.load()))
   setTitle("Add Artifact Manually")
-
-  def onOK() = {
-    try {
-      val artifactString = s"${controller.groupId.getText.trim}:${controller.artifactId.getText.trim}:${controller.version.getText.trim}"
-      mainDelegate.addArtifacts(artifactString :: Nil)
-    } catch {
-      case e: Throwable => e.printStackTrace()
-    }
-  }
 
 }
