@@ -19,8 +19,8 @@ import org.scalaconsole.data.{ClassLoaderManager, DependencyManager, Artifact}
 import collection.JavaConverters._
 import javafx.beans.value.{ObservableValue, ChangeListener}
 import javafx.concurrent.Worker
-import jdk.nashorn.api.scripting.JSObject
 import javafx.concurrent.Worker.State
+import netscape.javascript.JSObject
 
 trait MainController { self: MainStage =>
   @FXML  var resources: ResourceBundle = _

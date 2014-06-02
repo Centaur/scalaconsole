@@ -19,7 +19,7 @@ trait SearchArtifactController {self: SearchArtifactStage =>
 
   @FXML def onOK(event: ActionEvent) {
     import collection.JavaConverters._
-    mainDelegate.addArtifacts(selectedVersionList.getItems.asScala)
+    mainStage.addArtifacts(selectedVersionList.getItems.asScala)
     close()
   }
 

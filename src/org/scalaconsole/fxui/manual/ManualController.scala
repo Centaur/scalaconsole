@@ -9,7 +9,7 @@ trait ManualController { self: ManualStage =>
   @FXML  def onOK(e: ActionEvent) {
     try {
       val artifactString = s"${groupId.getText.trim}:${artifactId.getText.trim}:${version.getText.trim}"
-      mainDelegate.addArtifacts(artifactString :: Nil)
+      mainStage.addArtifacts(artifactString :: Nil)
     } catch {
       case e: Throwable => e.printStackTrace()
     }

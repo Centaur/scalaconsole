@@ -16,7 +16,7 @@ import javafx.beans.binding.Bindings
 import javafx.scene.input.MouseEvent
 import org.scalaconsole.fxui.FxUtil._
 
-class SearchArtifactStage(val mainDelegate: MainStage) extends Stage with SearchArtifactController {
+class SearchArtifactStage(val mainStage: MainStage) extends Stage with SearchArtifactController {
 
   @FXML var loadingImg: ImageView = _
   @FXML var errorMsg: Label = _
