@@ -155,22 +155,18 @@ trait MainController { self: MainStage =>
 
   private def initWebView(view: WebView) {
     val engine: WebEngine = view.getEngine
-    view.visibleProperty.addListener(new ChangeListener[java.lang.Boolean] {
-      override def changed(p1: ObservableValue[_ <: java.lang.Boolean], old: java.lang.Boolean, visible: java.lang.Boolean) = {
+    view.visibleProperty.addListener{ (p1: ObservableValue[_ <: java.lang.Boolean], old: java.lang.Boolean, visible: java.lang.Boolean) =>
         if(visible) view.requestFocus()
-      }
-    })
-    engine.setOnAlert((ev: WebEvent[String]) => Dialogs.create().masthead(null).message(ev.getData()).showInformation())
-    engine.getLoadWorker.stateProperty.addListener(new ChangeListener[Worker.State] {
-      override def changed(p1: ObservableValue[_ <: State], oldState: State, newState: State) = {
+    }
+    engine.setOnAlert((ev: WebEvent[String]) => Dialogs.create().masthead(null).message(ev.getData).showInformation())
+    engine.getLoadWorker.stateProperty.addListener{(p1: ObservableValue[_ <: State], oldState: State, newState: State) =>
         if (newState == Worker.State.SUCCEEDED) {
           setScriptAreaFont(engine)
           view.requestFocus()
           val window = engine.executeScript("window").asInstanceOf[JSObject]
           window.setMember("javaBridge", bridge)
         }
-      }
-    })
+    }
     engine.load(getClass.getResource("ace.html").toExternalForm)
   }
 

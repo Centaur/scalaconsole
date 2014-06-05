@@ -4,6 +4,7 @@ import javafx.concurrent.Task
 import java.util.concurrent.Callable
 import javafx.event.{EventHandler, Event}
 import javafx.util.Callback
+import javafx.beans.value.{ChangeListener, ObservableValue}
 
 object FxUtil {
   def onEventThread(r: => Unit) = Platform.runLater(new Runnable() {
@@ -27,5 +28,10 @@ object FxUtil {
   }
   implicit class FunctionAsCallback[P, R](func: P => R) extends Callback[P, R] {
     override def call(p: P) = func(p)
+  }
+
+  type ChangeListenerFunc[T] = (ObservableValue[_ <: T], T, T) => Unit
+  implicit class FunctionAsChangeListener[T](func: ChangeListenerFunc[T]) extends ChangeListener[T] {
+    override def changed(p1: ObservableValue[_ <: T], p2: T, p3: T) = func(p1, p2, p3)
   }
 }
