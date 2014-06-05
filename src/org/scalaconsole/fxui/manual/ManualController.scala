@@ -1,5 +1,4 @@
 package org.scalaconsole.fxui.manual
-import javafx.stage.Stage
 import javafx.fxml.FXML
 import javafx.event.ActionEvent
 import javafx.scene.input.{KeyCode, KeyEvent}

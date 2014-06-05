@@ -2,7 +2,7 @@ package org.scalaconsole.fxui
 import javafx.application.{Platform, Application}
 import javafx.stage.{WindowEvent, Stage}
 import javafx.fxml.FXMLLoader
-import javafx.scene.{Parent, Scene}
+import javafx.scene.Scene
 import javafx.event.EventHandler
 import org.scalaconsole.fxui.main.MainStage
 

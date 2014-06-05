@@ -1,7 +1,7 @@
 package org.scalaconsole.fxui.manual
 
 import javafx.stage.Stage
-import javafx.scene.{Scene, Parent}
+import javafx.scene.Scene
 import org.scalaconsole.fxui.main.MainStage
 import javafx.scene.control.TextField
 import javafx.fxml.{FXMLLoader, FXML}

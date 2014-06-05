@@ -7,7 +7,6 @@ object `package` {
 
   private[scalaconsole] val ScalaCoreLibraries = Set("scala-compiler", "scala-library", "scala-swing", "scalap", "scala-dbc", "scala-reflect")
   val isMac = System.getProperty("os.name").toLowerCase.contains("mac")
-//  val ControlOrMeta = if (isMac) Key.Modifier.Meta else Key.Modifier.Control
 
   implicit class Times(val n: Int) {
     def times(b: => Unit) {

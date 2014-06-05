@@ -5,7 +5,6 @@ import org.apache.ivy._
 import org.apache.ivy.core.settings._
 import org.apache.ivy.core.module.descriptor._
 import org.apache.ivy.core.module.id._
-import org.apache.ivy.plugins.parser.xml._
 import org.apache.ivy.core.resolve._
 import plugins.resolver._
 
@@ -39,7 +38,6 @@ object EmbeddedIvy {
     //creates an Ivy instance with settings
     val ivy = Ivy.newInstance(ivySettings)
     // For windows
-    import collection.JavaConverters._
     val md = DefaultModuleDescriptor.newCallerInstance(
       ModuleRevisionId.newInstance(groupId, artifactId, version),
       Array("*->*,!sources,!javadoc"), true, false

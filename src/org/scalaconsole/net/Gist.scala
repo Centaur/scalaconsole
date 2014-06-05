@@ -1,11 +1,9 @@
 package org.scalaconsole.net
 
 import java.net._
-import java.io.StringReader
 import com.google.gson.JsonParser
 import com.google.common.io.ByteStreams
-import javafx.scene.input.{DataFormat, ClipboardContent, Clipboard}
-import java.awt.datatransfer.Transferable
+import javafx.scene.input.{ClipboardContent, Clipboard}
 import org.scalaconsole.fxui.FxUtil
 
 object Gist {

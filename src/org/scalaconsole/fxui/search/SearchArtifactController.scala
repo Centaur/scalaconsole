@@ -1,7 +1,5 @@
 package org.scalaconsole.fxui.search
-import javafx.scene.image.ImageView
 import javafx.scene.control._
-import javafx.scene.layout.FlowPane
 import javafx.scene.input.KeyCode._
 import javafx.fxml.FXML
 import org.scalaconsole.fxui.{SelectedVersionCell, Variables, SemVersion}
