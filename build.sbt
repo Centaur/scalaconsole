@@ -42,7 +42,6 @@ libraryDependencies ++= Seq(
   "org.apache.ivy" % "ivy" % "2.3.0",
   "org.scala-lang" % "scala-compiler" % scalaVersion.value,
   "org.controlsfx" % "controlsfx" % "8.0.5",
-  "com.google.guava" % "guava" % "17.0",
   "com.google.code.gson" % "gson" % "2.2.4",
   "org.specs2" %% "specs2" % "2.3.11" % "test"
 )

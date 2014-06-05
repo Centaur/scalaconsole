@@ -1,6 +1,5 @@
 package org.scalaconsole.fxui;
 
-import com.google.common.base.Strings;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.DataFormat;
 import org.scalaconsole.fxui.main.MainController;
@@ -17,7 +16,9 @@ public class JavaBridge {
 
     public String getClipboardContent() {
         String content = Clipboard.getSystemClipboard().getString();
-        return Strings.nullToEmpty(content);
+        if(content == null)
+            return "";
+        else return content;
     }
     public void setClipboardContent(String content) {
         Map<DataFormat, Object> data = new HashMap<>();

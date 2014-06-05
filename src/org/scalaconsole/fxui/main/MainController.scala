@@ -12,7 +12,6 @@ import org.scalaconsole.fxui.manual.ManualStage
 import org.scalaconsole.fxui.search.SearchArtifactStage
 import javafx.geometry.Orientation
 import org.scalaconsole.fxui.FxUtil._
-import com.google.common.base.Strings
 import org.scalaconsole.net.{OAuthTinyServer, Gist}
 import org.scalaconsole.data.{ClassLoaderManager, DependencyManager, Artifact}
 
@@ -178,7 +177,7 @@ trait MainController { self: MainStage =>
     val scriptArea = tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView]
     val code = scriptArea.getEngine.executeScript("editor.getValue()").toString
     val description = Dialogs.create().title("Gist Description").masthead(null).showTextInput()
-    if (!Strings.isNullOrEmpty(code)) {
+    if (code != null && code.nonEmpty) {
       setStatus("Posting to gist...")
       startTask {
         val msg = Gist.post(code, token, description)

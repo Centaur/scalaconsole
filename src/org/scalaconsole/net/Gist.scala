@@ -2,9 +2,9 @@ package org.scalaconsole.net
 
 import java.net._
 import com.google.gson.JsonParser
-import com.google.common.io.ByteStreams
 import javafx.scene.input.{ClipboardContent, Clipboard}
 import org.scalaconsole.fxui.FxUtil
+import java.io.DataInputStream
 
 object Gist {
   def post(content: String, accessToken: Option[String], description: String = "Post By ScalaConsole"):String = {
@@ -29,7 +29,7 @@ object Gist {
 
     val contentLength = conn.getContentLength
     val buff = new Array[Byte](contentLength)
-    ByteStreams.readFully(conn.getInputStream, buff)
+    new DataInputStream(conn.getInputStream).readFully(buff)
     val json = new JsonParser().parse(new String(buff)).getAsJsonObject
     conn.getResponseCode match {
       case 201 =>
