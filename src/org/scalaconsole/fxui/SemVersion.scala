@@ -1,6 +1,5 @@
 package org.scalaconsole.fxui
 
-
 sealed trait ExtraVersion extends Ordered[ExtraVersion] {
   override def compare(that: ExtraVersion): Int = (this, that) match {
     case (GA(s1), GA(s2)) => s1 - s2
@@ -33,19 +32,14 @@ case class RC(no: Int) extends ExtraVersion {
 }
 
 case class M(no: Int) extends ExtraVersion {
-  override def toString: String = s"M$no"
+  override def toString: String = s"-M$no"
 }
 
 case class SNAPSHOT(date: String) extends ExtraVersion {
-  override def toString: String = s"SNAPSHOT$date"
+  override def toString: String = s"-SNAPSHOT$date"
 }
 
 case class SemVersion(major: Int, minor: Int, patch: Option[Int], extra: ExtraVersion) extends Ordered[SemVersion] {
-  def canMatch(another: SemVersion): Boolean = another match {
-    case SemVersion(maj, min, pa, ex) => true
-    case _ => false
-  }
-
   def fuzzyMatch(that: SemVersion): Boolean = {
     this match {
       case SemVersion(maj, min, None, GA(_)) if maj == that.major && min == that.minor => true
@@ -54,8 +48,8 @@ case class SemVersion(major: Int, minor: Int, patch: Option[Int], extra: ExtraVe
   }
 
   def fuzzyMatch(that: Option[SemVersion]): Boolean = that match {
-    case None => false
     case Some(v) => fuzzyMatch(v)
+    case None => false
   }
 
   def stringPresentation = s"$major-$minor" + patch.fold("")("-" + _.toString) + extra.toString

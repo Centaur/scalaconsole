@@ -40,10 +40,12 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 
 libraryDependencies ++= Seq(
   "org.apache.ivy" % "ivy" % "2.3.0",
-  "org.scala-lang" % "scala-compiler" % scalaVersion.value,
-  "org.controlsfx" % "controlsfx" % "8.0.5",
-  "com.google.code.gson" % "gson" % "2.2.4",
-  "org.specs2" %% "specs2" % "2.3.11" % "test"
+  ("org.scala-lang" % "scala-compiler" % scalaVersion.value)
+//    .exclude("org.scala-lang.modules", "scala-parser-combinators_2.11")
+//    .exclude("org.scala-lang.modules", "scala-xml_2.11")
+  ,"org.controlsfx" % "controlsfx" % "8.0.5"
+  ,"com.google.code.gson" % "gson" % "2.2.4"
+  ,"org.specs2" %% "specs2" % "2.3.11" % "test"
 )
 
 
@@ -54,5 +56,12 @@ mergeStrategy in assembly :=  {
   case x => (mergeStrategy in assembly).value.apply(x)
 }
 
+// this has the same effect as .exclude clause in libraryDependencies config, but does not rely on scala version
+excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
+  cp filter { item =>
+    val name = item.data.getName
+    (name.startsWith("scala-xml") || name.startsWith("scala-parser-combinators")) && name.endsWith(".jar")
+  }
+}
 
 
