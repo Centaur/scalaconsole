@@ -4,7 +4,7 @@ organization := "org.scalaconsole"
 
 name := "ScalaConsole"
 
-version := "2.0.0-M4"
+version := "2.0.0-M5"
 
 scalaVersion := "2.11.1"
 
@@ -20,7 +20,7 @@ fork := true
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
-incOptions := incOptions.value.withNameHashing(true)
+incOptions := incOptions.value.withNameHashing(nameHashing = true)
 
 //mainResourcesPath := "src"
 //
@@ -40,7 +40,7 @@ resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/release
 
 libraryDependencies ++= Seq(
   "org.apache.ivy" % "ivy" % "2.3.0",
-  ("org.scala-lang" % "scala-compiler" % scalaVersion.value)
+  "org.scala-lang" % "scala-compiler" % scalaVersion.value
 //    .exclude("org.scala-lang.modules", "scala-parser-combinators_2.11")
 //    .exclude("org.scala-lang.modules", "scala-xml_2.11")
   ,"org.controlsfx" % "controlsfx" % "8.0.5"
@@ -52,7 +52,10 @@ libraryDependencies ++= Seq(
 assemblySettings
 
 mergeStrategy in assembly :=  {
+  case PathList("org", "scalaconsole", "fxui", "main", "ace-builds", sub) => MergeStrategy.discard
   case PathList("org", "scalaconsole", "fxui", "main", "ace-builds", sub, xs@_*) if sub != "src-min-noconflict" => MergeStrategy.discard
+  case PathList("org", "scalaconsole", "fxui", "main", "ace-builds", "src-min-noconflict", mode) if mode.startsWith("mode-") && mode != "mode-scala.js" || mode.startsWith("worker-") => MergeStrategy.discard
+  case PathList("org", "scalaconsole", "fxui", "main", "ace-builds", "src-min-noconflict", "snippets", snippet) if snippet != "scala.js" => MergeStrategy.discard
   case x => (mergeStrategy in assembly).value.apply(x)
 }
 

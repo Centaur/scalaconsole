@@ -1,10 +1,29 @@
 # ScalaConsole Reloaded (V2.0)
 
+## ScalaConsole 是什么
+ScalaConsole是Scala语言REPL的图形界面替代者。
+
+## 为什么需要 ScalaConsole
+* 命令行REPL的编辑功能有限，只能基于行来进行编辑，如果输入错误，修改起来很痛苦。
+    
+    ScalaConsole使用全功能编辑器，支持语法高亮。
+  
+* 命令行REPL功能受限，例如对case class的类名支持不好，官方推荐的做法是用scalac先将case class编译好，再用REPL导入，非常麻烦。
+    
+    ScalaConsole直接使用scala.nsc，对case class完美支持，并支持所有的REPL选项。
+  
+* ScalaConsole支持基于搜索的依赖添加
+    
+    scala REPL无法方便地添加依赖。sbt console可以使用sbt配置中的依赖，但是依赖于sbt项目。ScalaConsole随时启动，随时添加依赖，不需要先创建项目。
+
+## 何时使用ScalaConsole
+当你需要临时验证一个想法，一小段代码的正确性，临时了解某一个Java/Scala库的API，又不想为它建立一个完整的sbt项目时。
+
 ## 版本要求
 * 运行：要求 Java 8
 * 编译：要求 Scala 2.11. 如果你使用的是 2.10-，请使用 ScalaConsole 1.x，现在有 [2.9](http://git.oschina.net/43284683/scalaconsole/tree/master/) 和 [2.10](http://git.oschina.net/43284683/scalaconsole/tree/2.10/) 两个分支. 其实要修改 ScalaConsole 2 的代码适应Scala 2.10工作量也不大，只是我本人没什么兴趣。欢迎提交 pull request.
 
-## 相对于1.x的变化
+## 2.0相对于1.x的变化
 * UI 实现由 Swing 转到 JavaFX
 
   Scala 2.11的模块化将 Swing 模块分离出来，将来的版本中可能根本就没有了。JavaFX 的开发体验比 Swing 好得太多，Java 8 的 Lambda Expression 对 JavaFX 更有加分。
@@ -59,7 +78,7 @@
 
 2. 代码编辑
 
-  **以下快捷键均为 Linux/Windows 上的键定义，在 Mac 上请将`Ctrl`换成`Meta`**
+  **以下快捷键均为 Linux/Windows 上的键定义，在 Mac 上请将`Ctrl`换成`Command`**
 
   ScalaConsole 快捷键定义尽量保持与 IDEA 一致。
 
