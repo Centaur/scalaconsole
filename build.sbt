@@ -1,4 +1,7 @@
 import AssemblyKeys._
+import sbtassembly.Plugin._
+import sbt._
+import Keys._
 
 organization := "org.scalaconsole"
 
@@ -22,6 +25,8 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
 
 incOptions := incOptions.value.withNameHashing(nameHashing = true)
 
+transitiveClassifiers in Global := Seq(Artifact.SourceClassifier)
+
 //mainResourcesPath := "src"
 //
 // testScalaSourcePath := "test"
@@ -36,14 +41,14 @@ incOptions := incOptions.value.withNameHashing(nameHashing = true)
 //scalacOptions += "-optimise"
 //
 
-resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+resolvers += Resolver.typesafeRepo("releases")
 
 libraryDependencies ++= Seq(
   "org.apache.ivy" % "ivy" % "2.3.0",
   "org.scala-lang" % "scala-compiler" % scalaVersion.value
 //    .exclude("org.scala-lang.modules", "scala-parser-combinators_2.11")
 //    .exclude("org.scala-lang.modules", "scala-xml_2.11")
-  ,"org.controlsfx" % "controlsfx" % "8.0.5"
+  ,"org.controlsfx" % "controlsfx" % "8.0.6"
   ,"com.google.code.gson" % "gson" % "2.2.4"
   ,"org.specs2" %% "specs2" % "2.3.11" % "test"
 )
