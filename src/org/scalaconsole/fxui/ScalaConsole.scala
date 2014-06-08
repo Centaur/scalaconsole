@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.event.EventHandler
 import org.scalaconsole.fxui.main.MainStage
-import java.util.Locale
 
 class ScalaConsole extends Application {
   override def start(pStage: Stage) = {
@@ -29,7 +28,6 @@ object ScalaConsole {
   var top         : Stage        = _
 
   def main(args: Array[String]) {
-    Locale.setDefault(Locale.ENGLISH)
     Application.launch(classOf[ScalaConsole], args: _*)
   }
 }

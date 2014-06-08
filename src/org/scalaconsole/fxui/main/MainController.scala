@@ -21,14 +21,14 @@ import javafx.concurrent.Worker
 import javafx.concurrent.Worker.State
 import netscape.javascript.JSObject
 
-trait MainController {self: MainStage =>
-  @FXML var resources : ResourceBundle = _
-  @FXML var location  : URL            = _
-  @FXML var scriptArea: WebView        = _
-  @FXML var outputArea: TextArea       = _
-  @FXML var statusBar : Label          = _
-  @FXML var splitPane : SplitPane      = _
-  @FXML var tabPane   : TabPane        = _
+trait MainController { self: MainStage =>
+  @FXML  var resources: ResourceBundle = _
+  @FXML  var location: URL = _
+  @FXML  var scriptArea: WebView = _
+  @FXML  var outputArea: TextArea = _
+  @FXML  var statusBar: Label = _
+  @FXML  var splitPane: SplitPane = _
+  @FXML  var tabPane: TabPane = _
 
   private def currentEngine = tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView].getEngine
 
@@ -36,26 +36,26 @@ trait MainController {self: MainStage =>
     commandQueue.put('Normal, script)
   }
 
-  @FXML def onRun(event: ActionEvent) {
+  @FXML  def onRun(event: ActionEvent) {
     val script = currentEngine.executeScript("editor.getValue()").toString
     runScript(script)
   }
 
-  @FXML def onRunSelected(event: ActionEvent) {
+  @FXML  def onRunSelected(event: ActionEvent) {
     val script = currentEngine.executeScript("editor.session.getTextRange(editor.getSelectionRange())").toString
     runScript(script)
   }
 
-  private def runPaste(script: String) {
+  private def runPaste (script: String) {
     commandQueue.put('Paste, script)
   }
-
-  @FXML def onRunInPasteMode(event: ActionEvent) {
+  
+  @FXML  def onRunInPasteMode(event: ActionEvent) {
     val script = currentEngine.executeScript("editor.session.getTextRange(editor.getSelectionRange())").toString
     runPaste(script)
   }
 
-  @FXML def onRunSelectedInPasteMode(event: ActionEvent) {
+  @FXML  def onRunSelectedInPasteMode(event: ActionEvent) {
     val script = currentEngine.executeScript("editor.getValue()").toString
     runPaste(script)
   }
@@ -69,54 +69,53 @@ trait MainController {self: MainStage =>
     initWebView(newView)
   }
 
-  @FXML def onCloseTab(event: ActionEvent) {
+  @FXML  def onCloseTab(event: ActionEvent) {
     val currentTab: Int = tabPane.getSelectionModel.getSelectedIndex
     if (currentTab != 0) tabPane.getTabs.remove(currentTab)
   }
 
-  @FXML def onPostAnonymousGist(event: ActionEvent) {
+  @FXML  def onPostAnonymousGist(event: ActionEvent) {
     postGist(None)
   }
 
-  @FXML def onPostGistWithAccount(event: ActionEvent) {
+  @FXML  def onPostGistWithAccount(event: ActionEvent) {
     OAuthTinyServer.withAccessToken(postGist)
   }
 
-  @FXML def onReplClear(event: ActionEvent) {
+  @FXML  def onReplClear(event: ActionEvent) {
     outputArea.clear()
   }
 
-  @FXML def onReplReset(event: ActionEvent) {
+  @FXML  def onReplReset(event: ActionEvent) {
     resetRepl()
   }
 
-  @FXML def onSetCommandlineOptions(event: ActionEvent) {
+  @FXML  def onSetCommandlineOptions(event: ActionEvent) {
     val current = Variables.commandlineOption
     val masth = "Example: -Xprint:typer"
     val msg = s"current: ${current.getOrElse("none")}"
     val result = Dialogs.create().title("Set Commandline Options").masthead(masth).message(msg).showTextInput(current.getOrElse(""))
-    val modified = Variables.commandlineOption == (result: Option[String])
-    Variables.commandlineOption = result
-    if (modified) {
+    if (result != null && Variables.commandlineOption.getOrElse("") != result) {
+      Variables.commandlineOption = Some(result)
       resetRepl()
     }
   }
 
-  @FXML def onSetFont(event: ActionEvent) {
+  @FXML  def onSetFont(event: ActionEvent) {
     val masth = "Example: Consolas-14 or Ubuntu Mono-17"
     val f = Variables.displayFont
     val fontAsString = Variables.encodeFont(f)
     val msg = s"current: $fontAsString"
     val result = Dialogs.create().title("Set Display Font").masthead(masth).message(msg).showTextInput(fontAsString)
-    for (res <- result) {
-      Variables.displayFont = Variables.decodeFont(res)
+    if (result != null) {
+      Variables.displayFont = Variables.decodeFont(result)
       setOutputAreaFont()
       setFontForAllScriptArea()
       setStatus(s"Font set to $result")
     }
   }
 
-  @FXML def onToggleSplitterOrientation(event: ActionEvent) {
+  @FXML  def onToggleSplitterOrientation(event: ActionEvent) {
     import Orientation._
     splitPane.getOrientation match {
       case HORIZONTAL =>
@@ -126,24 +125,24 @@ trait MainController {self: MainStage =>
     }
   }
 
-  @FXML def onDependencySearch(event: ActionEvent) {
+  @FXML  def onDependencySearch(event: ActionEvent) {
     val searchArtifactsStage = new SearchArtifactStage(this)
     searchArtifactsStage.show()
   }
 
-  @FXML def onDependencyManually(event: ActionEvent) {
+  @FXML  def onDependencyManually(event: ActionEvent) {
     val manualStage = new ManualStage(this)
     manualStage.show()
   }
 
-  @FXML def onDependencyReduce(event: ActionEvent) {
+  @FXML  def onDependencyReduce(event: ActionEvent) {
     val reduceStage = new ReduceStage(this)
     reduceStage.show()
   }
 
   val bridge: JavaBridge = new JavaBridge(this)
 
-  @FXML def initialize() {
+  @FXML  def initialize() {
     setOutputAreaFont()
     initWebView(scriptArea)
   }
@@ -155,17 +154,17 @@ trait MainController {self: MainStage =>
 
   private def initWebView(view: WebView) {
     val engine: WebEngine = view.getEngine
-    view.visibleProperty.addListener { (p1: ObservableValue[_ <: java.lang.Boolean], old: java.lang.Boolean, visible: java.lang.Boolean) =>
-      if (visible) view.requestFocus()
+    view.visibleProperty.addListener{ (p1: ObservableValue[_ <: java.lang.Boolean], old: java.lang.Boolean, visible: java.lang.Boolean) =>
+        if(visible) view.requestFocus()
     }
     engine.setOnAlert((ev: WebEvent[String]) => Dialogs.create().masthead(null).message(ev.getData).showInformation())
-    engine.getLoadWorker.stateProperty.addListener { (p1: ObservableValue[_ <: State], oldState: State, newState: State) =>
-      if (newState == Worker.State.SUCCEEDED) {
-        setScriptAreaFont(engine)
-        view.requestFocus()
-        val window = engine.executeScript("window").asInstanceOf[JSObject]
-        window.setMember("javaBridge", bridge)
-      }
+    engine.getLoadWorker.stateProperty.addListener{(p1: ObservableValue[_ <: State], oldState: State, newState: State) =>
+        if (newState == Worker.State.SUCCEEDED) {
+          setScriptAreaFont(engine)
+          view.requestFocus()
+          val window = engine.executeScript("window").asInstanceOf[JSObject]
+          window.setMember("javaBridge", bridge)
+        }
     }
     engine.load(getClass.getResource("ace.html").toExternalForm)
   }
@@ -178,13 +177,13 @@ trait MainController {self: MainStage =>
     val scriptArea = tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView]
     val code = scriptArea.getEngine.executeScript("editor.getValue()").toString
     val description = Dialogs.create().title("Gist Description").masthead(null).showTextInput()
-    if(code != null && code.nonEmpty) {
+    if (code != null && code.nonEmpty) {
       setStatus("Posting to gist...")
       startTask {
-        val msg = Gist.post(code, token, description.getOrElse(""))
+        val msg = Gist.post(code, token, description)
         setStatus(msg)
       }
-    } else  {
+    } else {
       setStatus("Empty Content. Not posting.")
     }
   }
@@ -211,8 +210,7 @@ trait MainController {self: MainStage =>
 
   def updateArtifacts(strs: Seq[String]) = {
     val reduced = strs.map(Artifact.apply).filter(_.nonEmpty).map(_.get)
-    if (DependencyManager.currentArtifacts.length > reduced.length) {
-      // 有变化
+    if(DependencyManager.currentArtifacts.length > reduced.length) { // 有变化
       DependencyManager.replaceCurrentArtifacts(reduced)
       ClassLoaderManager.reset()
       setStatus("Resolving artifacts...")
