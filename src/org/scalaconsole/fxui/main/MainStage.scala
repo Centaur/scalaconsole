@@ -4,6 +4,7 @@ import java.io._
 import javafx.concurrent.Task
 import org.scalaconsole.data.{DependencyManager, ClassLoaderManager}
 import java.util.jar.JarFile
+import scala.concurrent.{Future, Promise}
 import scala.tools.nsc.plugins.PluginDescription
 import org.scalaconsole.DetachedILoop
 import scala.tools.nsc.Settings
@@ -11,7 +12,9 @@ import java.util.concurrent.ArrayBlockingQueue
 import org.scalaconsole.fxui.{Constants, Variables, FxUtil}
 import javafx.fxml.FXMLLoader
 
-class MainStage extends MainController{
+import scala.util.Success
+
+class MainStage extends MainController {
 
   import FxUtil._
 
@@ -30,20 +33,12 @@ class MainStage extends MainController{
   }
   System.setOut(sysOutErr)
 
-  def startOutputRenderer() = {
-    val task = new Task[Unit] {
-      override def call() = {
-        for (line <- io.Source.fromInputStream(outputIs).getLines()) {
-          onEventThread {
-            outputArea.appendText(s"$line\n")
-          }
-        }
+  def startOutputRenderer() = startTask {
+    for (line <- io.Source.fromInputStream(outputIs).getLines()) {
+      onEventThread {
+        outputArea.appendText(s"$line\n")
       }
     }
-
-    val thread = new Thread(task)
-    thread.setDaemon(true)
-    thread.start()
   }
 
   /**
@@ -72,57 +67,63 @@ class MainStage extends MainController{
 
   def osToWriter(os: OutputStream) = new PrintWriter(new OutputStreamWriter(os))
 
-  def startRepl() = startTask {
-    val replIs = new PipedInputStream(4096)
-    val scriptWriter = new PrintWriter(new OutputStreamWriter(new PipedOutputStream(replIs)))
-    val settings = new Settings
-    Variables.commandlineOption.map(settings.processArgumentString)
+  def startRepl(): Future[Unit] = {
+    val promise = Promise[Unit]()
+    startTask {
+      val replIs = new PipedInputStream(4096)
+      val scriptWriter = new PrintWriter(new OutputStreamWriter(new PipedOutputStream(replIs)))
+      val settings = new Settings
+      Variables.commandlineOption.map(settings.processArgumentString)
 
-    for (path <- DependencyManager.boundedExtraClasspath(Variables.currentScalaVersion)) {
-      settings.classpath.append(path)
-      settings.classpath.value = settings.classpath.value // set settings.classpath.isDefault to false
-      // enable plugins
-      if (path.endsWith(".jar")) {
-        val jar = new JarFile(path)
-        for (xml <- Option(jar.getEntry(Constants.PluginXML))) {
-          val in = jar getInputStream xml
-          val plugin = PluginDescription.fromXML(in)
-          if (settings.pluginOptions.value.exists(_ == plugin.name + ":enable")) {
-            settings.plugin.appendToValue(path)
+      for (path <- DependencyManager.boundedExtraClasspath(Variables.currentScalaVersion)) {
+        settings.classpath.append(path)
+        settings.classpath.value = settings.classpath.value // set settings.classpath.isDefault to false
+        // enable plugins
+        if (path.endsWith(".jar")) {
+          val jar = new JarFile(path)
+          for (xml <- Option(jar.getEntry(Constants.PluginXML))) {
+            val in = jar getInputStream xml
+            val plugin = PluginDescription.fromXML(in)
+            if (settings.pluginOptions.value.contains(plugin.name + ":enable")) {
+              settings.plugin.appendToValue(path)
+            }
+            in.close()
           }
-          in.close()
         }
       }
-    }
 
-    if (ClassLoaderManager.isOrigin) {
-      settings.usejavacp.value = true
-      val iloop = new DetachedILoop(isToReader(replIs), osToWriter(replOs))
-      connectToRepl(scriptWriter, s => iloop.intp.interpret(s))
-      iloop.process(settings)
-    } else {
-      val (cl, scalaBootPath) = ClassLoaderManager.forVersion(Variables.currentScalaVersion)
-      settings.usejavacp.value = true
-      settings.bootclasspath.value = scalaBootPath
-      cl.asContext {
-        settings.embeddedDefaults(cl)
-        val remoteClazz = Class.forName("org.scalaconsole.DetachedILoop", false, cl)
-        val _iloop = remoteClazz.getConstructor(classOf[java.io.BufferedReader], classOf[java.io.PrintWriter]).
-                     newInstance(isToReader(replIs), osToWriter(replOs))
-        connectToRepl(scriptWriter, { s =>
-          val _intp = remoteClazz.getMethod("intp").invoke(_iloop)
-          val remoteIMain = Class.forName("scala.tools.nsc.interpreter.IMain", false, cl)
-          remoteIMain.getMethod("interpret", classOf[String]).invoke(_intp, s)
-        })
-        remoteClazz.getMethod("process", classOf[Array[String]]).invoke(_iloop, settings.recreateArgs.toArray)
+      if (ClassLoaderManager.isOrigin) {
+        settings.usejavacp.value = true
+        val iloop = new DetachedILoop(isToReader(replIs), osToWriter(replOs))
+        connectToRepl(scriptWriter, s => iloop.intp.interpret(s))
+        iloop.process(settings)
+      } else {
+        val (cl, scalaBootPath) = ClassLoaderManager.forVersion(Variables.currentScalaVersion)
+        settings.usejavacp.value = true
+        settings.bootclasspath.value = scalaBootPath
+        cl.asContext {
+          settings.embeddedDefaults(cl)
+          val remoteClazz = Class.forName("org.scalaconsole.DetachedILoop", false, cl)
+          val _iloop = remoteClazz.getConstructor(classOf[java.io.BufferedReader], classOf[java.io.PrintWriter]).
+                       newInstance(isToReader(replIs), osToWriter(replOs))
+          connectToRepl(scriptWriter, { s =>
+            val _intp = remoteClazz.getMethod("intp").invoke(_iloop)
+            val remoteIMain = Class.forName("scala.tools.nsc.interpreter.IMain", false, cl)
+            remoteIMain.getMethod("interpret", classOf[String]).invoke(_intp, s)
+          })
+          remoteClazz.getMethod("process", classOf[Array[String]]).invoke(_iloop, settings.recreateArgs.toArray)
+        }
       }
-    }
 
-    replIs.close()
-    scriptWriter.close()
+      replIs.close()
+      scriptWriter.close()
+      System.gc()
+      promise.complete(Success())
+    }
+    promise.future
   }
 
   startOutputRenderer()
-  startRepl()
+  var synchronizer = startRepl()
 
 }
