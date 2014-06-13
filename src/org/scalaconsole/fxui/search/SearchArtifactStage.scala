@@ -1,20 +1,19 @@
 package org.scalaconsole.fxui.search
 
-import javafx.stage.{WindowEvent, Stage}
-import javafx.scene.{Parent, Scene}
-import javafx.event.EventHandler
-import org.scalaconsole.fxui.main.MainStage
-import javafx.fxml.{FXML, FXMLLoader}
-import javafx.scene.image.ImageView
-import javafx.scene.control.{ListCell, TextField, ListView, Label}
-import org.scalaconsole.fxui.SemVersion
-import javafx.scene.layout.FlowPane
-import com.google.gson.JsonElement
-import javafx.collections.FXCollections
-import javafx.beans.property.{SimpleBooleanProperty, BooleanProperty}
 import javafx.beans.binding.Bindings
+import javafx.beans.property.{BooleanProperty, SimpleBooleanProperty}
+import javafx.collections.FXCollections
+import javafx.fxml.FXML
+import javafx.scene.control.{Label, ListCell, ListView, TextField}
+import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
+import javafx.scene.layout.FlowPane
+import javafx.stage.{Stage, WindowEvent}
+
+import com.google.gson.JsonElement
 import org.scalaconsole.fxui.FxUtil._
+import org.scalaconsole.fxui.SemVersion
+import org.scalaconsole.fxui.main.MainStage
 
 class SearchArtifactStage(val mainStage: MainStage) extends Stage with SearchArtifactController {
 
@@ -32,9 +31,7 @@ class SearchArtifactStage(val mainStage: MainStage) extends Stage with SearchArt
 
   val loading: BooleanProperty = new SimpleBooleanProperty(false)
 
-  private val loader = new FXMLLoader(getClass.getResource("/org/scalaconsole/fxui/search/SearchArtifactStage.fxml"))
-  loader.setController(this)
-  setScene(new Scene(loader.load()))
+  setScene(loadScene("/org/scalaconsole/fxui/search/SearchArtifactStage.fxml", controller = this))
   setTitle("Search and Add Artifacts")
   setOnShown((_: WindowEvent) => searchBox.requestFocus())
 

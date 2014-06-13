@@ -1,12 +1,13 @@
 package org.scalaconsole
 package data
 
-import java.lang.String
-import collection.mutable.ListBuffer
-import java.io.{BufferedReader, FileReader, FilenameFilter, FileWriter, BufferedWriter, File}
+import java.io.{BufferedReader, BufferedWriter, File, FileReader, FileWriter, FilenameFilter}
+
 import org.controlsfx.dialog.{Dialog, Dialogs}
 import org.scalaconsole.fxui.{Constants, Variables}
+
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,11 +37,11 @@ object DependencyManager {
     dependencies(version).paths.appendAll(newValues)
   }
 
-  def currentPaths = dependencies.get(version).getOrElse(Dependencies()).paths
+  def currentPaths = dependencies.getOrElse(version, Dependencies()).paths
 
-  def currentArtifacts = dependencies.get(version).getOrElse(Dependencies()).artifacts
+  def currentArtifacts = dependencies.getOrElse(version, Dependencies()).artifacts
 
-  import collection.JavaConverters.asJavaCollectionConverter
+  import scala.collection.JavaConverters.asJavaCollectionConverter
   def currentArtifactsAsJavaCollection = currentArtifacts.map(_.mkString).asJavaCollection
 
   /**
@@ -80,7 +81,7 @@ object DependencyManager {
   }
 
   def boundedExtraClasspath(ver: String): mutable.Buffer[String] = {
-    val dep = dependencies.get(ver).getOrElse(Dependencies())
+    val dep = dependencies.getOrElse(ver, Dependencies())
     dep.paths ++ dep.artifacts.flatMap {
       case Artifact(gid, aid, v) => net.EmbeddedIvy.resolve(gid, aid, v).map(_.getAbsolutePath)
     }
@@ -120,7 +121,6 @@ object DependencyManager {
     dependencies(version) = dep
     reader.close()
     data.ClassLoaderManager.reset()
-//    ui.Actions.resetReplAction.apply()
   }
 
   def loadProfiles = {

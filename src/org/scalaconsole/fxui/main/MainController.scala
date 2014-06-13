@@ -1,27 +1,27 @@
 package org.scalaconsole.fxui.main
-import java.util.ResourceBundle
 import java.net.URL
+import java.util.ResourceBundle
 import java.util.concurrent.Executor
-import javafx.scene.web.{WebEvent, WebEngine, WebView}
-import javafx.scene.control._
-import org.scalaconsole.fxui.{Variables, JavaBridge}
-import javafx.fxml.FXML
-import javafx.event.ActionEvent
-import org.controlsfx.dialog.Dialogs
-import org.scalaconsole.fxui.reduce.ReduceStage
-import org.scalaconsole.fxui.manual.ManualStage
-import org.scalaconsole.fxui.search.SearchArtifactStage
-import javafx.geometry.Orientation
-import org.scalaconsole.fxui.FxUtil._
-import org.scalaconsole.net.{OAuthTinyServer, Gist}
-import org.scalaconsole.data.{ClassLoaderManager, DependencyManager, Artifact}
-
-import collection.JavaConverters._
-import javafx.beans.value.{ObservableValue, ChangeListener}
+import javafx.beans.value.ObservableValue
 import javafx.concurrent.Worker
 import javafx.concurrent.Worker.State
-import netscape.javascript.JSObject
+import javafx.event.ActionEvent
+import javafx.fxml.FXML
+import javafx.geometry.Orientation
+import javafx.scene.control._
+import javafx.scene.web.{WebEngine, WebEvent, WebView}
 
+import netscape.javascript.JSObject
+import org.controlsfx.dialog.Dialogs
+import org.scalaconsole.data.{Artifact, ClassLoaderManager, DependencyManager}
+import org.scalaconsole.fxui.FxUtil._
+import org.scalaconsole.fxui.manual.ManualStage
+import org.scalaconsole.fxui.reduce.ReduceStage
+import org.scalaconsole.fxui.search.SearchArtifactStage
+import org.scalaconsole.fxui.{JavaBridge, Variables}
+import org.scalaconsole.net.{Gist, OAuthTinyServer}
+
+import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext
 
 trait MainController {self: MainStage =>
@@ -119,7 +119,7 @@ trait MainController {self: MainStage =>
   }
 
   @FXML def onToggleSplitterOrientation(event: ActionEvent) {
-    import Orientation._
+    import javafx.geometry.Orientation._
     splitPane.getOrientation match {
       case HORIZONTAL =>
         splitPane.setOrientation(VERTICAL)

@@ -1,7 +1,7 @@
 package org.scalaconsole.data
 
-import collection.mutable.Buffer
 import java.io.BufferedReader
+
 import scala.collection.mutable
 
 case class Dependencies(paths: mutable.Buffer[String] = mutable.Buffer.empty[String],

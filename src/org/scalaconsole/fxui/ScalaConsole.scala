@@ -1,24 +1,18 @@
 package org.scalaconsole.fxui
-import javafx.application.{Platform, Application}
-import javafx.stage.{WindowEvent, Stage}
-import javafx.fxml.FXMLLoader
-import javafx.scene.Scene
-import javafx.event.EventHandler
+import javafx.application.{Application, Platform}
+import javafx.stage.{Stage, WindowEvent}
+
+import org.scalaconsole.fxui.FxUtil._
 import org.scalaconsole.fxui.main.MainStage
 
 class ScalaConsole extends Application {
   override def start(pStage: Stage) = {
-    val loader = new FXMLLoader(this.getClass.getResource("main/MainStage.fxml"))
-    val mainStage = new MainStage
-    loader.setController(mainStage)
-    pStage.setScene(new Scene(loader.load()))
+    pStage.setScene(loadScene("main/MainStage.fxml", new MainStage))
     pStage.show()
-    pStage.setOnCloseRequest(new EventHandler[WindowEvent]() {
-      override def handle(p1: WindowEvent) = {
+    pStage.setOnCloseRequest{(_: WindowEvent) =>
         Platform.exit()
         System.exit(0)
-      }
-    })
+    }
     ScalaConsole.top = pStage
   }
 
