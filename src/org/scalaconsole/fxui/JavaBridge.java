@@ -28,4 +28,8 @@ public class JavaBridge {
     public void createTab() {
         controller.onNewTab(null);
     }
+
+    public void resetREPL() {
+        controller.onReplReset(null);
+    }
 }

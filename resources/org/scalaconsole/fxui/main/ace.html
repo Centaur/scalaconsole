@@ -76,6 +76,13 @@
               javaBridge.createTab();
           }
       });
+    editor.commands.addCommand({
+          name: 'Reset REPL',
+          bindKey: {win: 'Ctrl-Shift-E', mac: 'Command-Shift-E'},
+          exec: function(editor){
+              javaBridge.resetREPL();
+          }
+      });
 
     editor.getSession().setMode("ace/mode/scala");
     editor.getSession().setTabSize(2);
