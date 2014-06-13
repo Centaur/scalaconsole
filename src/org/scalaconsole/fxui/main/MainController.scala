@@ -193,11 +193,14 @@ trait MainController {self: MainStage =>
 
   private def resetRepl(cls: Boolean = true) = {
     commandQueue.put('Normal -> ":q")
-    import ExecutionContext.Implicits.global
-    synchronizer.onSuccess {
-      case _ =>
+    implicit val ec = ExecutionContext.fromExecutor(new Executor {
+      override def execute(command: Runnable) = command.run()
+    })
+    synchronizer.onSuccess { case _ =>
         synchronizer = startRepl()
-        if (cls) onEventThread{ outputArea.clear() }
+        if (cls) onEventThread {
+          outputArea.clear()
+        }
         setStatus("Repl reset.")
     }
   }
