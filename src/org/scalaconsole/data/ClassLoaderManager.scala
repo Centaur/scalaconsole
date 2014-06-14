@@ -11,7 +11,7 @@ object ClassLoaderManager {
 
   val myself = new java.io.File(getClass.getProtectionDomain.getCodeSource.getLocation.getPath)
 
-  def forVersion(v: String) = classLoaders.get(v).getOrElse {
+  def forVersion(v: String) = classLoaders.getOrElse(v, {
     val scalaLibraries = myself :: net.EmbeddedIvy.resolveScala(v) ++
       DependencyManager.boundedExtraClasspath(v).map(new java.io.File(_))
     val scalaBootPath = scalaLibraries mkString System.getProperty("path.separator")
@@ -25,7 +25,7 @@ object ClassLoaderManager {
     val result = (cl, scalaBootPath)
     classLoaders(v) = result
     (cl, scalaBootPath)
-  }
+  })
 
   def isOrigin = Variables.currentScalaVersion == Constants.originScalaVersion
 
