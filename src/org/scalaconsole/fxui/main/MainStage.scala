@@ -118,7 +118,7 @@ class MainStage extends MainController {
       replIs.close()
       scriptWriter.close()
       System.gc()
-      promise.complete(Success())
+      promise.complete(Success(()))
     }
     promise.future
   }
