@@ -88,7 +88,7 @@ ScalaConsole是Scala语言REPL的图形界面替代者。
 
   2.3 `Ctrl-X` | `Shift-Delete` **Smart Cut**
 
-  2.4 `Ctrl-K` **删除当前行**
+  2.4 `Ctrl-Y` **删除当前行**
 
   2.5 `Ctrl-/` **切换行注释**
 
