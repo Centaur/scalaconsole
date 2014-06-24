@@ -7,7 +7,7 @@ organization := "org.scalaconsole"
 
 name := "ScalaConsole"
 
-version := "2.0.0-M7"
+version := "2.0.0-M8"
 
 scalaVersion := "2.11.1"
 
