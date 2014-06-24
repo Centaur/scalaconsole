@@ -53,12 +53,12 @@ trait MainController {self: MainStage =>
     commandQueue.put('Paste, script)
   }
 
-  @FXML def onRunInPasteMode(event: ActionEvent) {
+  @FXML def onRunSelectedInPasteMode(event: ActionEvent) {
     val script = currentEngine.executeScript("editor.session.getTextRange(editor.getSelectionRange())").toString
     runPaste(script)
   }
 
-  @FXML def onRunSelectedInPasteMode(event: ActionEvent) {
+  @FXML def onRunInPasteMode(event: ActionEvent) {
     val script = currentEngine.executeScript("editor.getValue()").toString
     runPaste(script)
   }
