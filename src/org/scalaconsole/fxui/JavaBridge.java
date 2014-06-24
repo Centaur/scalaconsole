@@ -32,4 +32,12 @@ public class JavaBridge {
     public void resetREPL() {
         controller.onReplReset(null);
     }
+
+    public void runInPasteMode() {
+        controller.onRunInPasteMode(null);
+    }
+
+    public void runSelectedInPasteMode() {
+        controller.onRunSelectedInPasteMode(null);
+    }
 }

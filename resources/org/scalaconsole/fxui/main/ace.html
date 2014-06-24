@@ -83,6 +83,20 @@
               javaBridge.resetREPL();
           }
       });
+    editor.commands.addCommand({
+          name: 'Run in Paste Mode',
+          bindKey: {win: 'Ctrl-P'},
+          exec: function(editor){
+              javaBridge.runInPasteMode();
+          }
+      });
+    editor.commands.addCommand({
+          name: 'Run Selected in Paste Mode',
+          bindKey: {win: 'Ctrl-Shift-P'},
+          exec: function(editor){
+              javaBridge.runSelectedInPasteMode();
+          }
+      });
 
     editor.getSession().setMode("ace/mode/scala");
     editor.getSession().setTabSize(2);

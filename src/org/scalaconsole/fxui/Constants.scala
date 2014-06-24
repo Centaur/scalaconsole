@@ -5,6 +5,8 @@ import scala.util.Properties
 object Constants {
   val PluginXML = "scalac-plugin.xml"
 
+  val isWindows = System.getProperty("os.name").toLowerCase.contains("windows")
+
   private val hostVersion = util.Properties.versionString.split(" ")(1)
   val SupportedScalaVersions = Map(
     hostVersion -> hostVersion

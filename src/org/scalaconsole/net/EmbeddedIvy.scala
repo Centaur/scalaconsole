@@ -6,6 +6,7 @@ import org.apache.ivy.core.settings._
 import org.apache.ivy.core.module.descriptor._
 import org.apache.ivy.core.module.id._
 import org.apache.ivy.core.resolve._
+import org.scalaconsole.fxui.Constants
 import plugins.resolver._
 
 
@@ -37,15 +38,15 @@ object EmbeddedIvy {
     ivySettings.setDefaultResolver(chainResolver.getName)
     //creates an Ivy instance with settings
     val ivy = Ivy.newInstance(ivySettings)
-    // For windows
-    val md = DefaultModuleDescriptor.newCallerInstance(
+    val md = if(Constants.isWindows)
+      DefaultModuleDescriptor.newCallerInstance(
+      Array(ModuleRevisionId.newInstance(groupId, artifactId, version)),
+      true, false
+    ) else
+      DefaultModuleDescriptor.newCallerInstance(
       ModuleRevisionId.newInstance(groupId, artifactId, version),
       Array("*->*,!sources,!javadoc"), true, false
     )
-    // Works on other platforms
-    //    val md = DefaultModuleDescriptor.newCallerInstance(
-    //      ModuleRevisionId.newInstance(groupId, artifactId, version), Array("*,!sources,!javadoc"), true, false
-    //    )
     //init resolve report
     val options = new ResolveOptions
     val report = ivy.resolve(md, options)
