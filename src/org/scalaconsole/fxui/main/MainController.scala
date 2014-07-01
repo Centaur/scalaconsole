@@ -89,6 +89,10 @@ trait MainController {self: MainStage =>
     outputArea.clear()
   }
 
+  @FXML def onShowAceSettings(event: ActionEvent) {
+    currentEngine.executeScript("editor.commands.exec('showSettingsMenu', editor)")
+  }
+
   @FXML def onReplReset(event: ActionEvent) {
     resetRepl()
   }

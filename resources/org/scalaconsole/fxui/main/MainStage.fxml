@@ -74,6 +74,12 @@
                 </Menu>
                   <Menu mnemonicParsing="false" text="Edit">
                      <items>
+
+                         <MenuItem mnemonicParsing="false" onAction="#onShowAceSettings" text="Ace Settings">
+                             <accelerator>
+                                 <KeyCodeCombination alt="UP" code="COMMA" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                             </accelerator>
+                         </MenuItem>
                         <MenuItem mnemonicParsing="false" onAction="#onSetFont" text="Set Font ..." />
                         <MenuItem mnemonicParsing="false" onAction="#onToggleSplitterOrientation" text="Toggle Splitter Orientation">
                            <accelerator>
