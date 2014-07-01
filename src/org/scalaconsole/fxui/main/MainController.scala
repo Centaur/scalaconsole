@@ -148,6 +148,9 @@ trait MainController {self: MainStage =>
   @FXML def initialize() {
     setOutputAreaFont()
     initWebView(scriptArea)
+    tabPane.getSelectionModel.selectedItemProperty().addListener{(_:ObservableValue[_ <: Tab], old: Tab, _new: Tab) =>
+      Variables.theme = old.getContent.asInstanceOf[WebView].getEngine.executeScript("editor.getTheme()").asInstanceOf[String]
+    }
   }
 
   private def setOutputAreaFont() = {
@@ -158,7 +161,10 @@ trait MainController {self: MainStage =>
   private def initWebView(view: WebView) {
     val engine: WebEngine = view.getEngine
     view.visibleProperty.addListener { (p1: ObservableValue[_ <: java.lang.Boolean], old: java.lang.Boolean, visible: java.lang.Boolean) =>
-      if (visible) view.requestFocus()
+      if (visible) {
+        view.getEngine.executeScript(s"""editor.setTheme("${Variables.theme}")""")
+        view.requestFocus()
+      }
     }
     engine.setOnAlert((ev: WebEvent[String]) => Dialogs.create().masthead(null).message(ev.getData).showInformation())
     engine.getLoadWorker.stateProperty.addListener { (p1: ObservableValue[_ <: State], oldState: State, newState: State) =>
@@ -167,6 +173,7 @@ trait MainController {self: MainStage =>
         view.requestFocus()
         val window = engine.executeScript("window").asInstanceOf[JSObject]
         window.setMember("javaBridge", bridge)
+        engine.executeScript(s"""editor.setTheme("${Variables.theme}")""")
       }
     }
     engine.load(getClass.getResource("ace.html").toExternalForm)

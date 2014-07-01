@@ -14,4 +14,5 @@ object Variables {
 
   var currentScalaVersion = Constants.originScalaVersion
 
+  var theme = "ace/theme/github"
 }
