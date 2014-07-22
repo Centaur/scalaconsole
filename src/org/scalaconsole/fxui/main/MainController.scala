@@ -203,7 +203,7 @@ trait MainController {self: MainStage =>
   }
 
   private def resetRepl(cls: Boolean = true) = {
-    commandQueue.put('Normal -> ":q")
+    commandQueue.put('Normal -> "\n\n:q")
     implicit val ec = ExecutionContext.fromExecutor(new Executor {
       override def execute(command: Runnable) = command.run()
     })

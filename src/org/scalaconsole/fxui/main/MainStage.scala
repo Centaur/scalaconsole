@@ -53,7 +53,7 @@ class MainStage extends MainController {
           writer.write(script)
           if (!script.endsWith("\n")) writer.write("\n")
           writer.flush()
-          if (script == ":q")
+          if (script == "\n\n:q")
             quitCommand = true
         case ('Paste, script: String) =>
           println("// Interpreting in paste mode ")
