@@ -10,6 +10,7 @@ import javafx.fxml.FXML
 import javafx.geometry.Orientation
 import javafx.scene.control._
 import javafx.scene.web.{WebEngine, WebEvent, WebView}
+import javafx.stage.Stage
 
 import netscape.javascript.JSObject
 import org.controlsfx.dialog.Dialogs
@@ -70,6 +71,12 @@ trait MainController {self: MainStage =>
     tabPane.getTabs.add(newTab)
     tabPane.getSelectionModel.select(newTab)
     initWebView(newView)
+  }
+
+  @FXML def onNewWindow(event: ActionEvent) {
+    val newStage = new Stage
+    newStage.setScene(loadScene("main/MainStage.fxml", new MainStage))
+    newStage.show()
   }
 
   @FXML def onCloseTab(event: ActionEvent) {
