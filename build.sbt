@@ -1,5 +1,5 @@
-import AssemblyKeys._
 import sbtassembly.Plugin._
+import AssemblyKeys._
 import sbt._
 import Keys._
 
@@ -9,7 +9,7 @@ name := "ScalaConsole"
 
 version := "2.0.0-M9"
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.2"
 
 scalaSource in Compile := baseDirectory.value / "src"
 
