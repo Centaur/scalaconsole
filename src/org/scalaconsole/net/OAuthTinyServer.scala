@@ -11,9 +11,9 @@ object OAuthTinyServer {
   val port = socket.getLocalPort
 
   val redirect_path = "/scalaconsole/callback"
-  val redirect_uri = "http://localhost:%d%s".format(port, redirect_path)
+  val redirect_uri = s"http://localhost:$port$redirect_path"
   val authorize_uri =
-    "https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s&scope=gist".format(client_id, URLEncoder.encode(redirect_uri, "UTF-8"))
+    s"https://github.com/login/oauth/authorize?client_id=$client_id&redirect_uri=${URLEncoder.encode(redirect_uri, "UTF-8")}&scope=gist"
 
   val exchange_template = "https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s"
 
@@ -44,10 +44,7 @@ object OAuthTinyServer {
                 val exchange_uri = new URL(exchange_template.format(client_id, client_secret, code))
                 val conn = exchange_uri.openConnection().asInstanceOf[HttpURLConnection]
                 conn.setRequestMethod("POST")
-                val response_length = conn.getContentLength
-                val buff = new Array[Byte](response_length)
-                conn.getInputStream.read(buff)
-                val content = new String(buff)
+                val content = io.Source.fromInputStream(conn.getInputStream).mkString
                 accessToken = content.split("&").map(_.split("=")).find(_(0) == "access_token").map(_(1))
                 for (token <- accessToken) {
                   callback(Some(token))
