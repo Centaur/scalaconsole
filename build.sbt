@@ -59,10 +59,13 @@ libraryDependencies ++= Seq(
 assemblySettings
 
 mergeStrategy in assembly :=  {
-  case PathList("org", "scalaconsole", "fxui", "main", "ace-builds", sub) => MergeStrategy.discard
-  case PathList("org", "scalaconsole", "fxui", "main", "ace-builds", sub, xs@_*) if sub != "src-min-noconflict" => MergeStrategy.discard
-  case PathList("org", "scalaconsole", "fxui", "main", "ace-builds", "src-min-noconflict", mode) if mode.startsWith("mode-") && mode != "mode-scala.js" || mode.startsWith("worker-") => MergeStrategy.discard
-  case PathList("org", "scalaconsole", "fxui", "main", "ace-builds", "src-min-noconflict", "snippets", snippet) if snippet != "scala.js" => MergeStrategy.discard
+  case str @ PathList("org", "scalaconsole", "fxui", "main", "ace-builds", remains@_*) => remains match {
+    case Seq(sub) => MergeStrategy.discard
+    case Seq(sub, xs@_*) if sub != "src-min-noconflict" => MergeStrategy.discard
+    case Seq("src-min-noconflict", mode) if mode.startsWith("mode-") && mode != "mode-scala.js" || mode.startsWith("worker-") => MergeStrategy.discard
+    case Seq("src-min-noconflict", "snippets", snippet) if snippet != "scala.js" => MergeStrategy.discard
+    case _ => (mergeStrategy in assembly).value.apply(str)
+  }
   case x => (mergeStrategy in assembly).value.apply(x)
 }
 
