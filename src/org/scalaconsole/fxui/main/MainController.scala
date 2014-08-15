@@ -1,4 +1,5 @@
 package org.scalaconsole.fxui.main
+
 import java.net.URL
 import java.util.ResourceBundle
 import java.util.concurrent.Executor
@@ -26,13 +27,13 @@ import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext
 
 trait MainController {self: MainStage =>
-  @FXML var resources : ResourceBundle = _
-  @FXML var location  : URL            = _
-  @FXML var scriptArea: WebView        = _
-  @FXML var outputArea: TextArea       = _
-  @FXML var statusBar : Label          = _
-  @FXML var splitPane : SplitPane      = _
-  @FXML var tabPane   : TabPane        = _
+  @FXML var resources: ResourceBundle = _
+  @FXML var location: URL = _
+  @FXML var scriptArea: WebView = _
+  @FXML var outputArea: TextArea = _
+  @FXML var statusBar: Label = _
+  @FXML var splitPane: SplitPane = _
+  @FXML var tabPane: TabPane = _
 
   private def currentEngine = tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView].getEngine
 
@@ -159,7 +160,7 @@ trait MainController {self: MainStage =>
   @FXML def initialize() {
     setOutputAreaFont()
     initWebView(scriptArea)
-    tabPane.getSelectionModel.selectedItemProperty().addListener{(_:ObservableValue[_ <: Tab], old: Tab, _new: Tab) =>
+    tabPane.getSelectionModel.selectedItemProperty().addListener { (_: ObservableValue[_ <: Tab], old: Tab, _new: Tab) =>
       Variables.theme = old.getContent.asInstanceOf[WebView].getEngine.executeScript("editor.getTheme()").asInstanceOf[String]
     }
   }
@@ -173,7 +174,7 @@ trait MainController {self: MainStage =>
     val engine: WebEngine = view.getEngine
     view.visibleProperty.addListener { (p1: ObservableValue[_ <: java.lang.Boolean], old: java.lang.Boolean, visible: java.lang.Boolean) =>
       if (visible) {
-        view.getEngine.executeScript(s"""editor.setTheme("${Variables.theme}")""")
+        view.getEngine.executeScript( s"""editor.setTheme("${Variables.theme}")""")
         view.requestFocus()
       }
     }
@@ -184,7 +185,7 @@ trait MainController {self: MainStage =>
         view.requestFocus()
         val window = engine.executeScript("window").asInstanceOf[JSObject]
         window.setMember("javaBridge", bridge)
-        engine.executeScript(s"""editor.setTheme("${Variables.theme}")""")
+        engine.executeScript( s"""editor.setTheme("${Variables.theme}")""")
       }
     }
     engine.load(getClass.getResource("ace.html").toExternalForm)
@@ -215,11 +216,11 @@ trait MainController {self: MainStage =>
       override def execute(command: Runnable) = command.run()
     })
     synchronizer.onSuccess { case _ =>
-        synchronizer = startRepl()
-        if (cls) onEventThread {
-          outputArea.clear()
-        }
-        setStatus("Repl reset.")
+      synchronizer = startRepl()
+      if (cls) onEventThread {
+        outputArea.clear()
+      }
+      setStatus("Repl reset.")
     }
   }
 
@@ -237,7 +238,8 @@ trait MainController {self: MainStage =>
   }
 
   def updateArtifacts(strs: Seq[String]) = {
-    val reduced = strs.map(Artifact.apply).filter(_.nonEmpty).map(_.get)
+    val reduced = for (str <- strs;
+                       artifact <- Artifact(str)) yield artifact
     if (DependencyManager.currentArtifacts.length > reduced.length) {
       // 有变化
       DependencyManager.replaceCurrentArtifacts(reduced)
@@ -248,6 +250,7 @@ trait MainController {self: MainStage =>
       setStatus("No artifacts reduced.")
     }
   }
+
 
   def setScriptAreaFont(engine: WebEngine) = {
     val f = Variables.displayFont

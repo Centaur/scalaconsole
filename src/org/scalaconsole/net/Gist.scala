@@ -16,7 +16,7 @@ object Gist {
     conn.setDoOutput(true)
     conn.setUseCaches(false)
     conn.setRequestMethod("POST")
-    conn.setRequestProperty("Content-type", "text/json")
+    conn.setRequestProperty("Content-type", "text/json; charset=UTF-8")
     conn.connect()
     val requestJSON = """{
     "description": "%s",
@@ -25,12 +25,10 @@ object Gist {
       "fromScalaConsole.scala": {"content": "%s"}
     }}""".format(description, content.replaceAll( """\\""", """\\\\""").replaceAll( """\"""", """\\"""").replaceAll("\n", "\\\\n"))
 
-    conn.getOutputStream.write(requestJSON.getBytes)
+    conn.getOutputStream.write(requestJSON.getBytes("UTF-8"))
 
-    val contentLength = conn.getContentLength
-    val buff = new Array[Byte](contentLength)
-    new DataInputStream(conn.getInputStream).readFully(buff)
-    val json = new JsonParser().parse(new String(buff)).getAsJsonObject
+    val response = io.Source.fromInputStream(conn.getInputStream).mkString
+    val json = new JsonParser().parse(response).getAsJsonObject
     conn.getResponseCode match {
       case 201 =>
         val url = json.get("html_url").getAsString

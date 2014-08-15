@@ -1,4 +1,5 @@
 package org.scalaconsole.fxui.search
+
 import javafx.animation.FadeTransition
 import javafx.beans.value.ObservableValue
 import javafx.event.ActionEvent
@@ -15,7 +16,7 @@ import org.scalaconsole.net.MavenIndexerClient
 
 import scala.collection.JavaConverters._
 
-trait SearchArtifactController {self: SearchArtifactStage =>
+trait SearchArtifactController { self: SearchArtifactStage =>
 
   @FXML def onOK(event: ActionEvent) {
     import scala.collection.JavaConverters._
@@ -41,31 +42,35 @@ trait SearchArtifactController {self: SearchArtifactStage =>
           val versions = extractVersions(exactMatch) | extractVersions(otherMatch)
           val versionGroup = new ToggleGroup
 
-          versionGroup.selectedToggleProperty.addListener {(p1: ObservableValue[_ <: Toggle], old: Toggle, selected: Toggle) =>
-              val selectedBtn = selected.asInstanceOf[ToggleButton]
-              artifactVersions.clear()
-              if (selectedBtn.getText == "All") {
-                matchedArtifacts.setAll(allMatches.asJavaCollection)
-              } else {
-                matchedArtifacts.setAll(allMatches.filter { case (k, v) => k.endsWith(selectedBtn.getText)}.asJavaCollection)
-              }
+          versionGroup.selectedToggleProperty.addListener { (p1: ObservableValue[_ <: Toggle], old: Toggle, selected: Toggle) =>
+            val selectedBtn = selected.asInstanceOf[ToggleButton]
+            artifactVersions.clear()
+            if (selectedBtn.getText == "All") {
+              matchedArtifacts.setAll(allMatches.asJavaCollection)
+            } else {
+              matchedArtifacts.setAll(allMatches.filter { case (k, v) => k.endsWith(selectedBtn.getText)}.asJavaCollection)
+            }
           }
           val allBtn = new ToggleButton("All")
           allBtn.setToggleGroup(versionGroup)
-          val versionButtons = for (version <- versions if SemVersion(version).isDefined) yield {
+          case class VersionButton(btn: ToggleButton, version: SemVersion)
+          val versionButtons = for (version <- versions.toSeq; semVersion <- SemVersion(version)) yield {
             val btn = new ToggleButton(version)
             btn.setToggleGroup(versionGroup)
-            btn
+            VersionButton(btn, semVersion)
           }
 
           onEventThread {
             val children = crossBuildsPane.getChildren
             children.setAll(allBtn)
-            children.addAll(versionButtons.toSeq.sortBy(btn => SemVersion(btn.getText).get).asJavaCollection)
+            children.addAll(versionButtons.toSeq.sortBy(_.version).map(_.btn).asJavaCollection)
             val currentSemVersion = SemVersion(Variables.currentScalaVersion)
-            versionButtons.find(btn => SemVersion(btn.getText).exists(_.fuzzyMatch(currentSemVersion))).
-            orElse(versionButtons.find(btn => btn.getText == Variables.currentScalaVersion)).
-            getOrElse(allBtn).setSelected(true)
+            versionButtons
+              .find(_.version.fuzzyMatch(currentSemVersion))
+              .orElse(versionButtons.find(vb => vb.btn.getText == Variables.currentScalaVersion))
+              .map(_.btn)
+              .getOrElse(allBtn)
+              .setSelected(true)
             loading.setValue(false)
           }
         }
@@ -76,9 +81,9 @@ trait SearchArtifactController {self: SearchArtifactStage =>
   @FXML def initialize(): Unit = {
     loadingImg.visibleProperty.bind(loading)
     matchedList.setCellFactory((_: ListView[(String, JsonElement)]) => new ArtifactCell())
-    matchedList.getSelectionModel.selectedItemProperty.addListener {(p1: ObservableValue[_ <: (String, JsonElement)], oldEntry: (String, JsonElement), newEntry: (String, JsonElement)) =>
-        if (newEntry != null)
-          onSelectArtifact(newEntry)
+    matchedList.getSelectionModel.selectedItemProperty.addListener { (p1: ObservableValue[_ <: (String, JsonElement)], oldEntry: (String, JsonElement), newEntry: (String, JsonElement)) =>
+      if (newEntry != null)
+        onSelectArtifact(newEntry)
     }
     versionList.setCellFactory((_: ListView[SemVersion]) => new VersionCell())
     selectedVersionList.setCellFactory((_: ListView[String]) => new SelectedVersionCell())

@@ -48,18 +48,18 @@ resolvers += Resolver.typesafeRepo("releases")
 libraryDependencies ++= Seq(
   "org.apache.ivy" % "ivy" % "2.3.0",
   "org.scala-lang" % "scala-compiler" % scalaVersion.value
-//    .exclude("org.scala-lang.modules", "scala-parser-combinators_2.11")
-//    .exclude("org.scala-lang.modules", "scala-xml_2.11")
-  ,"org.controlsfx" % "controlsfx" % "8.0.5"
-  ,"com.google.code.gson" % "gson" % "2.2.4"
-  ,"org.specs2" %% "specs2" % "2.3.11" % "test"
+  //    .exclude("org.scala-lang.modules", "scala-parser-combinators_2.11")
+  //    .exclude("org.scala-lang.modules", "scala-xml_2.11")
+  , "org.controlsfx" % "controlsfx" % "8.0.5"
+  , "com.google.code.gson" % "gson" % "2.2.4"
+  , "org.specs2" %% "specs2" % "2.3.11" % "test"
 )
 
 
 assemblySettings
 
-mergeStrategy in assembly :=  {
-  case str @ PathList("org", "scalaconsole", "fxui", "main", "ace-builds", remains@_*) => remains match {
+mergeStrategy in assembly := {
+  case str@PathList("org", "scalaconsole", "fxui", "main", "ace-builds", remains@_*) => remains match {
     case Seq(sub) => MergeStrategy.discard
     case Seq(sub, xs@_*) if sub != "src-min-noconflict" => MergeStrategy.discard
     case Seq("src-min-noconflict", mode) if mode.startsWith("mode-") && mode != "mode-scala.js" || mode.startsWith("worker-") => MergeStrategy.discard
@@ -77,4 +77,15 @@ excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
   }
 }
 
+
+//wartremoverErrors ++= Warts.allBut(Wart.Var,
+//  Wart.MutableDataStructures,
+//  Wart.Null,
+//  Wart.NonUnitStatements,
+//  Wart.DefaultArguments,
+//  Wart.Nothing,
+//  Wart.Any,
+//  Wart.AsInstanceOf,
+//  Wart.IsInstanceOf
+//)
 
