@@ -14,12 +14,14 @@ class ScalaConsole extends Application {
         System.exit(0)
     }
     ScalaConsole.top = pStage
+    ScalaConsole.application = this
   }
 
 }
 
 object ScalaConsole {
   var top         : Stage        = _
+  var application : Application = _
 
   def main(args: Array[String]) {
     Application.launch(classOf[ScalaConsole], args: _*)
