@@ -26,7 +26,8 @@ import org.scalaconsole.net.{Gist, OAuthTinyServer}
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionContext
 
-trait MainController {self: MainStage =>
+trait MainController {
+  self: MainStage =>
   @FXML var resources: ResourceBundle = _
   @FXML var location: URL = _
   @FXML var scriptArea: WebView = _
@@ -110,9 +111,12 @@ trait MainController {self: MainStage =>
     val masth = "Example: -Xprint:typer"
     val msg = s"current: ${current.getOrElse("none")}"
     val result = Dialogs.create().title("Set Commandline Options").masthead(masth).message(msg).showTextInput(current.getOrElse(""))
-    if (result != null && Variables.commandlineOption.getOrElse("") != result) {
-      Variables.commandlineOption = Some(result)
-      resetRepl()
+    if (result.isPresent) {
+      val res = result.get()
+      if (Variables.commandlineOption.getOrElse("") != res) {
+        Variables.commandlineOption = Some(res)
+        resetRepl()
+      }
     }
   }
 
@@ -122,8 +126,9 @@ trait MainController {self: MainStage =>
     val fontAsString = Variables.encodeFont(f)
     val msg = s"current: $fontAsString"
     val result = Dialogs.create().title("Set Display Font").masthead(masth).message(msg).showTextInput(fontAsString)
-    if (result != null) {
-      Variables.displayFont = Variables.decodeFont(result)
+    if (result.isPresent) {
+      var res = result.get()
+      Variables.displayFont = Variables.decodeFont(res)
       setOutputAreaFont()
       setFontForAllScriptArea()
       setStatus(s"Font set to $result")
@@ -162,7 +167,7 @@ trait MainController {self: MainStage =>
     initWebView(scriptArea)
     tabPane.getSelectionModel.selectedItemProperty().addListener { (_: ObservableValue[_ <: Tab], old: Tab, _new: Tab) =>
       Variables.theme = old.getContent.asInstanceOf[WebView].getEngine.executeScript("editor.getTheme()").asInstanceOf[String]
-    }
+                                                                 }
   }
 
   private def setOutputAreaFont() = {
@@ -177,7 +182,7 @@ trait MainController {self: MainStage =>
         view.getEngine.executeScript( s"""editor.setTheme("${Variables.theme}")""")
         view.requestFocus()
       }
-    }
+                                     }
     engine.setOnAlert((ev: WebEvent[String]) => Dialogs.create().masthead(null).message(ev.getData).showInformation())
     engine.getLoadWorker.stateProperty.addListener { (p1: ObservableValue[_ <: State], oldState: State, newState: State) =>
       if (newState == Worker.State.SUCCEEDED) {
@@ -187,24 +192,24 @@ trait MainController {self: MainStage =>
         window.setMember("javaBridge", bridge)
         engine.executeScript( s"""editor.setTheme("${Variables.theme}")""")
       }
-    }
+                                                   }
     engine.load(getClass.getResource("ace.html").toExternalForm)
   }
 
   private def setStatus(s: String) = onEventThread {
-    statusBar.setText(s)
-  }
+                                                     statusBar.setText(s)
+                                                   }
 
   private def postGist(token: Option[String]) = {
     val scriptArea = tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView]
     val code = scriptArea.getEngine.executeScript("editor.getValue()").toString
-    val description = Dialogs.create().title("Gist Description").masthead(null).showTextInput()
+    val description = Dialogs.create().title("Gist Description").masthead(null).showTextInput().orElse("")
     if (code != null && code.nonEmpty) {
       setStatus("Posting to gist...")
       startTask {
-        val msg = Gist.post(code, token, description)
-        setStatus(msg)
-      }
+                  val msg = Gist.post(code, token, description)
+                  setStatus(msg)
+                }
     } else {
       setStatus("Empty Content. Not posting.")
     }
@@ -218,10 +223,10 @@ trait MainController {self: MainStage =>
     synchronizer.onSuccess { case _ =>
       synchronizer = startRepl()
       if (cls) onEventThread {
-        outputArea.clear()
-      }
+                               outputArea.clear()
+                             }
       setStatus("Repl reset.")
-    }
+                           }
   }
 
   def addArtifacts(strs: Seq[String]) = {
@@ -255,11 +260,11 @@ trait MainController {self: MainStage =>
   def setScriptAreaFont(engine: WebEngine) = {
     val f = Variables.displayFont
     onEventThread {
-      val doc = engine.getDocument
-      val editor = doc.getElementById("editor")
-      val css = s"font-family:${f.getFamily}; font-size: ${f.getSize}px"
-      editor.setAttribute("style", css)
-    }
+                    val doc = engine.getDocument
+                    val editor = doc.getElementById("editor")
+                    val css = s"font-family:${f.getFamily}; font-size: ${f.getSize}px"
+                    editor.setAttribute("style", css)
+                  }
   }
 
   def setFontForAllScriptArea() = {

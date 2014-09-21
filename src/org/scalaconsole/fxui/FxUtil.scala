@@ -8,7 +8,7 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.util.Callback
 import javafx.beans.value.{ChangeListener, ObservableValue}
-import java.util.Optional
+import java.util.{function, Optional}
 
 object FxUtil {
   def onEventThread(r: => Unit) = Platform.runLater(new Runnable() {
@@ -53,5 +53,10 @@ object FxUtil {
       ()
     }
   }
+
+//  implicit def optionalAsOption[T](opt: Optional[T]): Option[T] = {
+//    if(opt.isPresent) Some(opt.get())
+//    else None
+//  }
 
 }

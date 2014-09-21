@@ -7,7 +7,7 @@ organization := "org.scalaconsole"
 
 name := "ScalaConsole"
 
-version := "2.0.0-M9"
+version := "2.0.0-M10"
 
 scalaVersion := "2.11.2"
 
@@ -50,7 +50,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-compiler" % scalaVersion.value
   //    .exclude("org.scala-lang.modules", "scala-parser-combinators_2.11")
   //    .exclude("org.scala-lang.modules", "scala-xml_2.11")
-  , "org.controlsfx" % "controlsfx" % "8.0.5"
+  , "org.controlsfx" % "controlsfx" % "8.0.6_20"
   , "com.google.code.gson" % "gson" % "2.2.4"
   , "org.specs2" %% "specs2" % "2.3.11" % "test"
 )
