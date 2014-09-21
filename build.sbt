@@ -1,3 +1,4 @@
+import sbt.Package.{JarManifest, ManifestAttributes}
 import sbtassembly.Plugin._
 import AssemblyKeys._
 import sbt._
@@ -57,6 +58,8 @@ libraryDependencies ++= Seq(
 
 
 assemblySettings
+
+packageOptions in assembly ++= Seq(ManifestAttributes(("Specification-Version", "8.0.20")))
 
 mergeStrategy in assembly := {
   case str@PathList("org", "scalaconsole", "fxui", "main", "ace-builds", remains@_*) => remains match {
