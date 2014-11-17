@@ -36,28 +36,32 @@ object OAuthTinyServer {
     if (accessToken.isDefined) {
       callback(accessToken)
     } else {
-      ScalaConsole.application.getHostServices.showDocument(authorize_uri)
-      val client = socket.accept()
-      val reader = new BufferedReader(new InputStreamReader(client.getInputStream))
-      val request_line = reader.readLine
-      request_line.split("\\s") match {
-        case Array(method: String, path: String, version: String) if valid(method, path, version) =>
-          path match {
-            case ExtractCode(code) =>
-              val exchange_uri = new URL(exchange_template.format(client_id, client_secret, code))
-              val conn = exchange_uri.openConnection().asInstanceOf[HttpURLConnection]
-              conn.setRequestMethod("POST")
-              val content = io.Source.fromInputStream(conn.getInputStream).mkString
-              accessToken = content.split("&").map(_.split("=")).find(_(0) == "access_token").map(_(1))
-              for (token <- accessToken) {
-                callback(Some(token))
-                writeResponseMessage(client)
-              }
-              conn.disconnect()
-              client.close()
-          }
-        case _ => throw new RuntimeException("Protocol Error")
+      FxUtil.startTask {
+        val client = socket.accept()
+        val reader = new BufferedReader(new InputStreamReader(client.getInputStream))
+        val request_line = reader.readLine
+        request_line.split("\\s") match {
+          case Array(method: String, path: String, version: String) if valid(method, path, version) =>
+            path match {
+              case ExtractCode(code) =>
+                val exchange_uri = new URL(exchange_template.format(client_id, client_secret, code))
+                val conn = exchange_uri.openConnection().asInstanceOf[HttpURLConnection]
+                conn.setRequestMethod("POST")
+                val content = io.Source.fromInputStream(conn.getInputStream).mkString
+                accessToken = content.split("&").map(_.split("=")).find(_(0) == "access_token").map(_(1))
+                for (token <- accessToken) {
+                  FxUtil.onEventThread {
+                    callback(Some(token))
+                  }
+                  writeResponseMessage(client)
+                }
+                conn.disconnect()
+                client.close()
+            }
+          case _ => throw new RuntimeException("Protocol Error")
+        }
       }
+      ScalaConsole.application.getHostServices.showDocument(authorize_uri)
     }
   }
 
