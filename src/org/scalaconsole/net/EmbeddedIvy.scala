@@ -13,9 +13,7 @@ import plugins.resolver._
 object EmbeddedIvy {
 
   val repositories =
-    ('oschina, "http://maven.oschina.net/content/groups/public/") ::
-    ('typesafe, "http://repo.typesafe.com/typesafe/releases/") ::
-    ('central, "http://repo1.maven.org/maven2/") ::
+    ('repox, "http://localhost:8078/") ::
     Nil
 
   case class TransitiveResolver(m2Compatible: Boolean, name: String, patternRoot: String) extends IBiblioResolver {

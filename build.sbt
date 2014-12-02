@@ -1,6 +1,4 @@
 import sbt.Package.{JarManifest, ManifestAttributes}
-import sbtassembly.Plugin._
-import AssemblyKeys._
 import sbt._
 import Keys._
 
@@ -56,8 +54,6 @@ libraryDependencies ++= Seq(
   , "org.specs2" %% "specs2" % "2.3.11" % "test"
 )
 
-
-assemblySettings
 
 packageOptions in assembly ++= Seq(ManifestAttributes(("Specification-Version", "8.0.20")))
 
