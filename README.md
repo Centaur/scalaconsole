@@ -1,5 +1,7 @@
 # ScalaConsole Reloaded (V2.0)
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Centaur/scalaconsole?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## ScalaConsole 是什么
 ScalaConsole是Scala语言REPL的图形界面替代者。
 
