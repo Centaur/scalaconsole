@@ -8,7 +8,7 @@ name := "ScalaConsole"
 
 version := "2.0.0-M11"
 
-scalaVersion := "2.11.4"
+scalaVersion := "2.11.5"
 
 scalaSource in Compile := baseDirectory.value / "src"
 
@@ -49,27 +49,27 @@ libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-compiler" % scalaVersion.value
   //    .exclude("org.scala-lang.modules", "scala-parser-combinators_2.11")
   //    .exclude("org.scala-lang.modules", "scala-xml_2.11")
-  , "org.controlsfx" % "controlsfx" % "8.0.6_20"
-  , "com.google.code.gson" % "gson" % "2.2.4"
-  , "org.specs2" %% "specs2" % "2.3.11" % "test"
+  , "org.controlsfx" % "controlsfx" % "8.20.8"
+  , "com.google.code.gson" % "gson" % "2.3.1"
+  , "org.specs2" %% "specs2" % "2.4.15" % "test"
 )
 
 
 packageOptions in assembly ++= Seq(ManifestAttributes(("Specification-Version", "8.0.20")))
 
-mergeStrategy in assembly := {
+assemblyMergeStrategy in assembly := {
   case str@PathList("org", "scalaconsole", "fxui", "main", "ace-builds", remains@_*) => remains match {
     case Seq(sub) => MergeStrategy.discard
     case Seq(sub, xs@_*) if sub != "src-min-noconflict" => MergeStrategy.discard
     case Seq("src-min-noconflict", mode) if mode.startsWith("mode-") && mode != "mode-scala.js" || mode.startsWith("worker-") => MergeStrategy.discard
     case Seq("src-min-noconflict", "snippets", snippet) if snippet != "scala.js" => MergeStrategy.discard
-    case _ => (mergeStrategy in assembly).value.apply(str)
+    case _ => (assemblyMergeStrategy in assembly).value.apply(str)
   }
-  case x => (mergeStrategy in assembly).value.apply(x)
+  case x => (assemblyMergeStrategy in assembly).value.apply(x)
 }
 
 // this has the same effect as .exclude clause in libraryDependencies config, but does not rely on scala version
-excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
+assemblyExcludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
   cp filter { item =>
     val name = item.data.getName
     (name.startsWith("scala-xml") || name.startsWith("scala-parser-combinators")) && name.endsWith(".jar")

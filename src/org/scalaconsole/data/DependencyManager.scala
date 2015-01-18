@@ -2,8 +2,9 @@ package org.scalaconsole
 package data
 
 import java.io.{BufferedReader, BufferedWriter, File, FileReader, FileWriter, FilenameFilter}
+import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.{Alert, ButtonType}
 
-import org.controlsfx.dialog.{Dialog, Dialogs}
 import org.scalaconsole.fxui.{Constants, Variables}
 
 import scala.collection.mutable
@@ -91,9 +92,12 @@ object DependencyManager {
 
   def saveCurrentAsProfile(name: String) {
     def confirmOverwrite() = {
-      val response = Dialogs.create().owner(null).title("Confirm overwrite").
-                     message(s"Profile $name for $version exists. Overwrite?").showConfirm()
-      response == Dialog.Actions.OK
+    val dialog = new Alert(AlertType.CONFIRMATION)
+      dialog.setTitle("Confirm overwrite")
+      dialog.setHeaderText(null)
+      dialog.setContentText(s"Profile $name for $version exists. Overwrite?")
+      val result = dialog.showAndWait()
+      result.get() == ButtonType.OK
     }
 
     dependencies.get(version).map {dep =>
@@ -102,10 +106,16 @@ object DependencyManager {
         val writer = new BufferedWriter(new FileWriter(target))
         writer.write(dep.serialize)
         writer.close()
-        Dialogs.create().owner(null).message(s"Profile $name for Scala $version saved.").showInformation()
+        val dialog = new Alert(AlertType.INFORMATION)
+        dialog.setHeaderText(null)
+        dialog.setContentText(s"Profile $name for Scala $version saved.")
+        dialog.showAndWait()
       }
     } orElse {
-      Dialogs.create().owner(null).message("No Dependencies configured.").showInformation()
+      val dialog = new Alert(AlertType.INFORMATION)
+      dialog.setHeaderText(null)
+      dialog.setContentText("No Dependencies configured.")
+      dialog.showAndWait()
       None
     }
   }

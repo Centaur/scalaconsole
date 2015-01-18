@@ -17,7 +17,7 @@ object ClassLoaderManager {
     val scalaBootPath = scalaLibraries mkString System.getProperty("path.separator")
     val newClassPath = new PathResolver(new Settings).containers.filterNot { cp =>
       ScalaCoreLibraries exists {
-        cp.asClasspathString.contains
+        cp.asClassPathString.contains
       }
     }.flatMap(_.asURLs) ++ scalaLibraries.map(_.toURI.toURL)
 
