@@ -9,8 +9,8 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.FlowPane
 import javafx.stage.{Stage, WindowEvent}
+import javax.json.JsonValue
 
-import com.google.gson.JsonElement
 import org.scalaconsole.fxui.FxUtil._
 import org.scalaconsole.fxui.SemVersion
 import org.scalaconsole.fxui.main.MainStage
@@ -21,11 +21,11 @@ class SearchArtifactStage(val mainStage: MainStage) extends Stage with SearchArt
   @FXML var errorMsg: Label = _
   @FXML var versionList: ListView[SemVersion] = _
   @FXML var crossBuildsPane: FlowPane = _
-  @FXML var matchedList: ListView[(String, JsonElement)] = _
+  @FXML var matchedList: ListView[(String, JsonValue)] = _
   @FXML var selectedVersionList: ListView[String] = _
   @FXML var searchBox: TextField = _
 
-  val matchedArtifacts = FXCollections.observableArrayList[(String, JsonElement)]()
+  val matchedArtifacts = FXCollections.observableArrayList[(String, JsonValue)]()
   val artifactVersions = FXCollections.observableArrayList[SemVersion]()
   val selectedVersions = FXCollections.observableArrayList[String]()
 
@@ -36,7 +36,7 @@ class SearchArtifactStage(val mainStage: MainStage) extends Stage with SearchArt
   setOnShown((_: WindowEvent) => searchBox.requestFocus())
 
 
-  class ArtifactCell extends ListCell[(String, JsonElement)] {
+  class ArtifactCell extends ListCell[(String, JsonValue)] {
       textProperty.bind(Bindings.createStringBinding(() => {
         val item = getItem
         if (item != null) item._1

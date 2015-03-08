@@ -8,7 +8,7 @@ name := "ScalaConsole"
 
 version := "2.0.0-M11"
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.6"
 
 scalaSource in Compile := baseDirectory.value / "src"
 
@@ -47,10 +47,9 @@ resolvers += Resolver.typesafeRepo("releases")
 libraryDependencies ++= Seq(
   "org.apache.ivy" % "ivy" % "2.3.0",
   "org.scala-lang" % "scala-compiler" % scalaVersion.value
-  //    .exclude("org.scala-lang.modules", "scala-parser-combinators_2.11")
-  //    .exclude("org.scala-lang.modules", "scala-xml_2.11")
   , "org.controlsfx" % "controlsfx" % "8.20.8"
-  , "com.google.code.gson" % "gson" % "2.3.1"
+  , "org.glassfish" % "javax.json" % "1.0.4" % "runtime"
+  , "javax.json" % "javax.json-api" % "1.0"
   , "org.specs2" %% "specs2" % "2.4.15" % "test"
 )
 

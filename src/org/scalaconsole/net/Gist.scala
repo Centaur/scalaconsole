@@ -2,8 +2,8 @@ package org.scalaconsole.net
 
 import java.net._
 import javafx.scene.input.{Clipboard, ClipboardContent}
+import javax.json.Json
 
-import com.google.gson.JsonParser
 import org.scalaconsole.fxui.FxUtil
 
 object Gist {
@@ -31,11 +31,10 @@ object Gist {
 
     conn.getOutputStream.write(requestJSON.getBytes("UTF-8"))
 
-    val response = io.Source.fromInputStream(conn.getInputStream).mkString
-    val json = new JsonParser().parse(response).getAsJsonObject
+    val json = Json.createReader(conn.getInputStream).readObject()
     conn.getResponseCode match {
       case 201 =>
-        val url = json.get("html_url").getAsString
+        val url = json.getString("html_url")
         val copyContent = new ClipboardContent
         copyContent.putString(url)
 
@@ -45,7 +44,7 @@ object Gist {
 
         "New Gist created at %s. URL has been copied to clipboard.".format(url)
       case _ =>
-        "Post to gist failed. Error: %s".format(json.get("message").getAsString)
+        "Post to gist failed. Error: %s".format(json.getString("message"))
     }
   }
 }

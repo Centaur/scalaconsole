@@ -8,8 +8,8 @@ import javafx.scene.control._
 import javafx.scene.input.KeyCode._
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
+import javax.json.{JsonArray, JsonValue, JsonObject}
 
-import com.google.gson.JsonElement
 import org.scalaconsole.fxui.FxUtil._
 import org.scalaconsole.fxui.{SelectedVersionCell, SemVersion, Variables}
 import org.scalaconsole.net.MavenIndexerClient
@@ -80,10 +80,10 @@ trait SearchArtifactController { self: SearchArtifactStage =>
 
   @FXML def initialize(): Unit = {
     loadingImg.visibleProperty.bind(loading)
-    matchedList.setCellFactory((_: ListView[(String, JsonElement)]) => new ArtifactCell())
-    matchedList.getSelectionModel.selectedItemProperty.addListener { (p1: ObservableValue[_ <: (String, JsonElement)], oldEntry: (String, JsonElement), newEntry: (String, JsonElement)) =>
+    matchedList.setCellFactory((_: ListView[(String, JsonValue)]) => new ArtifactCell())
+    matchedList.getSelectionModel.selectedItemProperty.addListener { (p1: ObservableValue[_ <: (String, JsonValue)], oldEntry: (String, JsonValue), newEntry: (String, JsonValue)) =>
       if (newEntry != null)
-        onSelectArtifact(newEntry)
+        onSelectArtifact(newEntry.asInstanceOf[(String, JsonArray)])
     }
     versionList.setCellFactory((_: ListView[SemVersion]) => new VersionCell())
     selectedVersionList.setCellFactory((_: ListView[String]) => new SelectedVersionCell())
@@ -110,16 +110,16 @@ trait SearchArtifactController { self: SearchArtifactStage =>
     ft.play()
   }
 
-  private def extractVersions(json: Map[String, JsonElement]): Set[String] = {
+  private def extractVersions(json: Map[String, JsonValue]): Set[String] = {
     json.collect {
       case (SemVersion.R(v), _) => v
     }.toSet
   }
 
-  private def onSelectArtifact(entry: (String, JsonElement)) = {
+  private def onSelectArtifact(entry: (String, JsonArray)) = {
     val versions = for {
-      artifact <- entry._2.getAsJsonArray.asScala
-      version <- SemVersion.apply(artifact.getAsJsonObject.get("version").getAsString)
+      artifact <- entry._2.asScala
+      version <- SemVersion.apply(artifact.asInstanceOf[JsonObject].getString("version"))
     } yield version
 
     artifactVersions.setAll(versions.toSeq.sorted.asJavaCollection)

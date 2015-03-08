@@ -2,8 +2,9 @@ package org.scalaconsole
 package net
 
 import java.net.URLEncoder
-import com.google.gson.{JsonElement, JsonParser}
-import collection.JavaConverters.asScalaSetConverter
+import javax.json.{Json, JsonValue}
+
+import scala.collection.JavaConverters.asScalaSetConverter
 
 /**
  * Created by IntelliJ IDEA.
@@ -13,18 +14,19 @@ import collection.JavaConverters.asScalaSetConverter
  */
 
 object MavenIndexerClient {
-  type Artifacts = Map[String, JsonElement]
+  type Artifact = Map[String, JsonValue]
 
-  def search(keywords: String): (Artifacts, Artifacts) = {
-    val response = io.Source.fromURL("http://maven-index.gtan.com/search?q=" + URLEncoder.encode(keywords, "UTF-8")).mkString
-    val json = new JsonParser().parse(response).getAsJsonObject
-    (entrySet2Scala(json.get("exact").getAsJsonObject.entrySet),
-      entrySet2Scala(json.get("others").getAsJsonObject.entrySet))
+  def search(keywords: String): (Artifact, Artifact) = {
+    val response = io.Source.fromURL("http://maven-index.gtan.com/search?q=" + URLEncoder.encode(keywords, "UTF-8"))
+    val reader = Json.createReader(response.reader())
+    val json = reader.readObject()
+    (entrySet2Scala(json.getJsonObject("exact").entrySet()),
+      entrySet2Scala(json.getJsonObject("others").entrySet()))
   }
 
-  private def entrySet2Scala(entrySet: java.util.Set[java.util.Map.Entry[String, JsonElement]]): Map[String, JsonElement] = {
+  private def entrySet2Scala(entrySet: java.util.Set[java.util.Map.Entry[String, JsonValue]]): Map[String, JsonValue] = {
     entrySet.asScala.map {
-      case entry: java.util.Map.Entry[String, JsonElement] => (entry.getKey, entry.getValue)
+      case entry: java.util.Map.Entry[String, JsonValue] => (entry.getKey, entry.getValue)
     }.toMap
   }
 }
