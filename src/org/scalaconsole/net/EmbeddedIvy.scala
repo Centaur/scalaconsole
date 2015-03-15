@@ -43,7 +43,7 @@ object EmbeddedIvy {
     ) else
       DefaultModuleDescriptor.newCallerInstance(
       ModuleRevisionId.newInstance(groupId, artifactId, version),
-      Array("*->*,!sources,!javadoc"), true, false
+      Array("*->default,!sources,!javadoc"), true, false
     )
     //init resolve report
     val options = new ResolveOptions
