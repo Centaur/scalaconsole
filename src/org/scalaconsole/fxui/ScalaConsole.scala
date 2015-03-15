@@ -4,7 +4,6 @@ import java.util.Locale
 import javafx.application.{Application, Platform}
 import javafx.stage.{Stage, WindowEvent}
 
-import impl.org.controlsfx.i18n.Localization
 import org.scalaconsole.fxui.FxUtil._
 import org.scalaconsole.fxui.main.MainStage
 
@@ -27,7 +26,7 @@ object ScalaConsole {
   var application : Application = _
 
   def main(args: Array[String]) {
-    Localization.setLocale(Locale.ENGLISH)
+//    Localization.setLocale(Locale.ENGLISH)
     Application.launch(classOf[ScalaConsole], args: _*)
   }
 }

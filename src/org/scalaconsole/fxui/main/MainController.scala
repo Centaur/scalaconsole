@@ -3,18 +3,19 @@ package org.scalaconsole.fxui.main
 import java.net.URL
 import java.util.ResourceBundle
 import java.util.concurrent.Executor
+import java.util.function.Consumer
 import javafx.beans.value.ObservableValue
 import javafx.concurrent.Worker
 import javafx.concurrent.Worker.State
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.geometry.Orientation
+import javafx.scene.control.Alert.AlertType
 import javafx.scene.control._
 import javafx.scene.web.{WebEngine, WebEvent, WebView}
-import javafx.stage.Stage
+import javafx.stage.{StageStyle, Stage}
 
 import netscape.javascript.JSObject
-import org.controlsfx.dialog.Dialogs
 import org.scalaconsole.data.{Artifact, ClassLoaderManager, DependencyManager}
 import org.scalaconsole.fxui.FxUtil._
 import org.scalaconsole.fxui.manual.ManualStage
@@ -28,13 +29,13 @@ import scala.concurrent.ExecutionContext
 
 trait MainController {
   self: MainStage =>
-  @FXML var resources: ResourceBundle = _
-  @FXML var location: URL = _
-  @FXML var scriptArea: WebView = _
-  @FXML var outputArea: TextArea = _
-  @FXML var statusBar: Label = _
-  @FXML var splitPane: SplitPane = _
-  @FXML var tabPane: TabPane = _
+  @FXML var resources : ResourceBundle = _
+  @FXML var location  : URL            = _
+  @FXML var scriptArea: WebView        = _
+  @FXML var outputArea: TextArea       = _
+  @FXML var statusBar : Label          = _
+  @FXML var splitPane : SplitPane      = _
+  @FXML var tabPane   : TabPane        = _
 
   private def currentEngine = tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView].getEngine
 
@@ -110,14 +111,20 @@ trait MainController {
     val current = Variables.commandlineOption
     val masth = "Example: -Xprint:typer"
     val msg = s"current: ${current.getOrElse("none")}"
-    val result = Dialogs.create().title("Set Commandline Options").masthead(masth).message(msg).showTextInput(current.getOrElse(""))
-    if (result.isPresent) {
-      val res = result.get()
-      if (Variables.commandlineOption.getOrElse("") != res) {
-        Variables.commandlineOption = Some(res)
-        resetRepl()
+    val dlg = new TextInputDialog()
+    dlg.setTitle("Set Commandline Options")
+    dlg.setHeaderText(masth)
+    dlg.setContentText(msg)
+    val result = dlg.showAndWait()
+    result.ifPresent(
+      new Consumer[String]() {
+        override def accept(res: String) =
+          if (current.getOrElse("") != res) {
+            Variables.commandlineOption = Some(res)
+            resetRepl()
+          }
       }
-    }
+    )
   }
 
   @FXML def onSetFont(event: ActionEvent) {
@@ -125,14 +132,19 @@ trait MainController {
     val f = Variables.displayFont
     val fontAsString = Variables.encodeFont(f)
     val msg = s"current: $fontAsString"
-    val result = Dialogs.create().title("Set Display Font").masthead(masth).message(msg).showTextInput(fontAsString)
-    if (result.isPresent) {
-      var res = result.get()
-      Variables.displayFont = Variables.decodeFont(res)
-      setOutputAreaFont()
-      setFontForAllScriptArea()
-      setStatus(s"Font set to $result")
-    }
+    val dlg = new TextInputDialog(fontAsString)
+    dlg.setTitle("Set Display Font")
+    dlg.setHeaderText(masth)
+    dlg.setContentText(msg)
+    val result = dlg.showAndWait()
+    result.ifPresent(new Consumer[String]() {
+      override def accept(res: String) = {
+        Variables.displayFont = Variables.decodeFont(res)
+        setOutputAreaFont()
+        setFontForAllScriptArea()
+        setStatus(s"Font set to $result")
+      }
+    })
   }
 
   @FXML def onToggleSplitterOrientation(event: ActionEvent) {
@@ -167,7 +179,7 @@ trait MainController {
     initWebView(scriptArea)
     tabPane.getSelectionModel.selectedItemProperty().addListener { (_: ObservableValue[_ <: Tab], old: Tab, _new: Tab) =>
       Variables.theme = old.getContent.asInstanceOf[WebView].getEngine.executeScript("editor.getTheme()").asInstanceOf[String]
-                                                                 }
+    }
   }
 
   private def setOutputAreaFont() = {
@@ -182,8 +194,12 @@ trait MainController {
         view.getEngine.executeScript( s"""editor.setTheme("${Variables.theme}")""")
         view.requestFocus()
       }
-                                     }
-    engine.setOnAlert((ev: WebEvent[String]) => Dialogs.create().masthead(null).message(ev.getData).showInformation())
+    }
+    engine.setOnAlert((ev: WebEvent[String]) => {
+      val dlg = new Alert(AlertType.INFORMATION)
+      dlg.setContentText(ev.getData)
+      dlg.showAndWait()
+    })
     engine.getLoadWorker.stateProperty.addListener { (p1: ObservableValue[_ <: State], oldState: State, newState: State) =>
       if (newState == Worker.State.SUCCEEDED) {
         setScriptAreaFont(engine)
@@ -192,27 +208,34 @@ trait MainController {
         window.setMember("javaBridge", bridge)
         engine.executeScript( s"""editor.setTheme("${Variables.theme}")""")
       }
-                                                   }
+    }
     engine.load(getClass.getResource("ace.html").toExternalForm)
   }
 
   private def setStatus(s: String) = onEventThread {
-                                                     statusBar.setText(s)
-                                                   }
+    statusBar.setText(s)
+  }
 
   private def postGist(token: Option[String]) = {
     val scriptArea = tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView]
     val code = scriptArea.getEngine.executeScript("editor.getValue()").toString
-    val description = Dialogs.create().title("Gist Description").masthead(null).showTextInput().orElse("")
-    if (code != null && code.nonEmpty) {
-      setStatus("Posting to gist...")
-      startTask {
-                  val msg = Gist.post(code, token, description)
-                  setStatus(msg)
-                }
-    } else {
-      setStatus("Empty Content. Not posting.")
-    }
+    val dlg = new TextInputDialog()
+    dlg.setTitle("Gist Description")
+    dlg.setHeaderText(null)
+
+    val result = dlg.showAndWait()
+    result.ifPresent(new Consumer[String](){
+      override def accept(description: String) =
+        if (code != null && code.nonEmpty) {
+          setStatus("Posting to gist...")
+          startTask {
+            val msg = Gist.post(code, token, description)
+            setStatus(msg)
+          }
+        } else {
+          setStatus("Empty Content. Not posting.")
+        }
+    })
   }
 
   private def resetRepl(cls: Boolean = true) = {
@@ -223,10 +246,10 @@ trait MainController {
     synchronizer.onSuccess { case _ =>
       synchronizer = startRepl()
       if (cls) onEventThread {
-                               outputArea.clear()
-                             }
+        outputArea.clear()
+      }
       setStatus("Repl reset.")
-                           }
+    }
   }
 
   def addArtifacts(strs: Seq[String]) = {
@@ -256,15 +279,14 @@ trait MainController {
     }
   }
 
-
   def setScriptAreaFont(engine: WebEngine) = {
     val f = Variables.displayFont
     onEventThread {
-                    val doc = engine.getDocument
-                    val editor = doc.getElementById("editor")
-                    val css = s"font-family:${f.getFamily}; font-size: ${f.getSize}px"
-                    editor.setAttribute("style", css)
-                  }
+      val doc = engine.getDocument
+      val editor = doc.getElementById("editor")
+      val css = s"font-family:${f.getFamily}; font-size: ${f.getSize}px"
+      editor.setAttribute("style", css)
+    }
   }
 
   def setFontForAllScriptArea() = {

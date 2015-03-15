@@ -47,7 +47,7 @@ resolvers += Resolver.typesafeRepo("releases")
 libraryDependencies ++= Seq(
   "org.apache.ivy" % "ivy" % "2.3.0",
   "org.scala-lang" % "scala-compiler" % scalaVersion.value
-  , "org.controlsfx" % "controlsfx" % "8.20.8"
+//  , "org.controlsfx" % "controlsfx" % "8.20.8"
   , "org.glassfish" % "javax.json" % "1.0.4" % "runtime"
   , "javax.json" % "javax.json-api" % "1.0"
   , "org.specs2" %% "specs2" % "2.4.15" % "test"
