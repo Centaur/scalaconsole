@@ -40,7 +40,7 @@ trait MainController {
   private def currentEngine = tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView].getEngine
 
   private def runScript(script: String) = {
-    commandQueue.put('Normal, script)
+    commandQueue.put('Normal -> script)
   }
 
   @FXML def onRun(event: ActionEvent) {
@@ -54,7 +54,7 @@ trait MainController {
   }
 
   private def runPaste(script: String) {
-    commandQueue.put('Paste, script)
+    commandQueue.put('Paste -> script)
   }
 
   @FXML def onRunSelectedInPasteMode(event: ActionEvent) {
