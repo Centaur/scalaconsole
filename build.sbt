@@ -22,7 +22,8 @@ fork := true
 
 //javaOptions in run ++= Seq("-Xmx1024m", "-XX:+UseConcMarkSweepGC", "-XX:+CMSClassUnloadingEnabled")
 
-scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature",
+  "-Ydelambdafy:method", "-Xexperimental")
 
 incOptions := incOptions.value.withNameHashing(nameHashing = true)
 

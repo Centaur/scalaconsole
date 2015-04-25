@@ -20,7 +20,7 @@ ScalaConsole是Scala语言REPL的图形界面替代者。
 当你需要临时验证一个想法，一小段代码的正确性，临时了解某一个Java/Scala库的API，又不想为它建立一个完整的sbt项目时。
 
 ## 版本要求
-* 运行：要求 Java 8
+* 运行：要求 Java 8, `8u40` 分支要求jdk8u40+
 * 编译：要求 Scala 2.11. 如果你使用的是 2.10-，请使用 ScalaConsole 1.x，现在有 [2.9](http://git.oschina.net/43284683/scalaconsole/tree/master/) 和 [2.10](http://git.oschina.net/43284683/scalaconsole/tree/2.10/) 两个分支. 其实要修改 ScalaConsole 2 的代码适应Scala 2.10工作量也不大，只是我本人没什么兴趣。欢迎提交 pull request.
 
 ## 2.0相对于1.x的变化
@@ -65,7 +65,7 @@ ScalaConsole是Scala语言REPL的图形界面替代者。
   ```
   $ git clone 本仓库
   $ cd scalaconsole
-  $ git checkout 2.11
+  $ git checkout 8u40
   $ git submodule init
   $ git submodule update
   以上两个操作是为了获取本项目所依赖的 ace-builds 仓库的内容。

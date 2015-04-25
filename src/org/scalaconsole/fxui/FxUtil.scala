@@ -30,29 +30,32 @@ object FxUtil {
     new Scene(loader.load())
   }
 
-
-  implicit class FunctionAsCallable[R](func: () => R) extends Callable[R] {
-    override def call() = func()
-  }
-
-  implicit class FunctionAsEventHandler[E <: Event](func: E => Any) extends EventHandler[E] {
-    override def handle(e: E) = {
-      func(e); ()
-    }
-  }
-
-  implicit class FunctionAsCallback[P, R](func: P => R) extends Callback[P, R] {
-    override def call(p: P) = func(p)
-  }
-
-  type ChangeListenerFunc[T, U] = (ObservableValue[_ <: T], T, T) => U
-
-  implicit class FunctionAsChangeListener[T, U](func: ChangeListenerFunc[T, U]) extends ChangeListener[T] {
-    override def changed(p1: ObservableValue[_ <: T], p2: T, p3: T) = {
-      func(p1, p2, p3)
-      ()
-    }
-  }
+  /**
+   * -Xexperimental introduced in 2.11.x eliminates the need of the following 4 implicit classes
+   * @see https://github.com/scala/scala/pull/3037
+   */
+//  implicit class FunctionAsCallable[R](func: () => R) extends Callable[R] {
+//    override def call() = func()
+//  }
+//
+//  implicit class FunctionAsEventHandler[E <: Event](func: E => Any) extends EventHandler[E] {
+//    override def handle(e: E) = {
+//      func(e); ()
+//    }
+//  }
+//
+//  implicit class FunctionAsCallback[P, R](func: P => R) extends Callback[P, R] {
+//    override def call(p: P) = func(p)
+//  }
+//
+//  type ChangeListenerFunc[T, U] = (ObservableValue[_ <: T], T, T) => U
+//
+//  implicit class FunctionAsChangeListener[T, U](func: ChangeListenerFunc[T, U]) extends ChangeListener[T] {
+//    override def changed(p1: ObservableValue[_ <: T], p2: T, p3: T) = {
+//      func(p1, p2, p3)
+//      ()
+//    }
+//  }
 
 //  implicit def optionalAsOption[T](opt: Optional[T]): Option[T] = {
 //    if(opt.isPresent) Some(opt.get())

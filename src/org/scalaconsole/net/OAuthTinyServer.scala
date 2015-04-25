@@ -38,7 +38,7 @@ object OAuthTinyServer {
     } else {
       FxUtil.startTask {
         val client = socket.accept()
-        val reader = new BufferedReader(new InputStreamReader(client.getInputStream))
+        val reader = new BufferedReader(new InputStreamReader(client.getInputStream()))
         val request_line = reader.readLine
         request_line.split("\\s") match {
           case Array(method: String, path: String, version: String) if valid(method, path, version) =>
@@ -47,7 +47,7 @@ object OAuthTinyServer {
                 val exchange_uri = new URL(exchange_template.format(client_id, client_secret, code))
                 val conn = exchange_uri.openConnection().asInstanceOf[HttpURLConnection]
                 conn.setRequestMethod("POST")
-                val content = io.Source.fromInputStream(conn.getInputStream).mkString
+                val content = io.Source.fromInputStream(conn.getInputStream()).mkString
                 accessToken = content.split("&").map(_.split("=")).find(_(0) == "access_token").map(_(1))
                 for (token <- accessToken) {
                   FxUtil.onEventThread {
@@ -66,7 +66,7 @@ object OAuthTinyServer {
   }
 
   private def writeResponseMessage(client: Socket) {
-    val writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream))
+    val writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))
     writer.write(responseMessage)
     writer.flush()
   }
