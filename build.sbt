@@ -23,7 +23,7 @@ fork := true
 //javaOptions in run ++= Seq("-Xmx1024m", "-XX:+UseConcMarkSweepGC", "-XX:+CMSClassUnloadingEnabled")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature",
-  "-Ydelambdafy:method", "-Xexperimental")
+  "-Ydelambdafy:method", "-Xexperimental", "-Xlint")
 
 incOptions := incOptions.value.withNameHashing(nameHashing = true)
 
@@ -44,6 +44,8 @@ transitiveClassifiers in Global := Seq(Artifact.SourceClassifier)
 //
 
 resolvers += Resolver.typesafeRepo("releases")
+
+cleanFiles += new File(Path.userHome.absolutePath + "/.ivy2/exclude_classifiers")
 
 libraryDependencies ++= Seq(
   "org.apache.ivy" % "ivy" % "2.3.0",
