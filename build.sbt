@@ -8,7 +8,7 @@ name := "ScalaConsole"
 
 version := "2.0.0-M11"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 scalaSource in Compile := baseDirectory.value / "src"
 
