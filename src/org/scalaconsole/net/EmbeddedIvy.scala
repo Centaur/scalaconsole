@@ -13,7 +13,7 @@ import plugins.resolver._
 object EmbeddedIvy {
 
   val repositories =
-    ('repox, "http://114.80.200.226:8078/") ::
+    ('repox, "http://103.36.133.113:8078/") ::
     Nil
 
   case class TransitiveResolver(m2Compatible: Boolean, name: String, patternRoot: String) extends IBiblioResolver {
