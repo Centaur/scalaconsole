@@ -1,19 +1,17 @@
 package org.scalaconsole.fxui.main
 
+import java.lang
 import java.net.URL
 import java.util.ResourceBundle
-import java.util.concurrent.Executor
-import java.util.function.Consumer
 import javafx.beans.value.ObservableValue
 import javafx.concurrent.Worker
 import javafx.concurrent.Worker.State
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
-import javafx.geometry.Orientation
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control._
 import javafx.scene.web.{WebEngine, WebEvent, WebView}
-import javafx.stage.{StageStyle, Stage}
+import javafx.stage.Stage
 
 import netscape.javascript.JSObject
 import org.scalaconsole.data.{Artifact, ClassLoaderManager, DependencyManager}
@@ -116,13 +114,9 @@ trait MainController {
     dlg.setHeaderText(masth)
     dlg.setContentText(msg)
     val result = dlg.showAndWait()
-    result.ifPresent(
-      new Consumer[String]() {
-        override def accept(res: String) =
-          if (current.getOrElse("") != res) {
-            Variables.commandlineOption = Some(res)
-            resetRepl()
-          }
+    result.ifPresent(res => if (current.getOrElse("") != res) {
+        Variables.commandlineOption = Some(res)
+        resetRepl()
       }
     )
   }
@@ -137,13 +131,11 @@ trait MainController {
     dlg.setHeaderText(masth)
     dlg.setContentText(msg)
     val result = dlg.showAndWait()
-    result.ifPresent(new Consumer[String]() {
-      override def accept(res: String) = {
-        Variables.displayFont = Variables.decodeFont(res)
-        setOutputAreaFont()
-        setFontForAllScriptArea()
-        setStatus(s"Font set to $result")
-      }
+    result.ifPresent(res => {
+      Variables.displayFont = Variables.decodeFont(res)
+      setOutputAreaFont()
+      setFontForAllScriptArea()
+      setStatus(s"Font set to $result")
     })
   }
 
@@ -177,9 +169,9 @@ trait MainController {
   @FXML def initialize() {
     setOutputAreaFont()
     initWebView(scriptArea)
-    tabPane.getSelectionModel.selectedItemProperty().addListener { (_: ObservableValue[_ <: Tab], old: Tab, _new: Tab) =>
-      Variables.theme = old.getContent.asInstanceOf[WebView].getEngine.executeScript("editor.getTheme()").asInstanceOf[String]
-    }
+    tabPane.getSelectionModel.selectedItemProperty().addListener((observable: ObservableValue[_ <: Tab], oldValue: Tab, newValue: Tab) => {
+      Variables.theme = oldValue.getContent.asInstanceOf[WebView].getEngine.executeScript("editor.getTheme()").asInstanceOf[String]
+    })
   }
 
   private def setOutputAreaFont() = {
@@ -189,26 +181,28 @@ trait MainController {
 
   private def initWebView(view: WebView) {
     val engine: WebEngine = view.getEngine
-    view.visibleProperty.addListener { (p1: ObservableValue[_ <: java.lang.Boolean], old: java.lang.Boolean, visible: java.lang.Boolean) =>
-      if (visible) {
+    view.visibleProperty.addListener((observable: ObservableValue[_ <: lang.Boolean], oldValue: lang.Boolean, newValue: lang.Boolean) => {
+      if (newValue) {
         view.getEngine.executeScript( s"""editor.setTheme("${Variables.theme}")""")
         view.requestFocus()
       }
-    }
+    })
+
     engine.setOnAlert((ev: WebEvent[String]) => {
       val dlg = new Alert(AlertType.INFORMATION)
       dlg.setContentText(ev.getData)
       dlg.showAndWait()
     })
-    engine.getLoadWorker.stateProperty.addListener { (p1: ObservableValue[_ <: State], oldState: State, newState: State) =>
-      if (newState == Worker.State.SUCCEEDED) {
+    engine.getLoadWorker.stateProperty.addListener((observable: ObservableValue[_ <: State], oldValue: State, newValue: State) => {
+      if (newValue == Worker.State.SUCCEEDED) {
         setScriptAreaFont(engine)
         view.requestFocus()
         val window = engine.executeScript("window").asInstanceOf[JSObject]
         window.setMember("javaBridge", bridge)
         engine.executeScript( s"""editor.setTheme("${Variables.theme}")""")
       }
-    }
+    })
+
     engine.load(getClass.getResource("ace.html").toExternalForm)
   }
 
@@ -224,25 +218,20 @@ trait MainController {
     dlg.setHeaderText(null)
 
     val result = dlg.showAndWait()
-    result.ifPresent(new Consumer[String](){
-      override def accept(description: String) =
-        if (code != null && code.nonEmpty) {
-          setStatus("Posting to gist...")
-          startTask {
-            val msg = Gist.post(code, token, description)
-            setStatus(msg)
-          }
-        } else {
-          setStatus("Empty Content. Not posting.")
-        }
+    result.ifPresent(description => if (code != null && code.nonEmpty) {
+      setStatus("Posting to gist...")
+      startTask {
+        val msg = Gist.post(code, token, description)
+        setStatus(msg)
+      }
+    } else {
+      setStatus("Empty Content. Not posting.")
     })
   }
 
   private def resetRepl(cls: Boolean = true) = {
     commandQueue.put('Normal -> "\n\n:q")
-    implicit val ec = ExecutionContext.fromExecutor(new Executor {
-      override def execute(command: Runnable) = command.run()
-    })
+    implicit val ec = ExecutionContext.fromExecutor(_.run())
     synchronizer.onSuccess { case _ =>
       synchronizer = startRepl()
       if (cls) onEventThread {

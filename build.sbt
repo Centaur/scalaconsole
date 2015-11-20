@@ -25,39 +25,18 @@ fork := true
 scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature",
   "-Ydelambdafy:method", "-Xexperimental", "-Xlint")
 
-incOptions := incOptions.value.withNameHashing(nameHashing = true)
-
 transitiveClassifiers in Global := Seq(Artifact.SourceClassifier)
 
-//mainResourcesPath := "src"
-//
-// testScalaSourcePath := "test"
-//
-//testResourcesPath := "test"
-//
-//managedDependencyPath := "lib"
-//
-////  override def mainSources = super.mainSources --- ("src" ** "CommaSeperatedData.scala")
-//mainResources := super.mainResources --- ("src" ** ("*.scala" | "*.java"))
-//
-//scalacOptions += "-optimise"
-//
-
-resolvers += Resolver.typesafeRepo("releases")
-
-cleanFiles += new File(Path.userHome.absolutePath + "/.ivy2/exclude_classifiers")
-
 libraryDependencies ++= Seq(
-  "org.apache.ivy" % "ivy" % "2.3.0",
-  "org.scala-lang" % "scala-compiler" % scalaVersion.value
-//  , "org.controlsfx" % "controlsfx" % "8.20.8"
+  "org.apache.ivy" % "ivy" % "2.4.0"
+  , "org.scala-lang" % "scala-compiler" % scalaVersion.value
   , "org.glassfish" % "javax.json" % "1.0.4" % "runtime"
   , "javax.json" % "javax.json-api" % "1.0"
-  , "org.specs2" %% "specs2-core" % "3.6.4" % "test"
+  , "org.specs2" %% "specs2-core" % "3.6.5" % "test"
 )
 
 
-packageOptions in assembly ++= Seq(ManifestAttributes(("Specification-Version", "8.0.20")))
+//packageOptions in assembly ++= Seq(ManifestAttributes(("Specification-Version", "8.0.20")))
 
 assemblyMergeStrategy in assembly := {
   case str@PathList("org", "scalaconsole", "fxui", "main", "ace-builds", remains@_*) => remains match {
