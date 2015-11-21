@@ -169,7 +169,7 @@ trait MainController {
   @FXML def initialize() {
     setOutputAreaFont()
     initWebView(scriptArea)
-    tabPane.getSelectionModel.selectedItemProperty().addListener((observable: ObservableValue[_ <: Tab], oldValue: Tab, newValue: Tab) => {
+    tabPane.getSelectionModel.selectedItemProperty().addListener((observable, oldValue, newValue) => {
       Variables.theme = oldValue.getContent.asInstanceOf[WebView].getEngine.executeScript("editor.getTheme()").asInstanceOf[String]
     })
   }
@@ -181,7 +181,7 @@ trait MainController {
 
   private def initWebView(view: WebView) {
     val engine: WebEngine = view.getEngine
-    view.visibleProperty.addListener((observable: ObservableValue[_ <: lang.Boolean], oldValue: lang.Boolean, newValue: lang.Boolean) => {
+    view.visibleProperty.addListener((observable, oldValue, newValue) => {
       if (newValue) {
         view.getEngine.executeScript( s"""editor.setTheme("${Variables.theme}")""")
         view.requestFocus()
@@ -193,7 +193,7 @@ trait MainController {
       dlg.setContentText(ev.getData)
       dlg.showAndWait()
     })
-    engine.getLoadWorker.stateProperty.addListener((observable: ObservableValue[_ <: State], oldValue: State, newValue: State) => {
+    engine.getLoadWorker.stateProperty.addListener((observable, oldValue, newValue) => {
       if (newValue == Worker.State.SUCCEEDED) {
         setScriptAreaFont(engine)
         view.requestFocus()

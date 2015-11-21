@@ -11,9 +11,7 @@ import javafx.beans.value.{ChangeListener, ObservableValue}
 import java.util.{function, Optional}
 
 object FxUtil {
-  def onEventThread(r: => Unit) = Platform.runLater(new Runnable() {
-    override def run() = r
-  })
+  def onEventThread(r: => Unit) = Platform.runLater(() => r)
 
   def startTask[T](t: => T): Unit = {
     val task = new Task[T] {
