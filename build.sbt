@@ -8,7 +8,7 @@ name := "ScalaConsole"
 
 version := "2.0.0-M11"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 scalaSource in Compile := baseDirectory.value / "src"
 
@@ -32,7 +32,7 @@ libraryDependencies ++= Seq(
   , "org.scala-lang" % "scala-compiler" % scalaVersion.value
   , "org.glassfish" % "javax.json" % "1.0.4" % "runtime"
   , "javax.json" % "javax.json-api" % "1.0"
-  , "org.specs2" %% "specs2-core" % "3.6.5" % "test"
+  , "org.specs2" %% "specs2-core" % "3.7.2" % "test"
 )
 
 
