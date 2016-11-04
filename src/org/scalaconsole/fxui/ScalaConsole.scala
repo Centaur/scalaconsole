@@ -1,6 +1,5 @@
 package org.scalaconsole.fxui
 
-import java.util.Locale
 import javafx.application.{Application, Platform}
 import javafx.stage.{Stage, WindowEvent}
 

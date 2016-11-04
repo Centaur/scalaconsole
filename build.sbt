@@ -8,7 +8,7 @@ name := "ScalaConsole"
 
 version := "2.0.0-M11"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.0"
 
 scalaSource in Compile := baseDirectory.value / "src"
 
@@ -22,8 +22,7 @@ fork := true
 
 //javaOptions in run ++= Seq("-Xmx1024m", "-XX:+UseConcMarkSweepGC", "-XX:+CMSClassUnloadingEnabled")
 
-scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature",
-  "-Ydelambdafy:method", "-Xexperimental", "-Xlint")
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-Xlint")
 
 transitiveClassifiers in Global := Seq(Artifact.SourceClassifier)
 
@@ -32,9 +31,8 @@ libraryDependencies ++= Seq(
   , "org.scala-lang" % "scala-compiler" % scalaVersion.value
   , "org.glassfish" % "javax.json" % "1.0.4" % "runtime"
   , "javax.json" % "javax.json-api" % "1.0"
-  , "org.specs2" %% "specs2-core" % "3.7.2" % "test"
+  , "org.specs2" %% "specs2-core" % "3.8.6" %  "test"
 )
-
 
 //packageOptions in assembly ++= Seq(ManifestAttributes(("Specification-Version", "8.0.20")))
 
@@ -50,11 +48,9 @@ assemblyMergeStrategy in assembly := {
 }
 
 // this has the same effect as .exclude clause in libraryDependencies config, but does not rely on scala version
-assemblyExcludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
-  cp filter { item =>
+assemblyExcludedJars in assembly := (fullClasspath in assembly).value filter { item =>
     val name = item.data.getName
     (name.startsWith("scala-xml") || name.startsWith("scala-parser-combinators")) && name.endsWith(".jar")
-  }
 }
 
 

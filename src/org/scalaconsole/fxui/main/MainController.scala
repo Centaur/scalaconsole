@@ -1,11 +1,8 @@
 package org.scalaconsole.fxui.main
 
-import java.lang
 import java.net.URL
 import java.util.ResourceBundle
-import javafx.beans.value.ObservableValue
 import javafx.concurrent.Worker
-import javafx.concurrent.Worker.State
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.control.Alert.AlertType
@@ -232,7 +229,7 @@ trait MainController {
   private def resetRepl(cls: Boolean = true) = {
     commandQueue.put('Normal -> "\n\n:q")
     implicit val ec = ExecutionContext.fromExecutor(_.run())
-    synchronizer.onSuccess { case _ =>
+    synchronizer.foreach { _ =>
       synchronizer = startRepl()
       if (cls) onEventThread {
         outputArea.clear()
