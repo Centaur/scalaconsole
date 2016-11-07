@@ -229,6 +229,7 @@ trait MainController {
   private def resetRepl(cls: Boolean = true) = {
     commandQueue.put('Normal -> "\n\n:q")
     implicit val ec = ExecutionContext.fromExecutor(_.run())
+    import concurrent.ExecutionContext.Implicits.global
     synchronizer.foreach { _ =>
       synchronizer = startRepl()
       if (cls) onEventThread {
