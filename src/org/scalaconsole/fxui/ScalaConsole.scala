@@ -7,7 +7,7 @@ import org.scalaconsole.fxui.FxUtil._
 import org.scalaconsole.fxui.main.MainStage
 
 class ScalaConsole extends Application {
-  override def start(pStage: Stage) = {
+  override def start(pStage: Stage): Unit = {
     pStage.setScene(loadScene("main/MainStage.fxml", new MainStage))
     pStage.show()
     pStage.setOnCloseRequest{(_: WindowEvent) =>

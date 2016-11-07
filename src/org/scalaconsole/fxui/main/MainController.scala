@@ -2,6 +2,7 @@ package org.scalaconsole.fxui.main
 
 import java.net.URL
 import java.util.ResourceBundle
+import java.util.concurrent.Executor
 import javafx.concurrent.Worker
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
@@ -24,13 +25,13 @@ import scala.concurrent.ExecutionContext
 
 trait MainController {
   self: MainStage =>
-  @FXML var resources : ResourceBundle = _
-  @FXML var location  : URL            = _
-  @FXML var scriptArea: WebView        = _
-  @FXML var outputArea: TextArea       = _
-  @FXML var statusBar : Label          = _
-  @FXML var splitPane : SplitPane      = _
-  @FXML var tabPane   : TabPane        = _
+  @FXML var resources: ResourceBundle = _
+  @FXML var location: URL = _
+  @FXML var scriptArea: WebView = _
+  @FXML var outputArea: TextArea = _
+  @FXML var statusBar: Label = _
+  @FXML var splitPane: SplitPane = _
+  @FXML var tabPane: TabPane = _
 
   private def currentEngine = tabPane.getSelectionModel.getSelectedItem.getContent.asInstanceOf[WebView].getEngine
 
@@ -112,9 +113,9 @@ trait MainController {
     dlg.setContentText(msg)
     val result = dlg.showAndWait()
     result.ifPresent(res => if (current.getOrElse("") != res) {
-        Variables.commandlineOption = Some(res)
-        resetRepl()
-      }
+      Variables.commandlineOption = Some(res)
+      resetRepl()
+    }
     )
   }
 
@@ -228,7 +229,6 @@ trait MainController {
 
   private def resetRepl(cls: Boolean = true) = {
     commandQueue.put('Normal -> "\n\n:q")
-    implicit val ec = ExecutionContext.fromExecutor(_.run())
     import concurrent.ExecutionContext.Implicits.global
     synchronizer.foreach { _ =>
       synchronizer = startRepl()
@@ -239,7 +239,7 @@ trait MainController {
     }
   }
 
-  def addArtifacts(strs: Seq[String]) = {
+  def addArtifacts(strs: Seq[String]): Unit = {
     if (strs.nonEmpty) {
       for (str <- strs; artifact <- Artifact(str)) {
         DependencyManager.addArtifact(artifact)
@@ -252,7 +252,7 @@ trait MainController {
     }
   }
 
-  def updateArtifacts(strs: Seq[String]) = {
+  def updateArtifacts(strs: Seq[String]): Unit = {
     val reduced = for (str <- strs;
                        artifact <- Artifact(str)) yield artifact
     if (DependencyManager.currentArtifacts.length > reduced.length) {
@@ -266,7 +266,7 @@ trait MainController {
     }
   }
 
-  def setScriptAreaFont(engine: WebEngine) = {
+  def setScriptAreaFont(engine: WebEngine): Unit = {
     val f = Variables.displayFont
     onEventThread {
       val doc = engine.getDocument
@@ -276,7 +276,7 @@ trait MainController {
     }
   }
 
-  def setFontForAllScriptArea() = {
+  def setFontForAllScriptArea(): Unit = {
     for (tab <- tabPane.getTabs.asScala) {
       val engine = tab.getContent.asInstanceOf[WebView].getEngine
       setScriptAreaFont(engine)

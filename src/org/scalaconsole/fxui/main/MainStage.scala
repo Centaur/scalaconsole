@@ -33,7 +33,7 @@ class MainStage extends MainController {
   }
   System.setOut(sysOutErr)
 
-  def startOutputRenderer() = startTask {
+  def startOutputRenderer(): Unit = startTask {
     for (line <- io.Source.fromInputStream(outputIs).getLines()) {
       onEventThread {
         outputArea.appendText(s"$line\n")
@@ -45,13 +45,13 @@ class MainStage extends MainController {
    * 启动一个新的repl，用于切换scala版本和reset时。每次调用它，就生成一对stream和一个Task来运行scala ILoop
    * @return
    */
-  def connectToRepl(writer: PrintWriter, pasteFunc: String => Unit) = startTask {
+  def connectToRepl(writer: PrintWriter, pasteFunc: String => Unit): Unit = startTask {
     var quitCommand = false
     while (!quitCommand) {
       commandQueue.take() match {
         case ('Normal, script: String) =>
-          writer.write(script)
-          if (!script.endsWith("\n")) writer.write("\n")
+          writer.print(script)
+          if (!script.endsWith("\n")) writer.println()
           writer.flush()
           if (script == "\n\n:q")
             quitCommand = true
@@ -69,7 +69,7 @@ class MainStage extends MainController {
 
   def startRepl(): Future[Unit] = {
     val promise = Promise[Unit]()
-    startTask {
+    new Thread(() => {
       val replIs = new PipedInputStream(4096)
       val scriptWriter = new PrintWriter(new OutputStreamWriter(new PipedOutputStream(replIs)))
       val settings = new Settings
@@ -118,12 +118,12 @@ class MainStage extends MainController {
       replIs.close()
       scriptWriter.close()
       System.gc()
-      promise.complete(Success(()))
-    }
+      promise.completeWith(Future.unit)
+    }).start()
     promise.future
   }
 
   startOutputRenderer()
-  var synchronizer = startRepl()
+  @volatile var synchronizer: Future[Unit] = startRepl()
 
 }
