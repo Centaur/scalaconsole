@@ -9,7 +9,14 @@ import javafx.scene.Scene
 object FxUtil {
   def onEventThread(r: => Unit): Unit = Platform.runLater(() => r)
 
-  def startTask[T](t: => T): Unit = scala.concurrent.ExecutionContext.Implicits.global.execute(() => t)
+  def startTask[T](t: => T): Unit = {
+    val task = new Task[T] {
+      override def call(): T = t
+    }
+    val thread = new Thread(task)
+    thread.setDaemon(true)
+    thread.start()
+  }
 
   def loadScene(fxml: String, controller: AnyRef): Scene = {
     val loader = new FXMLLoader(getClass.getResource(fxml))

@@ -117,13 +117,12 @@ class MainStage extends MainController {
 
       replIs.close()
       scriptWriter.close()
-      System.gc()
       promise.completeWith(Future.unit)
     }).start()
     promise.future
   }
 
   startOutputRenderer()
-  @volatile var synchronizer: Future[Unit] = startRepl()
+  var synchronizer: Future[Unit] = startRepl()
 
 }

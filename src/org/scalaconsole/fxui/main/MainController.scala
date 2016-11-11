@@ -2,7 +2,7 @@ package org.scalaconsole.fxui.main
 
 import java.net.URL
 import java.util.ResourceBundle
-import java.util.concurrent.Executor
+import java.util.concurrent.{Executor, ThreadPoolExecutor}
 import javafx.concurrent.Worker
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
@@ -229,7 +229,7 @@ trait MainController {
 
   private def resetRepl(cls: Boolean = true) = {
     commandQueue.put('Normal -> "\n\n:q")
-    import concurrent.ExecutionContext.Implicits.global
+    implicit val ec = ExecutionContext.fromExecutor(_.run())
     synchronizer.foreach { _ =>
       synchronizer = startRepl()
       if (cls) onEventThread {
