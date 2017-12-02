@@ -2,7 +2,6 @@ package org.scalaconsole.fxui.main
 
 import java.net.URL
 import java.util.ResourceBundle
-import java.util.concurrent.{Executor, ThreadPoolExecutor}
 import javafx.concurrent.Worker
 import javafx.event.ActionEvent
 import javafx.fxml.FXML

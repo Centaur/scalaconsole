@@ -1,7 +1,6 @@
 package org.scalaconsole
 package net
 
-import java.awt.EventQueue
 import java.net._
 import java.io._
 
@@ -47,7 +46,7 @@ object OAuthTinyServer {
                 val exchange_uri = new URL(exchange_template.format(client_id, client_secret, code))
                 val conn = exchange_uri.openConnection().asInstanceOf[HttpURLConnection]
                 conn.setRequestMethod("POST")
-                val content = io.Source.fromInputStream(conn.getInputStream()).mkString
+                val content = scala.io.Source.fromInputStream(conn.getInputStream()).mkString
                 accessToken = content.split("&").map(_.split("=")).find(_(0) == "access_token").map(_(1))
                 for (token <- accessToken) {
                   FxUtil.onEventThread {

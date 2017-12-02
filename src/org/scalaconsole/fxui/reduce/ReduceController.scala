@@ -1,14 +1,13 @@
 package org.scalaconsole.fxui.reduce
 import javafx.collections.FXCollections
-import org.scalaconsole.data.DependencyManager
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
-import org.scalaconsole.fxui.{FxUtil, SelectedVersionCell}
 import javafx.scene.control.ListView
+import javafx.scene.input.KeyCode._
+import javafx.scene.input.KeyEvent
 
-import FxUtil._
-import javafx.scene.input.{KeyCode, KeyEvent}
-import KeyCode._
+import org.scalaconsole.data.DependencyManager
+import org.scalaconsole.fxui.SelectedVersionCell
 
 trait ReduceController { self: ReduceStage =>
   @FXML def onOK(event: ActionEvent) {

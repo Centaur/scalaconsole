@@ -1,18 +1,16 @@
 package org.scalaconsole.fxui.main
 
 import java.io._
-import javafx.concurrent.Task
-import org.scalaconsole.data.{DependencyManager, ClassLoaderManager}
-import java.util.jar.JarFile
-import scala.concurrent.{Future, Promise}
-import scala.tools.nsc.plugins.PluginDescription
-import org.scalaconsole.DetachedILoop
-import scala.tools.nsc.Settings
 import java.util.concurrent.ArrayBlockingQueue
-import org.scalaconsole.fxui.{Constants, Variables, FxUtil}
-import javafx.fxml.FXMLLoader
+import java.util.jar.JarFile
 
-import scala.util.Success
+import org.scalaconsole.DetachedILoop
+import org.scalaconsole.data.{ClassLoaderManager, DependencyManager}
+import org.scalaconsole.fxui.{Constants, FxUtil, Variables}
+
+import scala.concurrent.{Future, Promise}
+import scala.tools.nsc.Settings
+import scala.tools.nsc.plugins.PluginDescription
 
 class MainStage extends MainController {
 
@@ -34,7 +32,7 @@ class MainStage extends MainController {
   System.setOut(sysOutErr)
 
   def startOutputRenderer(): Unit = startTask {
-    for (line <- io.Source.fromInputStream(outputIs).getLines()) {
+    for (line <- scala.io.Source.fromInputStream(outputIs).getLines()) {
       onEventThread {
         outputArea.appendText(s"$line\n")
       }
@@ -85,7 +83,7 @@ class MainStage extends MainController {
             val in = jar getInputStream xml
             val plugin = PluginDescription.fromXML(in)
             if (settings.pluginOptions.value.contains(plugin.name + ":enable")) {
-              settings.plugin.appendToValue(path)
+//              settings.plugin.(path)
             }
             in.close()
           }
